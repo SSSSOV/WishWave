@@ -85,7 +85,7 @@ html:not([data-theme]) {
   --secondary: #b1ccc6;
   --on-secondary: #1c3530;
   --secondary-container: #334b47;
-  --on-secondary-container: #334b47;
+  --on-secondary-container: #cce8e2;
 
   /* Tertiary colors */
   --tertiary: #accae5;
@@ -133,4 +133,9 @@ body {
   font-size: 14px;
   line-height: 20px;
   font-weight: 400;
+}
+
+.surface {
+  background-color: var(--surface);
+  border-color: var(--outline);
 }

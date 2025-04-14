@@ -1,23 +1,62 @@
-.button {
-  display: inline-flex;
+.elevated_button,
+.filled_button,
+.filled_tonal_button,
+.outlined_button,
+.text_button {
+  height: 40px;
+  border-radius: 20px;
+  padding: 0 24px;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 20px;
+  width: fit-content;
+
+  display: flex;
+  gap: 8px;
   align-items: center;
   justify-content: center;
-  transition: all;
-  transition-duration: 200ms;
-  transition-timing-function: ease-in-out;
-  background: #fff;
+
+  transition: 200ms all;
 }
 
-/* Состояния */
-/* .bg-primary\\/hovered {
-  background-color: color-mix(in srgb, var(--primary) 8%, transparent);
+.elevated_button {
+  background-color: var(--surface-container-low);
+  color: var(--primary);
+  box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.2);
 }
-.bg-primary\\/pressed {
-  background-color: color-mix(in srgb, var(--primary) 12%, transparent);
+
+.filled_button {
+  background-color: var(--primary);
+  color: var(--on-primary);
 }
-.bg-primary-container\\/hovered {
-  background-color: color-mix(in srgb, var(--primary-container) 8%, transparent);
+
+.filled_tonal_button {
+  background-color: var(--secondary-container);
+  color: var(--on-secondary-container);
 }
-.bg-primary-container\\/pressed {
-  background-color: color-mix(in srgb, var(--primary-container) 12%, transparent);
-} */
+
+.outlined_button {
+  color: var(--primary);
+  border: 1px solid var(--outline);
+}
+
+.text_button {
+  color: var(--primary);
+  padding: 0 12px;
+}
+
+.with_icon {
+  padding-left: 16px;
+}
+
+.icon {
+  font-size: 18px !important;
+  margin-bottom: 2px;
+  font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 48;
+}
+
+.only_icon {
+  font-size: 24px !important;
+  padding: 0;
+  width: 40px;
+}
