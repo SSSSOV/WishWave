@@ -1,2 +1,21 @@
 # WishWave
- Development of a web application for a wish list service for a diploma
+
+Development of a web application for a wish list service for a diploma
+
+Главная:
+Недавние обновления друзей
+Рекомендации на основе друзей
+Рекламные рекомендации
+
+Друзья:
+Список друзей
+Добавление друзей
+Сортировка по дате рождения
+
+Мои:
+Виш листы
+
+Профиль:
+Настройки
+
+Добавить:

@@ -1,0 +1,23 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all;
+  transition-duration: 200ms;
+  transition-timing-function: ease-in-out;
+  background: #fff;
+}
+
+/* Состояния */
+/* .bg-primary\\/hovered {
+  background-color: color-mix(in srgb, var(--primary) 8%, transparent);
+}
+.bg-primary\\/pressed {
+  background-color: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+.bg-primary-container\\/hovered {
+  background-color: color-mix(in srgb, var(--primary-container) 8%, transparent);
+}
+.bg-primary-container\\/pressed {
+  background-color: color-mix(in srgb, var(--primary-container) 12%, transparent);
+} */
