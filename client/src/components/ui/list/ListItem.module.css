@@ -1,0 +1,40 @@
+.headline {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+}
+.overline {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 700;
+}
+
+.list_item {
+  display: flex;
+  justify-content: space-between;
+  /* background-color: var(--surface-dim); */
+  gap: 16px;
+  padding: 8px 16px;
+  align-items: center;
+}
+.leading_element,
+.trailing_element {
+  display: flex;
+}
+.content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.condition1 {
+  height: 56px;
+}
+.condition2 {
+  height: 72px;
+}
+.condition3 {
+  height: 56px;
+}
+.clickable {
+  cursor: pointer;
+}

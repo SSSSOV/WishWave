@@ -1,0 +1,41 @@
+.headline {
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 700;
+}
+.title {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 500;
+}
+.body {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+}
+.label {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 700;
+}
+.link {
+  text-decoration: underline;
+}
+.text_center {
+  text-align: center;
+}
+.ul {
+  /* border: 1px solid var(--outline); */
+  border-radius: var(--md);
+  padding: var(--sm);
+  margin-bottom: var(--md);
+  background-color: var(--secondary-container);
+  color: var(--on-secondary-container);
+  transition: 0.5s all;
+}
+.ul:hover {
+  border-radius: var(--sm);
+  background-color: var(--tertiary-container);
+  color: var(--on-tertiary-container);
+  box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.2);
+}

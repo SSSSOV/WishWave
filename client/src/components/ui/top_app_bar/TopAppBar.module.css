@@ -1,0 +1,62 @@
+.trailing_icon {
+  display: flex;
+}
+
+.top_app_bar {
+  display: flex;
+  gap: var(--xs);
+  align-items: center;
+  padding: var(--sm) var(--xs);
+  background-color: var(--surface-container);
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+.with_rail {
+  margin-left: 72px;
+  width: calc(100% - 72px) !important;
+}
+.title_center,
+.title_sm {
+  display: flex;
+  font-size: var(--xl);
+  width: 100%;
+}
+.title_center {
+  justify-content: center;
+}
+
+.top_app_bar_md,
+.top_app_bar_lg {
+  background-color: var(--surface-container);
+  display: flex;
+  flex-direction: column;
+  gap: var(--xs);
+  padding-bottom: var(--xl);
+  padding: var(--sm) var(--sm) var(--xl) var(--sm);
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+.top_app_bar_lg {
+  gap: calc(2 * var(--xl));
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+.title_md_lg {
+  font-size: var(--xl);
+  width: 100%;
+  padding: 0 var(--lg);
+}
+.icons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--sm) var(--xs) 0px var(--xs);
+}
+
+.border {
+  border: 1px solid var(--outline);
+}
