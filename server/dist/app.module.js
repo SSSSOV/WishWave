@@ -12,6 +12,7 @@ const sequelize_1 = require("@nestjs/sequelize");
 const users_module_1 = require("./users/users.module");
 const config_1 = require("@nestjs/config");
 const users_model_1 = require("./users/users.model");
+const roles_module_1 = require("./roles/roles.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -34,6 +35,7 @@ exports.AppModule = AppModule = __decorate([
                 autoLoadModels: true
             }),
             users_module_1.UsersModule,
+            roles_module_1.RolesModule,
         ]
     })
 ], AppModule);
