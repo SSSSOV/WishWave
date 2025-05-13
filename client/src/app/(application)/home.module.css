@@ -1,0 +1,19 @@
+/* По умолчанию показываем мобильную версию */
+.desktop_container {
+  display: none;
+}
+
+.mobile_container {
+  display: block;
+}
+
+/* На десктопах показываем десктопную версию */
+@media (min-width: 768px) {
+  .desktop_container {
+    display: block;
+  }
+
+  .mobile_container {
+    display: none;
+  }
+}

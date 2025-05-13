@@ -9,7 +9,7 @@
   font-weight: 700;
   font-size: 14px;
   line-height: 20px;
-  width: fit-content;
+  /* width: fit-content; */
 
   display: flex;
   gap: 8px;
@@ -17,6 +17,13 @@
   justify-content: center;
 
   transition: 200ms all;
+}
+.fit {
+  width: fit-content;
+}
+.p_none {
+  height: auto !important;
+  padding: 0 !important;
 }
 
 .elevated_button {
@@ -59,4 +66,8 @@
   font-size: 24px !important;
   padding: 0;
   width: 40px;
+}
+
+.unselected {
+  color: var(--on-surface);
 }

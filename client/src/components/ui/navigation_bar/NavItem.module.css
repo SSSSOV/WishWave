@@ -1,0 +1,27 @@
+.nav_item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--xs);
+  color: var(--on-surface);
+  width: 56px;
+  text-align: center;
+}
+.item_icon {
+  border-radius: var(--xl);
+  height: 32px;
+  width: 56px;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.item_label {
+  font-size: 12px;
+  font-weight: 700;
+  width: 56px;
+  text-wrap: balance;
+}
+.selected_item_icon {
+  background-color: var(--secondary-container);
+  color: var(--on-secondary-container);
+}
