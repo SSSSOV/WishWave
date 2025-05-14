@@ -13,6 +13,14 @@ const users_module_1 = require("./users/users.module");
 const config_1 = require("@nestjs/config");
 const users_model_1 = require("./users/users.model");
 const roles_module_1 = require("./roles/roles.module");
+const roles_model_1 = require("./roles/roles.model");
+const ban_module_1 = require("./ban/ban.module");
+const friend_module_1 = require("./friend/friend.module");
+const wishlist_module_1 = require("./wishlist/wishlist.module");
+const friendstatus_module_1 = require("./friendstatus/friendstatus.module");
+const accesslevel_module_1 = require("./accesslevel/accesslevel.module");
+const wish_module_1 = require("./wish/wish.module");
+const wishstatus_module_1 = require("./wishstatus/wishstatus.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -31,11 +39,18 @@ exports.AppModule = AppModule = __decorate([
                 username: process.env.POSTGRES_USER,
                 password: process.env.POSTGRES_PASSWORD,
                 database: process.env.POSTGRES_DB,
-                models: [users_model_1.User],
+                models: [users_model_1.User, roles_model_1.Role],
                 autoLoadModels: true
             }),
             users_module_1.UsersModule,
             roles_module_1.RolesModule,
+            ban_module_1.BanModule,
+            friend_module_1.FriendModule,
+            wishlist_module_1.WishlistModule,
+            friendstatus_module_1.FriendstatusModule,
+            accesslevel_module_1.AccesslevelModule,
+            wish_module_1.WishModule,
+            wishstatus_module_1.WishstatusModule,
         ]
     })
 ], AppModule);

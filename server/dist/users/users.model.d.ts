@@ -5,12 +5,10 @@ interface UserCreationAttrs {
     email: string;
 }
 export declare class User extends Model<User, UserCreationAttrs> {
-    iden: number;
+    id: number;
     full_name: string;
     login: string;
     password: string;
     email: string;
-    banned: boolean;
-    ban_reason: string;
 }
 export {};

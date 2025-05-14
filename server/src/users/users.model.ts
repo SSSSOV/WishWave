@@ -1,4 +1,5 @@
-import {Column, DataType, Model, Table } from "sequelize-typescript";
+import {BelongsTo, Column, DataType, Model, Table } from "sequelize-typescript";
+import { Role } from "src/roles/roles.model";
 
 interface UserCreationAttrs {
     login: string;
@@ -9,7 +10,7 @@ interface UserCreationAttrs {
 @Table({tableName: 'users'})
 export class User extends Model<User, UserCreationAttrs> {
     @Column({type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true})
-    iden: number;
+    declare id: number;
 
     @Column({type: DataType.STRING, allowNull: true})
     full_name: string;
@@ -22,10 +23,4 @@ export class User extends Model<User, UserCreationAttrs> {
 
     @Column({type: DataType.STRING, unique: true, allowNull: false})
     email: string;
-
-    @Column({type: DataType.BOOLEAN, defaultValue: false})
-    banned: boolean;
-
-    @Column({type: DataType.STRING, allowNull: true})
-    ban_reason: string;
 }

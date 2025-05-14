@@ -10,13 +10,22 @@ exports.RolesModule = void 0;
 const common_1 = require("@nestjs/common");
 const roles_service_1 = require("./roles.service");
 const roles_controller_1 = require("./roles.controller");
+const roles_model_1 = require("./roles.model");
+const sequelize_1 = require("@nestjs/sequelize");
+const users_model_1 = require("../users/users.model");
 let RolesModule = class RolesModule {
 };
 exports.RolesModule = RolesModule;
 exports.RolesModule = RolesModule = __decorate([
     (0, common_1.Module)({
         providers: [roles_service_1.RolesService],
-        controllers: [roles_controller_1.RolesController]
+        controllers: [roles_controller_1.RolesController],
+        imports: [
+            sequelize_1.SequelizeModule.forFeature([roles_model_1.Role, users_model_1.User])
+        ],
+        exports: [
+            roles_service_1.RolesService
+        ]
     })
 ], RolesModule);
 //# sourceMappingURL=roles.module.js.map
