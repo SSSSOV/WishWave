@@ -1,10 +1,8 @@
 import { Module } from "@nestjs/common";
 import { SequelizeModule } from "@nestjs/sequelize";
-import { UsersModule } from './users/users.module';
 import { ConfigModule } from "@nestjs/config";
-import { User } from "./users/users.model";
+import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
-import { Role } from "./roles/roles.model";
 import { BanModule } from './ban/ban.module';
 import { FriendModule } from './friend/friend.module';
 import { WishlistModule } from './wishlist/wishlist.module';
@@ -12,6 +10,18 @@ import { FriendstatusModule } from './friendstatus/friendstatus.module';
 import { AccesslevelModule } from './accesslevel/accesslevel.module';
 import { WishModule } from './wish/wish.module';
 import { WishstatusModule } from './wishstatus/wishstatus.module';
+import { WishStatus } from "./wishstatus/wishstatus.model";
+import { Wish } from "./wish/wish.model";
+import { WishListWish } from "./wishlist/wishlist-wish.model";
+import { WishList } from "./wishlist/wishlist.model";
+import { AccessLevel } from "./accesslevel/accesslevel.model";
+import { User } from "./users/users.model";
+import { FriendUsers } from "./friend/friend-users.model";
+import { Friend } from "./friend/friend.model";
+import { Ban } from "./ban/ban.model";
+import { Role } from "./roles/roles.model";
+import { FriendStatus } from "./friendstatus/friendstatus.model";
+
 
 
 @Module({
@@ -28,7 +38,7 @@ import { WishstatusModule } from './wishstatus/wishstatus.module';
           username: process.env.POSTGRES_USER,
           password: process.env.POSTGRES_PASSWORD,
           database:  process.env.POSTGRES_DB,
-          models: [User, Role],
+          models: [WishStatus, Wish, WishListWish, WishList, AccessLevel, User, FriendUsers, Friend, Ban, Role, FriendStatus],
           autoLoadModels: true
         }),
         UsersModule,

@@ -9,9 +9,9 @@ export class FriendUsers extends Model<FriendUsers> {
 
     @ForeignKey(()=>User)
     @Column({type: DataType.INTEGER})
-    userid: number;
+    userId: number;
 
     @ForeignKey(()=>Friend)
     @Column({type: DataType.INTEGER})
-    friendid: number;
+    friendId: number;
 }

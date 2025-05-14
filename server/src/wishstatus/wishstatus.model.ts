@@ -1,4 +1,5 @@
-import {Column, DataType, Model, Table } from "sequelize-typescript";
+import {BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { Wish } from "src/wish/wish.model";
 
 interface WishStatusCreationAttrs {
     userid: number;
@@ -15,4 +16,11 @@ export class WishStatus extends Model<WishStatus, WishStatusCreationAttrs> {
 
     @Column({type: DataType.STRING, unique: true, allowNull: false})
     name: string;
+
+    @ForeignKey(() => Wish)
+    @Column({type: DataType.INTEGER})
+    wishId:number;
+
+    @BelongsTo(() => Wish)
+    wishs: Wish
 }

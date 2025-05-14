@@ -14,8 +14,8 @@ const sequelize_typescript_1 = require("sequelize-typescript");
 const users_model_1 = require("../users/users.model");
 const friend_model_1 = require("./friend.model");
 let FriendUsers = class FriendUsers extends sequelize_typescript_1.Model {
-    userid;
-    friendid;
+    userId;
+    friendId;
 };
 exports.FriendUsers = FriendUsers;
 __decorate([
@@ -26,12 +26,12 @@ __decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => users_model_1.User),
     (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
     __metadata("design:type", Number)
-], FriendUsers.prototype, "userid", void 0);
+], FriendUsers.prototype, "userId", void 0);
 __decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => friend_model_1.Friend),
     (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
     __metadata("design:type", Number)
-], FriendUsers.prototype, "friendid", void 0);
+], FriendUsers.prototype, "friendId", void 0);
 exports.FriendUsers = FriendUsers = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'friend_users', createdAt: false, updatedAt: false })
 ], FriendUsers);

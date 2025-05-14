@@ -1,4 +1,5 @@
-import {Column, DataType, Model, Table } from "sequelize-typescript";
+import {BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { WishList } from "src/wishlist/wishlist.model";
 
 interface AccessLevelCreationAttrs {
     name: string;
@@ -11,4 +12,11 @@ export class AccessLevel extends Model<AccessLevel, AccessLevelCreationAttrs> {
 
     @Column({type: DataType.STRING, unique: true, allowNull: false})
     name: string;
+
+    @ForeignKey(() => WishList)
+    @Column({type: DataType.INTEGER})
+    wishlistId: number;
+
+    @BelongsTo(() => WishList)
+    wishlists: WishList
 }

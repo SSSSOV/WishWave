@@ -10,13 +10,19 @@ exports.AccesslevelModule = void 0;
 const common_1 = require("@nestjs/common");
 const accesslevel_controller_1 = require("./accesslevel.controller");
 const accesslevel_service_1 = require("./accesslevel.service");
+const sequelize_1 = require("@nestjs/sequelize");
+const accesslevel_model_1 = require("./accesslevel.model");
+const wishlist_model_1 = require("../wishlist/wishlist.model");
 let AccesslevelModule = class AccesslevelModule {
 };
 exports.AccesslevelModule = AccesslevelModule;
 exports.AccesslevelModule = AccesslevelModule = __decorate([
     (0, common_1.Module)({
         controllers: [accesslevel_controller_1.AccesslevelController],
-        providers: [accesslevel_service_1.AccesslevelService]
+        providers: [accesslevel_service_1.AccesslevelService],
+        imports: [
+            sequelize_1.SequelizeModule.forFeature([accesslevel_model_1.AccessLevel, wishlist_model_1.WishList]),
+        ]
     })
 ], AccesslevelModule);
 //# sourceMappingURL=accesslevel.module.js.map

@@ -1,4 +1,4 @@
-import {BelongsTo, Column, DataType, Model, Table } from "sequelize-typescript";
+import {BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
 import { User } from "src/users/users.model";
 
 interface RoleCreationAttrs {
@@ -15,4 +15,11 @@ export class Role extends Model<Role, RoleCreationAttrs> {
 
     @Column({type: DataType.STRING, allowNull: true})
     description: string;
+
+    @ForeignKey(() => User)
+    @Column({type: DataType.INTEGER})
+    userId: number;
+
+    @BelongsTo(() => User)
+    users: User
 }

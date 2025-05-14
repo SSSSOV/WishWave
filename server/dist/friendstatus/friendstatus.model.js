@@ -11,8 +11,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FriendStatus = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
+const friend_model_1 = require("../friend/friend.model");
 let FriendStatus = class FriendStatus extends sequelize_typescript_1.Model {
     description;
+    friendId;
+    friends;
 };
 exports.FriendStatus = FriendStatus;
 __decorate([
@@ -23,6 +26,15 @@ __decorate([
     (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING, unique: true, allowNull: false }),
     __metadata("design:type", String)
 ], FriendStatus.prototype, "description", void 0);
+__decorate([
+    (0, sequelize_typescript_1.ForeignKey)(() => friend_model_1.Friend),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
+    __metadata("design:type", Number)
+], FriendStatus.prototype, "friendId", void 0);
+__decorate([
+    (0, sequelize_typescript_1.BelongsTo)(() => friend_model_1.Friend),
+    __metadata("design:type", friend_model_1.Friend)
+], FriendStatus.prototype, "friends", void 0);
 exports.FriendStatus = FriendStatus = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'friend_status' })
 ], FriendStatus);

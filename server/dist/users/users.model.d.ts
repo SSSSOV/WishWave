@@ -1,4 +1,8 @@
 import { Model } from "sequelize-typescript";
+import { Ban } from "src/ban/ban.model";
+import { Friend } from "src/friend/friend.model";
+import { Role } from "src/roles/roles.model";
+import { WishList } from "src/wishlist/wishlist.model";
 interface UserCreationAttrs {
     login: string;
     password: string;
@@ -10,5 +14,10 @@ export declare class User extends Model<User, UserCreationAttrs> {
     login: string;
     password: string;
     email: string;
+    wishlistId: number;
+    friends: Friend[];
+    bans: Ban[];
+    rols: Role[];
+    wishlists: WishList;
 }
 export {};

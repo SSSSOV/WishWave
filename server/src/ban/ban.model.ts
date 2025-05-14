@@ -1,4 +1,5 @@
-import {Column, DataType, Model, Table } from "sequelize-typescript";
+import {BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { User } from "src/users/users.model";
 
 interface BanCreationAttrs {
     description: string;
@@ -11,4 +12,11 @@ export class Ban extends Model<Ban, BanCreationAttrs> {
 
     @Column({type: DataType.STRING, allowNull: true})
     description: string;
+
+    @ForeignKey(() => User)
+    @Column({type: DataType.INTEGER})
+    userId: number;
+
+    @BelongsTo(() => User)
+    users: User
 }

@@ -11,8 +11,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AccessLevel = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
+const wishlist_model_1 = require("../wishlist/wishlist.model");
 let AccessLevel = class AccessLevel extends sequelize_typescript_1.Model {
     name;
+    wishlistId;
+    wishlists;
 };
 exports.AccessLevel = AccessLevel;
 __decorate([
@@ -23,6 +26,15 @@ __decorate([
     (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING, unique: true, allowNull: false }),
     __metadata("design:type", String)
 ], AccessLevel.prototype, "name", void 0);
+__decorate([
+    (0, sequelize_typescript_1.ForeignKey)(() => wishlist_model_1.WishList),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
+    __metadata("design:type", Number)
+], AccessLevel.prototype, "wishlistId", void 0);
+__decorate([
+    (0, sequelize_typescript_1.BelongsTo)(() => wishlist_model_1.WishList),
+    __metadata("design:type", wishlist_model_1.WishList)
+], AccessLevel.prototype, "wishlists", void 0);
 exports.AccessLevel = AccessLevel = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'access_level' })
 ], AccessLevel);

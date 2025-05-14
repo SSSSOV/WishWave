@@ -11,9 +11,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Friend = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
+const users_model_1 = require("../users/users.model");
+const friend_users_model_1 = require("./friend-users.model");
+const friendstatus_model_1 = require("../friendstatus/friendstatus.model");
 let Friend = class Friend extends sequelize_typescript_1.Model {
     userid1;
     userid2;
+    users;
+    friendstatuses;
 };
 exports.Friend = Friend;
 __decorate([
@@ -28,7 +33,15 @@ __decorate([
     (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, unique: true, allowNull: false }),
     __metadata("design:type", Number)
 ], Friend.prototype, "userid2", void 0);
+__decorate([
+    (0, sequelize_typescript_1.BelongsToMany)(() => users_model_1.User, () => friend_users_model_1.FriendUsers),
+    __metadata("design:type", Array)
+], Friend.prototype, "users", void 0);
+__decorate([
+    (0, sequelize_typescript_1.HasMany)(() => friendstatus_model_1.FriendStatus),
+    __metadata("design:type", Array)
+], Friend.prototype, "friendstatuses", void 0);
 exports.Friend = Friend = __decorate([
-    (0, sequelize_typescript_1.Table)({ tableName: 'roles' })
+    (0, sequelize_typescript_1.Table)({ tableName: 'friend' })
 ], Friend);
 //# sourceMappingURL=friend.model.js.map

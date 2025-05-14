@@ -11,11 +11,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
+const ban_model_1 = require("../ban/ban.model");
+const friend_users_model_1 = require("../friend/friend-users.model");
+const friend_model_1 = require("../friend/friend.model");
+const roles_model_1 = require("../roles/roles.model");
+const wishlist_model_1 = require("../wishlist/wishlist.model");
 let User = class User extends sequelize_typescript_1.Model {
     full_name;
     login;
     password;
     email;
+    wishlistId;
+    friends;
+    bans;
+    rols;
+    wishlists;
 };
 exports.User = User;
 __decorate([
@@ -38,6 +48,27 @@ __decorate([
     (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING, unique: true, allowNull: false }),
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
+__decorate([
+    (0, sequelize_typescript_1.ForeignKey)(() => wishlist_model_1.WishList),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
+    __metadata("design:type", Number)
+], User.prototype, "wishlistId", void 0);
+__decorate([
+    (0, sequelize_typescript_1.BelongsToMany)(() => friend_model_1.Friend, () => friend_users_model_1.FriendUsers),
+    __metadata("design:type", Array)
+], User.prototype, "friends", void 0);
+__decorate([
+    (0, sequelize_typescript_1.HasMany)(() => ban_model_1.Ban),
+    __metadata("design:type", Array)
+], User.prototype, "bans", void 0);
+__decorate([
+    (0, sequelize_typescript_1.HasMany)(() => roles_model_1.Role),
+    __metadata("design:type", Array)
+], User.prototype, "rols", void 0);
+__decorate([
+    (0, sequelize_typescript_1.BelongsTo)(() => wishlist_model_1.WishList),
+    __metadata("design:type", wishlist_model_1.WishList)
+], User.prototype, "wishlists", void 0);
 exports.User = User = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'users' })
 ], User);

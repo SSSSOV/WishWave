@@ -10,13 +10,22 @@ exports.WishlistModule = void 0;
 const common_1 = require("@nestjs/common");
 const wishlist_service_1 = require("./wishlist.service");
 const wishlist_controller_1 = require("./wishlist.controller");
+const sequelize_1 = require("@nestjs/sequelize");
+const wishlist_model_1 = require("./wishlist.model");
+const wish_model_1 = require("../wish/wish.model");
+const wishlist_wish_model_1 = require("./wishlist-wish.model");
+const accesslevel_model_1 = require("../accesslevel/accesslevel.model");
+const users_model_1 = require("../users/users.model");
 let WishlistModule = class WishlistModule {
 };
 exports.WishlistModule = WishlistModule;
 exports.WishlistModule = WishlistModule = __decorate([
     (0, common_1.Module)({
         providers: [wishlist_service_1.WishlistService],
-        controllers: [wishlist_controller_1.WishlistController]
+        controllers: [wishlist_controller_1.WishlistController],
+        imports: [
+            sequelize_1.SequelizeModule.forFeature([wishlist_model_1.WishList, wish_model_1.Wish, wishlist_wish_model_1.WishListWish, accesslevel_model_1.AccessLevel, users_model_1.User]),
+        ]
     })
 ], WishlistModule);
 //# sourceMappingURL=wishlist.module.js.map
