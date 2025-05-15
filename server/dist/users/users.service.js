@@ -30,7 +30,8 @@ let UsersService = class UsersService {
         if (!role) {
             throw new Error('Role "USER" not found');
         }
-        await user.$set('roles', [role.id]);
+        user.roleId = role.id;
+        await user.save();
         return user;
     }
     async getAllUsers() {
