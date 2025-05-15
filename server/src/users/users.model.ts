@@ -28,19 +28,23 @@ export class User extends Model<User, UserCreationAttrs> {
     @Column({type: DataType.STRING, unique: true, allowNull: false})
     email: string;
 
-    @ForeignKey(() => WishList)
+    @ForeignKey(() => Role)
     @Column({type: DataType.INTEGER})
-    wishlistId: number;
+    roleId: number;
+
+    @ForeignKey(() => Ban)
+    @Column({type: DataType.INTEGER})
+    banId: number;
 
     @BelongsToMany(() => Friend, () => FriendUsers)
     friends: Friend[];
 
-    @HasMany(() => Ban)
-    bans: Ban[];
+    @BelongsTo(() => Ban)
+    bans: Ban;
 
-    @HasMany(() => Role)
-    rols: Role[];
+    @BelongsTo(() => Role)
+    rolеs: Role;
 
-    @BelongsTo(() => WishList)
-    wishlists: WishList
+    @HasMany(() => WishList)
+    wishlists: WishList[];
 }

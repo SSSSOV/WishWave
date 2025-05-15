@@ -1,4 +1,4 @@
-import {BelongsToMany, Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
+import {BelongsTo, BelongsToMany, Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
 import { Wish } from "src/wish/wish.model";
 import { WishListWish } from "./wishlist-wish.model";
 import { AccessLevel } from "src/accesslevel/accesslevel.model";
@@ -16,12 +16,20 @@ export class WishList extends Model<WishList, WishListCreationAttrs> {
     @Column({type: DataType.STRING, allowNull: false})
     name: string;
 
+    @ForeignKey(() => User)
+    @Column({type: DataType.INTEGER, allowNull: false})
+    userId: number;
+
+    @ForeignKey(() => AccessLevel)
+    @Column({type: DataType.INTEGER, allowNull: false})
+    accesslevelId: number;
+
     @BelongsToMany(() => Wish, () => WishListWish)
     wishs: Wish[];
 
-    @HasMany(() => AccessLevel)
-    accesslevels: AccessLevel[];
+    @BelongsTo(() => AccessLevel)
+    accesslevels: AccessLevel;
 
-    @HasMany(() => User)
-    users: User[];
+    @BelongsTo(() => User)
+    users: User;
 }

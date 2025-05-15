@@ -21,10 +21,11 @@ let User = class User extends sequelize_typescript_1.Model {
     login;
     password;
     email;
-    wishlistId;
+    roleId;
+    banId;
     friends;
     bans;
-    rols;
+    rolеs;
     wishlists;
 };
 exports.User = User;
@@ -49,25 +50,30 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => wishlist_model_1.WishList),
+    (0, sequelize_typescript_1.ForeignKey)(() => roles_model_1.Role),
     (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
     __metadata("design:type", Number)
-], User.prototype, "wishlistId", void 0);
+], User.prototype, "roleId", void 0);
+__decorate([
+    (0, sequelize_typescript_1.ForeignKey)(() => ban_model_1.Ban),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
+    __metadata("design:type", Number)
+], User.prototype, "banId", void 0);
 __decorate([
     (0, sequelize_typescript_1.BelongsToMany)(() => friend_model_1.Friend, () => friend_users_model_1.FriendUsers),
     __metadata("design:type", Array)
 ], User.prototype, "friends", void 0);
 __decorate([
-    (0, sequelize_typescript_1.HasMany)(() => ban_model_1.Ban),
-    __metadata("design:type", Array)
+    (0, sequelize_typescript_1.BelongsTo)(() => ban_model_1.Ban),
+    __metadata("design:type", ban_model_1.Ban)
 ], User.prototype, "bans", void 0);
 __decorate([
-    (0, sequelize_typescript_1.HasMany)(() => roles_model_1.Role),
-    __metadata("design:type", Array)
-], User.prototype, "rols", void 0);
+    (0, sequelize_typescript_1.BelongsTo)(() => roles_model_1.Role),
+    __metadata("design:type", roles_model_1.Role)
+], User.prototype, "rol\u0435s", void 0);
 __decorate([
-    (0, sequelize_typescript_1.BelongsTo)(() => wishlist_model_1.WishList),
-    __metadata("design:type", wishlist_model_1.WishList)
+    (0, sequelize_typescript_1.HasMany)(() => wishlist_model_1.WishList),
+    __metadata("design:type", Array)
 ], User.prototype, "wishlists", void 0);
 exports.User = User = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'users' })

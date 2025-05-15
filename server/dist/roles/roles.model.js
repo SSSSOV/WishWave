@@ -15,7 +15,6 @@ const users_model_1 = require("../users/users.model");
 let Role = class Role extends sequelize_typescript_1.Model {
     value;
     description;
-    userId;
     users;
 };
 exports.Role = Role;
@@ -32,13 +31,8 @@ __decorate([
     __metadata("design:type", String)
 ], Role.prototype, "description", void 0);
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => users_model_1.User),
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
-    __metadata("design:type", Number)
-], Role.prototype, "userId", void 0);
-__decorate([
-    (0, sequelize_typescript_1.BelongsTo)(() => users_model_1.User),
-    __metadata("design:type", users_model_1.User)
+    (0, sequelize_typescript_1.HasMany)(() => users_model_1.User),
+    __metadata("design:type", Array)
 ], Role.prototype, "users", void 0);
 exports.Role = Role = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'roles' })

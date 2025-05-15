@@ -9,7 +9,8 @@ export declare class Friend extends Model<Friend, FriendCreationAttrs> {
     id: number;
     userid1: number;
     userid2: number;
+    friendstatusId: number;
     users: User[];
-    friendstatuses: FriendStatus[];
+    friendstatus: FriendStatus;
 }
 export {};

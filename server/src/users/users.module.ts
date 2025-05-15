@@ -8,12 +8,14 @@ import { Friend } from 'src/friend/friend.model';
 import { FriendUsers } from 'src/friend/friend-users.model';
 import { Ban } from 'src/ban/ban.model';
 import { WishList } from 'src/wishlist/wishlist.model';
+import { RolesModule } from 'src/roles/roles.module';
 
 @Module({
   controllers: [UsersController],
   providers: [UsersService],
   imports: [
     SequelizeModule.forFeature([User, Friend, FriendUsers, Ban, Role, WishList]),
+    RolesModule
   ]
 })
 export class UsersModule {}

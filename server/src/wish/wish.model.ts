@@ -1,4 +1,4 @@
-import {BelongsToMany, Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
+import {BelongsTo, BelongsToMany, Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
 import { WishListWish } from "src/wishlist/wishlist-wish.model";
 import { WishList } from "src/wishlist/wishlist.model";
 import { WishStatus } from "src/wishstatus/wishstatus.model";
@@ -25,9 +25,13 @@ export class Wish extends Model<Wish, WishCreationAttrs> {
     @Column({type: DataType.STRING, allowNull: true})
     product_link: string;
 
+    @ForeignKey(() => WishStatus)
+    @Column({type: DataType.INTEGER})
+    wishstatusId: Number;
+
     @BelongsToMany(() => WishList, () => WishListWish)
     wishlists: WishList[];
 
-    @HasMany(() => WishStatus)
-    wishstuses: WishStatus[];
+    @BelongsTo(() => WishStatus)
+    wishstuses: WishStatus;
 }

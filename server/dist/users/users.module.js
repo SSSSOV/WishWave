@@ -17,6 +17,7 @@ const friend_model_1 = require("../friend/friend.model");
 const friend_users_model_1 = require("../friend/friend-users.model");
 const ban_model_1 = require("../ban/ban.model");
 const wishlist_model_1 = require("../wishlist/wishlist.model");
+const roles_module_1 = require("../roles/roles.module");
 let UsersModule = class UsersModule {
 };
 exports.UsersModule = UsersModule;
@@ -26,6 +27,7 @@ exports.UsersModule = UsersModule = __decorate([
         providers: [users_service_1.UsersService],
         imports: [
             sequelize_1.SequelizeModule.forFeature([users_model_1.User, friend_model_1.Friend, friend_users_model_1.FriendUsers, ban_model_1.Ban, roles_model_1.Role, wishlist_model_1.WishList]),
+            roles_module_1.RolesModule
         ]
     })
 ], UsersModule);

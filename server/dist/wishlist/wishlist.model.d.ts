@@ -8,8 +8,10 @@ interface WishListCreationAttrs {
 export declare class WishList extends Model<WishList, WishListCreationAttrs> {
     id: number;
     name: string;
+    userId: number;
+    accesslevelId: number;
     wishs: Wish[];
-    accesslevels: AccessLevel[];
-    users: User[];
+    accesslevels: AccessLevel;
+    users: User;
 }
 export {};

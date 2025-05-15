@@ -14,10 +14,11 @@ export declare class User extends Model<User, UserCreationAttrs> {
     login: string;
     password: string;
     email: string;
-    wishlistId: number;
+    roleId: number;
+    banId: number;
     friends: Friend[];
-    bans: Ban[];
-    rols: Role[];
-    wishlists: WishList;
+    bans: Ban;
+    rolеs: Role;
+    wishlists: WishList[];
 }
 export {};

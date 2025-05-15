@@ -11,7 +11,8 @@ export declare class Wish extends Model<Wish, WishCreationAttrs> {
     image: string;
     price: number;
     product_link: string;
+    wishstatusId: Number;
     wishlists: WishList[];
-    wishstuses: WishStatus[];
+    wishstuses: WishStatus;
 }
 export {};

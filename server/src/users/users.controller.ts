@@ -9,13 +9,13 @@ export class UsersController {
 
     }
 
-//     @Post()
-//     create(@Body() userDto: createUserDto) {
-//         return this.usersService.createUser(userDto);
-//     }
+    @Post()
+    create(@Body() userDto: createUserDto) {
+        return this.usersService.createUser(userDto);
+    }
 
-//     @Get()
-//     getAll() {
-//         return this.usersService.getAllUsers();
-//     }    
+    @Get()
+    getAll() {
+        return this.usersService.getAllUsers();
+    }    
 }

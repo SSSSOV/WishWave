@@ -15,7 +15,6 @@ const wish_model_1 = require("../wish/wish.model");
 let WishStatus = class WishStatus extends sequelize_typescript_1.Model {
     userid;
     name;
-    wishId;
     wishs;
 };
 exports.WishStatus = WishStatus;
@@ -32,13 +31,8 @@ __decorate([
     __metadata("design:type", String)
 ], WishStatus.prototype, "name", void 0);
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => wish_model_1.Wish),
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
-    __metadata("design:type", Number)
-], WishStatus.prototype, "wishId", void 0);
-__decorate([
-    (0, sequelize_typescript_1.BelongsTo)(() => wish_model_1.Wish),
-    __metadata("design:type", wish_model_1.Wish)
+    (0, sequelize_typescript_1.HasMany)(() => wish_model_1.Wish),
+    __metadata("design:type", Array)
 ], WishStatus.prototype, "wishs", void 0);
 exports.WishStatus = WishStatus = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'wish_status' })

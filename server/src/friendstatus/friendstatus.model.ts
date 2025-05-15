@@ -1,4 +1,4 @@
-import {BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import {BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
 import { Friend } from "src/friend/friend.model";
 
 interface FriendStatusCreationAttrs {
@@ -12,11 +12,7 @@ export class FriendStatus extends Model<FriendStatus, FriendStatusCreationAttrs>
 
     @Column({type: DataType.STRING, unique: true, allowNull: false})
     description: string;
-
-    @ForeignKey(() => Friend)
-    @Column({type: DataType.INTEGER})
-    friendId: number;
     
-    @BelongsTo(() => Friend)
-    friends: Friend
+    @HasMany(() => Friend)
+    friends: Friend[];
 }

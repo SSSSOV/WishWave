@@ -17,8 +17,9 @@ const friendstatus_model_1 = require("../friendstatus/friendstatus.model");
 let Friend = class Friend extends sequelize_typescript_1.Model {
     userid1;
     userid2;
+    friendstatusId;
     users;
-    friendstatuses;
+    friendstatus;
 };
 exports.Friend = Friend;
 __decorate([
@@ -26,21 +27,26 @@ __decorate([
     __metadata("design:type", Number)
 ], Friend.prototype, "id", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, unique: true, allowNull: false }),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, allowNull: false }),
     __metadata("design:type", Number)
 ], Friend.prototype, "userid1", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, unique: true, allowNull: false }),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, allowNull: false }),
     __metadata("design:type", Number)
 ], Friend.prototype, "userid2", void 0);
+__decorate([
+    (0, sequelize_typescript_1.ForeignKey)(() => friendstatus_model_1.FriendStatus),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
+    __metadata("design:type", Number)
+], Friend.prototype, "friendstatusId", void 0);
 __decorate([
     (0, sequelize_typescript_1.BelongsToMany)(() => users_model_1.User, () => friend_users_model_1.FriendUsers),
     __metadata("design:type", Array)
 ], Friend.prototype, "users", void 0);
 __decorate([
-    (0, sequelize_typescript_1.HasMany)(() => friendstatus_model_1.FriendStatus),
-    __metadata("design:type", Array)
-], Friend.prototype, "friendstatuses", void 0);
+    (0, sequelize_typescript_1.BelongsTo)(() => friendstatus_model_1.FriendStatus),
+    __metadata("design:type", friendstatus_model_1.FriendStatus)
+], Friend.prototype, "friendstatus", void 0);
 exports.Friend = Friend = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'friend' })
 ], Friend);

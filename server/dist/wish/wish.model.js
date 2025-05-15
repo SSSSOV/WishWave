@@ -19,6 +19,7 @@ let Wish = class Wish extends sequelize_typescript_1.Model {
     image;
     price;
     product_link;
+    wishstatusId;
     wishlists;
     wishstuses;
 };
@@ -44,12 +45,17 @@ __decorate([
     __metadata("design:type", String)
 ], Wish.prototype, "product_link", void 0);
 __decorate([
+    (0, sequelize_typescript_1.ForeignKey)(() => wishstatus_model_1.WishStatus),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
+    __metadata("design:type", Number)
+], Wish.prototype, "wishstatusId", void 0);
+__decorate([
     (0, sequelize_typescript_1.BelongsToMany)(() => wishlist_model_1.WishList, () => wishlist_wish_model_1.WishListWish),
     __metadata("design:type", Array)
 ], Wish.prototype, "wishlists", void 0);
 __decorate([
-    (0, sequelize_typescript_1.HasMany)(() => wishstatus_model_1.WishStatus),
-    __metadata("design:type", Array)
+    (0, sequelize_typescript_1.BelongsTo)(() => wishstatus_model_1.WishStatus),
+    __metadata("design:type", wishstatus_model_1.WishStatus)
 ], Wish.prototype, "wishstuses", void 0);
 exports.Wish = Wish = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'wish' })

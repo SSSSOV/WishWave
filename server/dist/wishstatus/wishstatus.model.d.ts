@@ -8,7 +8,6 @@ export declare class WishStatus extends Model<WishStatus, WishStatusCreationAttr
     id: number;
     userid: number;
     name: string;
-    wishId: number;
-    wishs: Wish;
+    wishs: Wish[];
 }
 export {};
