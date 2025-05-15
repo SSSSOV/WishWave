@@ -15,12 +15,9 @@ export class BanService {
             throw new NotFoundException('Пользователь не найден');
         }
 
-
         const ban = await this.banRepository.create({description});
 
-        user.banId = ban.id;
-
-        await user.save();
+        await this.userRepository.update({ banId: ban.id }, { where: { id: userId } });
 
         return {message: `Пользователь ${user.login} забанен`, ban};
     }

@@ -34,18 +34,18 @@ export class User extends Model<User, UserCreationAttrs> {
     roleId: number;
 
     @ForeignKey(() => Ban)
-    @Column({type: DataType.INTEGER})
+    @Column({type: DataType.INTEGER, allowNull: true})
     banId: number;
 
     @BelongsToMany(() => Friend, () => FriendUsers)
-    friends: Friend[];
+    friend: Friend[];
 
     @BelongsTo(() => Ban)
-    bans: Ban;
+    ban: Ban;
 
     @BelongsTo(() => Role)
     rolе: Role;
 
     @HasMany(() => WishList)
-    wishlists: WishList[];
+    wishlist: WishList[];
 }

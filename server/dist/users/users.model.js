@@ -23,10 +23,10 @@ let User = class User extends sequelize_typescript_1.Model {
     email;
     roleId;
     banId;
-    friends;
-    bans;
+    friend;
+    ban;
     rolе;
-    wishlists;
+    wishlist;
 };
 exports.User = User;
 __decorate([
@@ -56,17 +56,17 @@ __decorate([
 ], User.prototype, "roleId", void 0);
 __decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => ban_model_1.Ban),
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, allowNull: true }),
     __metadata("design:type", Number)
 ], User.prototype, "banId", void 0);
 __decorate([
     (0, sequelize_typescript_1.BelongsToMany)(() => friend_model_1.Friend, () => friend_users_model_1.FriendUsers),
     __metadata("design:type", Array)
-], User.prototype, "friends", void 0);
+], User.prototype, "friend", void 0);
 __decorate([
     (0, sequelize_typescript_1.BelongsTo)(() => ban_model_1.Ban),
     __metadata("design:type", ban_model_1.Ban)
-], User.prototype, "bans", void 0);
+], User.prototype, "ban", void 0);
 __decorate([
     (0, sequelize_typescript_1.BelongsTo)(() => roles_model_1.Role),
     __metadata("design:type", roles_model_1.Role)
@@ -74,7 +74,7 @@ __decorate([
 __decorate([
     (0, sequelize_typescript_1.HasMany)(() => wishlist_model_1.WishList),
     __metadata("design:type", Array)
-], User.prototype, "wishlists", void 0);
+], User.prototype, "wishlist", void 0);
 exports.User = User = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'users' })
 ], User);
