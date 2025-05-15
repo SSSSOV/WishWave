@@ -29,10 +29,7 @@ let UsersService = class UsersService {
         if (!role) {
             throw new Error('Role "USER" not found');
         }
-        const user = await this.userRepository.create({
-            ...dto,
-            roleId: role.id,
-        });
+        const user = await this.userRepository.create({ ...dto, roleId: role.id, });
         return user;
     }
     async getAllUsers() {
