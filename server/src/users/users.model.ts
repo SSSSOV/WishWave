@@ -1,4 +1,4 @@
-import {BelongsTo, BelongsToMany, Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
+import {AllowNull, BelongsTo, BelongsToMany, Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
 import { Ban } from "src/ban/ban.model";
 import { FriendUsers } from "src/friend/friend-users.model";
 import { Friend } from "src/friend/friend.model";
@@ -9,6 +9,7 @@ interface UserCreationAttrs {
     login: string;
     password: string;
     email: string;
+    roleId: number;
 }
 
 @Table({tableName: 'users'})
@@ -29,7 +30,7 @@ export class User extends Model<User, UserCreationAttrs> {
     email: string;
 
     @ForeignKey(() => Role)
-    @Column({type: DataType.INTEGER})
+    @Column({type: DataType.INTEGER, allowNull: false})
     roleId: number;
 
     @ForeignKey(() => Ban)
@@ -43,7 +44,7 @@ export class User extends Model<User, UserCreationAttrs> {
     bans: Ban;
 
     @BelongsTo(() => Role)
-    rolеs: Role;
+    rolе: Role;
 
     @HasMany(() => WishList)
     wishlists: WishList[];

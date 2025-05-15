@@ -11,18 +11,20 @@ export class UsersService {
 
     }
     async createUser(dto: createUserDto) {
-        const user = await this.userRepository.create(dto);
         const role = await this.roleService.getRoleByValue("USER");
 
         if (!role) {
             throw new Error('Role "USER" not found');
         }
 
-        user.roleId = role.id;
-        await user.save();
+        const user = await this.userRepository.create({
+            ...dto,
+            roleId: role.id,
+        });
 
         return user;
     }
+
 
     async getAllUsers(){
         const users = await this.userRepository.findAll({include: {all: true}});

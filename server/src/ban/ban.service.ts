@@ -15,6 +15,7 @@ export class BanService {
             throw new NotFoundException('Пользователь не найден');
         }
 
+
         const ban = await this.banRepository.create({description});
 
         user.banId = ban.id;

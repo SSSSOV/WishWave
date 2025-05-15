@@ -7,6 +7,7 @@ interface UserCreationAttrs {
     login: string;
     password: string;
     email: string;
+    roleId: number;
 }
 export declare class User extends Model<User, UserCreationAttrs> {
     id: number;
@@ -18,7 +19,7 @@ export declare class User extends Model<User, UserCreationAttrs> {
     banId: number;
     friends: Friend[];
     bans: Ban;
-    rolеs: Role;
+    rolе: Role;
     wishlists: WishList[];
 }
 export {};

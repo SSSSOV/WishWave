@@ -25,7 +25,7 @@ let User = class User extends sequelize_typescript_1.Model {
     banId;
     friends;
     bans;
-    rolеs;
+    rolе;
     wishlists;
 };
 exports.User = User;
@@ -51,7 +51,7 @@ __decorate([
 ], User.prototype, "email", void 0);
 __decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => roles_model_1.Role),
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, allowNull: false }),
     __metadata("design:type", Number)
 ], User.prototype, "roleId", void 0);
 __decorate([
@@ -70,7 +70,7 @@ __decorate([
 __decorate([
     (0, sequelize_typescript_1.BelongsTo)(() => roles_model_1.Role),
     __metadata("design:type", roles_model_1.Role)
-], User.prototype, "rol\u0435s", void 0);
+], User.prototype, "rol\u0435", void 0);
 __decorate([
     (0, sequelize_typescript_1.HasMany)(() => wishlist_model_1.WishList),
     __metadata("design:type", Array)
