@@ -18,14 +18,11 @@ const roles_model_1 = require("../roles/roles.model");
 const wishlist_model_1 = require("../wishlist/wishlist.model");
 let User = class User extends sequelize_typescript_1.Model {
     full_name;
-    login;
     password;
     email;
-    roleId;
-    banId;
     friend;
     ban;
-    rolе;
+    role;
     wishlist;
 };
 exports.User = User;
@@ -70,7 +67,7 @@ __decorate([
 __decorate([
     (0, sequelize_typescript_1.BelongsTo)(() => roles_model_1.Role),
     __metadata("design:type", roles_model_1.Role)
-], User.prototype, "rol\u0435", void 0);
+], User.prototype, "role", void 0);
 __decorate([
     (0, sequelize_typescript_1.HasMany)(() => wishlist_model_1.WishList),
     __metadata("design:type", Array)

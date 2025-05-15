@@ -21,7 +21,7 @@ export class User extends Model<User, UserCreationAttrs> {
     full_name: string;
 
     @Column({type: DataType.STRING, unique: true, allowNull: false})
-    login: string;
+    declare login: string;
 
     @Column({type: DataType.STRING, allowNull: false})
     password: string;
@@ -31,11 +31,11 @@ export class User extends Model<User, UserCreationAttrs> {
 
     @ForeignKey(() => Role)
     @Column({type: DataType.INTEGER, allowNull: false})
-    roleId: number;
+    declare roleId: number;
 
     @ForeignKey(() => Ban)
     @Column({type: DataType.INTEGER, allowNull: true})
-    banId: number;
+    declare banId: number;
 
     @BelongsToMany(() => Friend, () => FriendUsers)
     friend: Friend[];
@@ -44,7 +44,7 @@ export class User extends Model<User, UserCreationAttrs> {
     ban: Ban;
 
     @BelongsTo(() => Role)
-    rolе: Role;
+    role: Role;
 
     @HasMany(() => WishList)
     wishlist: WishList[];

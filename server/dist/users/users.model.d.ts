@@ -19,7 +19,7 @@ export declare class User extends Model<User, UserCreationAttrs> {
     banId: number;
     friend: Friend[];
     ban: Ban;
-    rolе: Role;
+    role: Role;
     wishlist: WishList[];
 }
 export {};

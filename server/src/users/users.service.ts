@@ -17,10 +17,7 @@ export class UsersService {
             throw new Error('Role "USER" not found');
         }
 
-        const user = await this.userRepository.create({
-            ...dto,
-            roleId: role.id,
-        });
+        const user = await this.userRepository.create({...dto, roleId: role.id,});
 
         return user;
     }
