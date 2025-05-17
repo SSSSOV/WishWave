@@ -22,6 +22,8 @@ let AuthService = class AuthService {
         this.jwtService = jwtService;
     }
     async login(userDto) {
+        const user = await this.validateUser(userDto);
+        return this.generateToken(user);
     }
     async registartion(userDto) {
         const candidate = await this.userSerice.getUserByEmail(userDto.email);
@@ -37,6 +39,17 @@ let AuthService = class AuthService {
         return {
             token: this.jwtService.sign(payload)
         };
+    }
+    async validateUser(userDto) {
+        const user = await this.userSerice.getUserByEmail(userDto.email);
+        if (!user) {
+            throw new common_1.UnauthorizedException({ message: 'Некорректный email, логин или пароль' });
+        }
+        const passwordEquals = await bcrypt.compare(userDto.password, user.password);
+        if (user && passwordEquals) {
+            return user;
+        }
+        throw new common_1.UnauthorizedException({ message: 'Некорректный email, логин или пароль' });
     }
 };
 exports.AuthService = AuthService;

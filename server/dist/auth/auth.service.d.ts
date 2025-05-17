@@ -5,11 +5,12 @@ export declare class AuthService {
     private userSerice;
     private jwtService;
     constructor(userSerice: UsersService, jwtService: JwtService);
-    login(userDto: createUserDto): Promise<void>;
+    login(userDto: createUserDto): Promise<{
+        token: string;
+    }>;
     registartion(userDto: createUserDto): Promise<{
         token: string;
     }>;
-    generateToken(user: any): Promise<{
-        token: string;
-    }>;
+    private generateToken;
+    private validateUser;
 }

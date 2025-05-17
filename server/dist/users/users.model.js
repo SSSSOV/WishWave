@@ -17,13 +17,6 @@ const friend_model_1 = require("../friend/friend.model");
 const roles_model_1 = require("../roles/roles.model");
 const wishlist_model_1 = require("../wishlist/wishlist.model");
 let User = class User extends sequelize_typescript_1.Model {
-    full_name;
-    password;
-    email;
-    friend;
-    ban;
-    role;
-    wishlist;
 };
 exports.User = User;
 __decorate([
