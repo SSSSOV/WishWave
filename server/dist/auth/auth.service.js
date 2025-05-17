@@ -26,9 +26,13 @@ let AuthService = class AuthService {
         return this.generateToken(user);
     }
     async registartion(userDto) {
-        const candidate = await this.userSerice.getUserByEmail(userDto.email);
-        if (candidate) {
+        const candidateByEmail = await this.userSerice.getUserByEmail(userDto.email);
+        if (candidateByEmail) {
             throw new common_1.HttpException('Пользователь с таким email существует', common_1.HttpStatus.BAD_REQUEST);
+        }
+        const candidateByLogin = await this.userSerice.getUserByLogin(userDto.login);
+        if (candidateByLogin) {
+            throw new common_1.HttpException('Пользователь с таким login существует', common_1.HttpStatus.BAD_REQUEST);
         }
         const hashPassword = await bcrypt.hash(userDto.password, 5);
         const user = await this.userSerice.createUser({ ...userDto, password: hashPassword });
