@@ -33,6 +33,14 @@ let UsersService = class UsersService {
         user.role = role;
         return user;
     }
+    async updateUser(id, dto) {
+        const user = await this.userRepository.findByPk(id);
+        if (!user) {
+            throw new Error('Пользователь не найден');
+        }
+        await user.update(dto);
+        return user;
+    }
     async getAllUsers() {
         const users = await this.userRepository.findAll({ include: { all: true } });
         return users;

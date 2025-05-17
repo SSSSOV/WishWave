@@ -30,6 +30,10 @@ let UsersController = class UsersController {
     delete(id) {
         return this.usersService.deleteUserById(id);
     }
+    async updateUser(id, dto) {
+        const updatedUser = await this.usersService.updateUser(+id, dto);
+        return updatedUser;
+    }
 };
 exports.UsersController = UsersController;
 __decorate([
@@ -52,6 +56,14 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "delete", null);
+__decorate([
+    (0, common_1.Patch)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "updateUser", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])

@@ -8,4 +8,5 @@ export declare class UsersController {
     delete(id: number): Promise<{
         message: string;
     }>;
+    updateUser(id: string, dto: Partial<createUserDto>): Promise<import("./users.model").User>;
 }

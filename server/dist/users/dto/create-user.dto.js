@@ -5,6 +5,7 @@ class createUserDto {
     login;
     password;
     email;
+    full_name;
 }
 exports.createUserDto = createUserDto;
 //# sourceMappingURL=create-user.dto.js.map

@@ -6,6 +6,7 @@ export declare class UsersService {
     private roleService;
     constructor(userRepository: typeof User, roleService: RolesService);
     createUser(dto: createUserDto): Promise<User>;
+    updateUser(id: number, dto: Partial<createUserDto>): Promise<User>;
     getAllUsers(): Promise<User[]>;
     getUserByEmail(email: string): Promise<User | null>;
     getUserByLogin(login: string): Promise<User | null>;
