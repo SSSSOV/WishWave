@@ -8,6 +8,7 @@ export declare class UsersService {
     createUser(dto: createUserDto): Promise<User>;
     getAllUsers(): Promise<User[]>;
     getUserByEmail(email: string): Promise<User | null>;
+    getUserByLogin(login: string): Promise<User | null>;
     deleteUserById(userId: number): Promise<{
         message: string;
     }>;

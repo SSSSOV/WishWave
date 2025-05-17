@@ -41,6 +41,10 @@ let UsersService = class UsersService {
         const user = await this.userRepository.findOne({ where: { email }, include: { all: true } });
         return user;
     }
+    async getUserByLogin(login) {
+        const user = await this.userRepository.findOne({ where: { login }, include: { all: true } });
+        return user;
+    }
     async deleteUserById(userId) {
         const user = await this.userRepository.findByPk(userId);
         if (!user) {

@@ -35,13 +35,16 @@ let AuthService = class AuthService {
         return this.generateToken(user);
     }
     async generateToken(user) {
-        const payload = { login: user.login, id: user.id, roles: user.role };
+        const payload = { login: user.login, id: user.id, email: user.email, roles: user.role };
         return {
             token: this.jwtService.sign(payload)
         };
     }
     async validateUser(userDto) {
-        const user = await this.userSerice.getUserByEmail(userDto.email);
+        let user = await this.userSerice.getUserByEmail(userDto.loginOrEmail);
+        if (!user) {
+            user = await this.userSerice.getUserByLogin(userDto.loginOrEmail);
+        }
         if (!user) {
             throw new common_1.UnauthorizedException({ message: 'Некорректный email, логин или пароль' });
         }

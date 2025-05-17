@@ -34,6 +34,11 @@ export class UsersService {
         return user;
     }
 
+    async getUserByLogin(login: string) {
+        const user = await this.userRepository.findOne({where: {login}, include: {all: true}})
+        return user;
+    }
+
     async deleteUserById(userId: number) {
         const user = await this.userRepository.findByPk(userId);
         

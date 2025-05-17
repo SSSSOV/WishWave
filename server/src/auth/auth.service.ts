@@ -3,13 +3,14 @@ import { JwtService } from '@nestjs/jwt';
 import { createUserDto } from 'src/users/dto/create-user.dto';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcryptjs'
+import { LoginUserDto } from 'src/users/dto/login-user.dto';
 
 @Injectable()
 export class AuthService {
 
     constructor(private userSerice: UsersService, private jwtService: JwtService) {}
 
-    async login(userDto: createUserDto){
+    async login(userDto: LoginUserDto){
         const user = await this.validateUser(userDto)
         return this.generateToken(user)
     }
@@ -25,14 +26,18 @@ export class AuthService {
     }
 
     private async generateToken(user) {
-        const payload = {login: user.login, id: user.id, roles: user.role}
+        const payload = {login: user.login, id: user.id, email: user.email ,roles: user.role}
         return {
             token: this.jwtService.sign(payload)
         }
     }
 
-    private async validateUser(userDto: createUserDto) {
-        const user = await this.userSerice.getUserByEmail(userDto.email);
+    private async validateUser(userDto: LoginUserDto) {
+        let user = await this.userSerice.getUserByEmail(userDto.loginOrEmail);
+
+        if (!user) {
+            user = await this.userSerice.getUserByLogin(userDto.loginOrEmail);
+        }
 
         if (!user) {
             throw new UnauthorizedException({ message: 'Некорректный email, логин или пароль' });
