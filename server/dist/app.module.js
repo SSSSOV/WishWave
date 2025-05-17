@@ -31,6 +31,7 @@ const ban_model_1 = require("./ban/ban.model");
 const roles_model_1 = require("./roles/roles.model");
 const friendstatus_model_1 = require("./friendstatus/friendstatus.model");
 const auth_module_1 = require("./auth/auth.module");
+const file_module_1 = require("./file/file.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -62,6 +63,7 @@ exports.AppModule = AppModule = __decorate([
             wish_module_1.WishModule,
             wishstatus_module_1.WishstatusModule,
             auth_module_1.AuthModule,
+            file_module_1.FileModule,
         ]
     })
 ], AppModule);

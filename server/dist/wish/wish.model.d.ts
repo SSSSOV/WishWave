@@ -4,6 +4,7 @@ import { WishStatus } from "src/wishstatus/wishstatus.model";
 interface WishCreationAttrs {
     name: string;
     price: number;
+    image: string;
 }
 export declare class Wish extends Model<Wish, WishCreationAttrs> {
     id: number;

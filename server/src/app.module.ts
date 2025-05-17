@@ -22,7 +22,9 @@ import { Ban } from "./ban/ban.model";
 import { Role } from "./roles/roles.model";
 import { FriendStatus } from "./friendstatus/friendstatus.model";
 import { AuthModule } from './auth/auth.module';
-
+import { FileModule } from './file/file.module';
+import { ServeStaticModule } from "@nestjs/serve-static";
+import * as path from 'path';
 
 
 @Module({
@@ -31,6 +33,9 @@ import { AuthModule } from './auth/auth.module';
     imports: [
         ConfigModule.forRoot({
             envFilePath: `.${process.env.NODE_ENV}.env`
+        }),
+        ServeStaticModule.forRoot({
+          rootPath: path.resolve(__dirname, 'static').
         }),
         SequelizeModule.forRoot({
           dialect: 'postgres',
@@ -52,6 +57,7 @@ import { AuthModule } from './auth/auth.module';
         WishModule,
         WishstatusModule,
         AuthModule,
+        FileModule,
       ]
 })
 export class AppModule {}
