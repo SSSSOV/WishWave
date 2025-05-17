@@ -27,6 +27,9 @@ let UsersController = class UsersController {
     getAll() {
         return this.usersService.getAllUsers();
     }
+    async getUserById(id) {
+        return this.usersService.getUserById(+id);
+    }
     delete(id) {
         return this.usersService.deleteUserById(id);
     }
@@ -49,6 +52,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "getAll", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getUserById", null);
 __decorate([
     (0, common_1.Delete)(),
     __param(0, (0, common_1.Body)('id')),

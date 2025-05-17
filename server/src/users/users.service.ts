@@ -35,9 +35,19 @@ export class UsersService {
 
     async getAllUsers(){
         const users = await this.userRepository.findAll({include: {all: true}});
+        if (!users) {
+            throw Error('пользователи не найдены')
+        }
         return users;
     }
     
+    async getUserById(id: number) {
+        const user = await this.userRepository.findByPk(id, {include: {all: true}});
+        if (!user) {
+            throw Error('пользователь не найден (id)')
+        }
+        return user;
+    }
 
     async getUserByEmail(email: string) {
         const user = await this.userRepository.findOne({where: {email}, include: {all: true}})
