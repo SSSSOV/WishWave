@@ -16,18 +16,20 @@ exports.WishController = void 0;
 const common_1 = require("@nestjs/common");
 const wish_service_1 = require("./wish.service");
 const create_wish_dto_1 = require("./dto/create-wish.dto");
+const platform_express_1 = require("@nestjs/platform-express");
 let WishController = class WishController {
     wishService;
     constructor(wishService) {
         this.wishService = wishService;
     }
     createWish(dto, image) {
-        this.wishService.create(dto, image);
+        return this.wishService.create(dto, image);
     }
 };
 exports.WishController = WishController;
 __decorate([
     (0, common_1.Post)(),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image')),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),

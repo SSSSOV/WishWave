@@ -8,12 +8,39 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FileService = void 0;
 const common_1 = require("@nestjs/common");
+const path = require("path");
+const fs = require("fs");
+const uuid = require("uuid");
+const axios_1 = require("axios");
 let FileService = class FileService {
     async createFile(file) {
         try {
+            const ext = path.extname(file.originalname);
+            const fileName = uuid.v4() + ext;
+            const filePath = path.resolve(__dirname, '..', 'static');
+            if (!fs.existsSync(filePath)) {
+                fs.mkdirSync(filePath, { recursive: true });
+            }
+            fs.writeFileSync(path.join(filePath, fileName), file.buffer);
+            return fileName;
         }
         catch (e) {
             throw new common_1.HttpException('Произошла ошибка при записи файла', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async downloadImage(url) {
+        try {
+            const response = await axios_1.default.get(url, { responseType: 'arraybuffer' });
+            const fileName = uuid.v4() + '.jpg';
+            const filePath = path.resolve(__dirname, '..', 'static');
+            if (!fs.existsSync(filePath)) {
+                fs.mkdirSync(filePath, { recursive: true });
+            }
+            fs.writeFileSync(path.join(filePath, fileName), response.data);
+            return fileName;
+        }
+        catch (e) {
+            throw new common_1.HttpException('Не удалось загрузить изображение по ссылке', common_1.HttpStatus.BAD_REQUEST);
         }
     }
 };

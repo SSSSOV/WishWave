@@ -25,8 +25,18 @@ let WishService = class WishService {
         this.fileService = fileService;
     }
     async create(dto, image) {
-        const fileName = await this.fileService.createFile(image);
-        const wish = await this.wishRepository.create({ ...dto, image: fileName });
+        let fileName = null;
+        if (image) {
+            fileName = await this.fileService.createFile(image);
+        }
+        else if (dto.image && dto.image.startsWith('http')) {
+            fileName = await this.fileService.downloadImage(dto.image);
+        }
+        const data = { ...dto };
+        if (fileName) {
+            data.image = fileName;
+        }
+        const wish = await this.wishRepository.create(data);
         return wish;
     }
 };

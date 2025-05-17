@@ -10,8 +10,20 @@ export class WishService {
     constructor(@InjectModel(Wish) private wishRepository: typeof Wish, private fileService: FileService) {}
 
     async create(dto: CreateWishDto, image: any) {
-        const fileName = await this.fileService.createFile(image);
-        const wish = await this.wishRepository.create({...dto, image: fileName})
+        let fileName: string | null = null;
+
+        if(image) {
+            fileName = await this.fileService.createFile(image);
+        } else if (dto.image && dto.image.startsWith('http')) {
+            fileName = await this.fileService.downloadImage(dto.image);
+        }
+
+        const data: any = {...dto};
+        if (fileName) {
+            data.image = fileName;
+        }
+
+        const wish = await this.wishRepository.create(data);
         return wish;
     }
 
