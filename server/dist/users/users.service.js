@@ -30,11 +30,25 @@ let UsersService = class UsersService {
             throw new Error('Role "USER" not found');
         }
         const user = await this.userRepository.create({ ...dto, roleId: role.id, });
+        user.role = role;
         return user;
     }
     async getAllUsers() {
         const users = await this.userRepository.findAll({ include: { all: true } });
         return users;
+    }
+    async getUserByEmail(email) {
+        const user = await this.userRepository.findOne({ where: { email }, include: { all: true } });
+        return user;
+    }
+    async deleteUserById(userId) {
+        const user = await this.userRepository.findByPk(userId);
+        if (!user) {
+            throw new Error('Пользователь не найден');
+        }
+        const login = user.login;
+        await user.destroy();
+        return { message: `Пользователь ${login} с ID ${userId} удалён` };
     }
 };
 exports.UsersService = UsersService;

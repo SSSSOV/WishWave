@@ -28,6 +28,9 @@ exports.UsersModule = UsersModule = __decorate([
         imports: [
             sequelize_1.SequelizeModule.forFeature([users_model_1.User, friend_model_1.Friend, friend_users_model_1.FriendUsers, ban_model_1.Ban, roles_model_1.Role, wishlist_model_1.WishList]),
             roles_module_1.RolesModule
+        ],
+        exports: [
+            users_service_1.UsersService
         ]
     })
 ], UsersModule);

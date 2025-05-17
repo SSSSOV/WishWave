@@ -30,6 +30,7 @@ const friend_model_1 = require("./friend/friend.model");
 const ban_model_1 = require("./ban/ban.model");
 const roles_model_1 = require("./roles/roles.model");
 const friendstatus_model_1 = require("./friendstatus/friendstatus.model");
+const auth_module_1 = require("./auth/auth.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -60,6 +61,7 @@ exports.AppModule = AppModule = __decorate([
             accesslevel_module_1.AccesslevelModule,
             wish_module_1.WishModule,
             wishstatus_module_1.WishstatusModule,
+            auth_module_1.AuthModule,
         ]
     })
 ], AppModule);

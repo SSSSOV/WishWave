@@ -21,6 +21,7 @@ import { Friend } from "./friend/friend.model";
 import { Ban } from "./ban/ban.model";
 import { Role } from "./roles/roles.model";
 import { FriendStatus } from "./friendstatus/friendstatus.model";
+import { AuthModule } from './auth/auth.module';
 
 
 
@@ -50,6 +51,7 @@ import { FriendStatus } from "./friendstatus/friendstatus.model";
         AccesslevelModule,
         WishModule,
         WishstatusModule,
+        AuthModule,
       ]
 })
 export class AppModule {}

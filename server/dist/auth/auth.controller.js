@@ -12,48 +12,41 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UsersController = void 0;
+exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
-const create_user_dto_1 = require("./dto/create-user.dto");
-const users_service_1 = require("./users.service");
-let UsersController = class UsersController {
-    usersService;
-    constructor(usersService) {
-        this.usersService = usersService;
+const swagger_1 = require("@nestjs/swagger");
+const create_user_dto_1 = require("../users/dto/create-user.dto");
+const auth_service_1 = require("./auth.service");
+let AuthController = class AuthController {
+    authService;
+    constructor(authService) {
+        this.authService = authService;
     }
-    create(userDto) {
-        return this.usersService.createUser(userDto);
+    login(userDto) {
+        return this.authService.login(userDto);
     }
-    getAll() {
-        return this.usersService.getAllUsers();
-    }
-    delete(id) {
-        return this.usersService.deleteUserById(id);
+    registartion(userDto) {
+        return this.authService.registartion(userDto);
     }
 };
-exports.UsersController = UsersController;
+exports.AuthController = AuthController;
 __decorate([
-    (0, common_1.Post)(),
+    (0, common_1.Post)('/login'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_user_dto_1.createUserDto]),
     __metadata("design:returntype", void 0)
-], UsersController.prototype, "create", null);
+], AuthController.prototype, "login", null);
 __decorate([
-    (0, common_1.Get)(),
+    (0, common_1.Post)('/registration'),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [create_user_dto_1.createUserDto]),
     __metadata("design:returntype", void 0)
-], UsersController.prototype, "getAll", null);
-__decorate([
-    (0, common_1.Delete)(),
-    __param(0, (0, common_1.Body)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", void 0)
-], UsersController.prototype, "delete", null);
-exports.UsersController = UsersController = __decorate([
-    (0, common_1.Controller)('users'),
-    __metadata("design:paramtypes", [users_service_1.UsersService])
-], UsersController);
-//# sourceMappingURL=users.controller.js.map
+], AuthController.prototype, "registartion", null);
+exports.AuthController = AuthController = __decorate([
+    (0, swagger_1.ApiTags)('Авторизация'),
+    (0, common_1.Controller)('auth'),
+    __metadata("design:paramtypes", [auth_service_1.AuthService])
+], AuthController);
+//# sourceMappingURL=auth.controller.js.map
