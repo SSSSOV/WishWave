@@ -25,6 +25,9 @@ let WishController = class WishController {
     createWish(dto, image) {
         return this.wishService.create(dto, image);
     }
+    getAllWishes() {
+        return this.wishService.getAll();
+    }
 };
 exports.WishController = WishController;
 __decorate([
@@ -36,6 +39,12 @@ __decorate([
     __metadata("design:paramtypes", [create_wish_dto_1.CreateWishDto, Object]),
     __metadata("design:returntype", void 0)
 ], WishController.prototype, "createWish", null);
+__decorate([
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], WishController.prototype, "getAllWishes", null);
 exports.WishController = WishController = __decorate([
     (0, common_1.Controller)('wish'),
     __metadata("design:paramtypes", [wish_service_1.WishService])

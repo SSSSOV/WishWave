@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { WishService } from './wish.service';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -14,4 +14,8 @@ export class WishController {
         return this.wishService.create(dto, image)
     }
 
+    @Get()
+    getAllWishes() {
+        return this.wishService.getAll();
+    }
 }

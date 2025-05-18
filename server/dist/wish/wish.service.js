@@ -39,6 +39,9 @@ let WishService = class WishService {
         const wish = await this.wishRepository.create(data);
         return wish;
     }
+    async getAll() {
+        return await this.wishRepository.findAll();
+    }
 };
 exports.WishService = WishService;
 exports.WishService = WishService = __decorate([

@@ -27,4 +27,8 @@ export class WishService {
         return wish;
     }
 
+    async getAll() {
+        return await this.wishRepository.findAll();
+    }
+
 }
