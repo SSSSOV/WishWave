@@ -24,6 +24,12 @@ let WishstatusController = class WishstatusController {
     create(dto) {
         return this.wishStatusService.create(dto);
     }
+    getAll() {
+        return this.wishStatusService.getAll();
+    }
+    getById(id) {
+        return this.wishStatusService.getById(id);
+    }
 };
 exports.WishstatusController = WishstatusController;
 __decorate([
@@ -33,6 +39,19 @@ __decorate([
     __metadata("design:paramtypes", [create_wishstatus_dto_1.CreateWishStatusDto]),
     __metadata("design:returntype", void 0)
 ], WishstatusController.prototype, "create", null);
+__decorate([
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], WishstatusController.prototype, "getAll", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], WishstatusController.prototype, "getById", null);
 exports.WishstatusController = WishstatusController = __decorate([
     (0, common_1.Controller)('wishstatus'),
     __metadata("design:paramtypes", [wishstatus_service_1.WishstatusService])

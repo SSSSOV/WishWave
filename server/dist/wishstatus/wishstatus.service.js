@@ -24,6 +24,16 @@ let WishstatusService = class WishstatusService {
     async create(dto) {
         return this.wishStatusRepository.create(dto);
     }
+    async getAll() {
+        return this.wishStatusRepository.findAll({ include: { all: true } });
+    }
+    async getById(id) {
+        const status = await this.wishStatusRepository.findByPk(id);
+        if (!status) {
+            throw new common_1.NotFoundException(`Статус желания с id ${id} не найден`);
+        }
+        return status;
+    }
 };
 exports.WishstatusService = WishstatusService;
 exports.WishstatusService = WishstatusService = __decorate([

@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { WishstatusService } from './wishstatus.service';
 import { CreateWishStatusDto } from './dto/create-wishstatus.dto';
 
@@ -11,4 +11,13 @@ export class WishstatusController {
         return this.wishStatusService.create(dto);
     }
 
+    @Get()
+    getAll() {
+        return this.wishStatusService.getAll();
+    }
+
+    @Get(':id')
+    getById(@Param('id', ParseIntPipe) id: number) {
+        return this.wishStatusService.getById(id);
+    }
 }
