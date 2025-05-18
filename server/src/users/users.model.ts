@@ -4,6 +4,7 @@ import { FriendUsers } from "src/friend/friend-users.model";
 import { Friend } from "src/friend/friend.model";
 import { Role } from "src/roles/roles.model";
 import { WishList } from "src/wishlist/wishlist.model";
+import { WishStatus } from "src/wishstatus/wishstatus.model";
 
 interface UserCreationAttrs {
     login: string;
@@ -48,4 +49,7 @@ export class User extends Model<User, UserCreationAttrs> {
 
     @HasMany(() => WishList)
     declare wishlist: WishList[];
+
+    @HasMany(() => WishStatus)
+    wishstatuses: WishStatus[];
 }

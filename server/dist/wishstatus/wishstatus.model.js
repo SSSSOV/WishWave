@@ -11,11 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WishStatus = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
+const users_model_1 = require("../users/users.model");
 const wish_model_1 = require("../wish/wish.model");
 let WishStatus = class WishStatus extends sequelize_typescript_1.Model {
-    userid;
     name;
-    wishs;
+    bookedByUserId;
+    bookedByUser;
+    wishes;
 };
 exports.WishStatus = WishStatus;
 __decorate([
@@ -23,17 +25,22 @@ __decorate([
     __metadata("design:type", Number)
 ], WishStatus.prototype, "id", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, unique: true, allowNull: false }),
-    __metadata("design:type", Number)
-], WishStatus.prototype, "userid", void 0);
-__decorate([
     (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING, unique: true, allowNull: false }),
     __metadata("design:type", String)
 ], WishStatus.prototype, "name", void 0);
 __decorate([
+    (0, sequelize_typescript_1.ForeignKey)(() => users_model_1.User),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, allowNull: true }),
+    __metadata("design:type", Number)
+], WishStatus.prototype, "bookedByUserId", void 0);
+__decorate([
+    (0, sequelize_typescript_1.BelongsTo)(() => users_model_1.User),
+    __metadata("design:type", users_model_1.User)
+], WishStatus.prototype, "bookedByUser", void 0);
+__decorate([
     (0, sequelize_typescript_1.HasMany)(() => wish_model_1.Wish),
     __metadata("design:type", Array)
-], WishStatus.prototype, "wishs", void 0);
+], WishStatus.prototype, "wishes", void 0);
 exports.WishStatus = WishStatus = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'wish_status' })
 ], WishStatus);

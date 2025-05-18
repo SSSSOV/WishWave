@@ -13,6 +13,7 @@ const wishstatus_service_1 = require("./wishstatus.service");
 const sequelize_1 = require("@nestjs/sequelize");
 const wishstatus_model_1 = require("./wishstatus.model");
 const wish_model_1 = require("../wish/wish.model");
+const users_model_1 = require("../users/users.model");
 let WishstatusModule = class WishstatusModule {
 };
 exports.WishstatusModule = WishstatusModule;
@@ -21,7 +22,7 @@ exports.WishstatusModule = WishstatusModule = __decorate([
         controllers: [wishstatus_controller_1.WishstatusController],
         providers: [wishstatus_service_1.WishstatusService],
         imports: [
-            sequelize_1.SequelizeModule.forFeature([wishstatus_model_1.WishStatus, wish_model_1.Wish]),
+            sequelize_1.SequelizeModule.forFeature([wishstatus_model_1.WishStatus, wish_model_1.Wish, users_model_1.User]),
         ]
     })
 ], WishstatusModule);

@@ -9,12 +9,13 @@ import { FriendUsers } from 'src/friend/friend-users.model';
 import { Ban } from 'src/ban/ban.model';
 import { WishList } from 'src/wishlist/wishlist.model';
 import { RolesModule } from 'src/roles/roles.module';
+import { WishStatus } from 'src/wishstatus/wishstatus.model';
 
 @Module({
   controllers: [UsersController],
   providers: [UsersService],
   imports: [
-    SequelizeModule.forFeature([User, Friend, FriendUsers, Ban, Role, WishList]),
+    SequelizeModule.forFeature([User, Friend, FriendUsers, Ban, Role, WishList, WishStatus]),
     RolesModule
   ],
   exports: [
