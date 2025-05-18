@@ -7,4 +7,5 @@ export declare class WishService {
     constructor(wishRepository: typeof Wish, fileService: FileService);
     create(dto: CreateWishDto, image: any): Promise<Wish>;
     getAll(): Promise<Wish[]>;
+    findById(id: number): Promise<Wish>;
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { Wish } from './wish.model';
 import { InjectModel } from '@nestjs/sequelize';
@@ -29,6 +29,14 @@ export class WishService {
 
     async getAll() {
         return await this.wishRepository.findAll();
+    }
+
+    async findById(id: number): Promise<Wish> {
+        const wish = await this.wishRepository.findByPk(id);
+        if (!wish) {
+            throw new NotFoundException(`Желание с id ${id} не было найдено`);
+        }
+        return wish;
     }
 
 }

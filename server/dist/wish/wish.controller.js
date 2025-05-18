@@ -28,6 +28,9 @@ let WishController = class WishController {
     getAllWishes() {
         return this.wishService.getAll();
     }
+    async getWIshById(id) {
+        return this.wishService.findById(id);
+    }
 };
 exports.WishController = WishController;
 __decorate([
@@ -45,6 +48,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], WishController.prototype, "getAllWishes", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], WishController.prototype, "getWIshById", null);
 exports.WishController = WishController = __decorate([
     (0, common_1.Controller)('wish'),
     __metadata("design:paramtypes", [wish_service_1.WishService])
