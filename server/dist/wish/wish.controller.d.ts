@@ -8,6 +8,6 @@ export declare class WishController {
     getAllWishes(): Promise<Wish[]>;
     getWIshById(id: number): Promise<Wish>;
     updateWish(id: number, dto: Partial<CreateWishDto>): Promise<Wish>;
-    bookWish(wishId: number, userId: number): Promise<Wish>;
-    unbookWish(wishId: number, userId: number): Promise<Wish>;
+    bookWish(wishId: number, req: any): Promise<Wish>;
+    unbookWish(wishId: number, req: any): Promise<Wish>;
 }

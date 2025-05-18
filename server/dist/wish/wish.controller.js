@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const wish_service_1 = require("./wish.service");
 const create_wish_dto_1 = require("./dto/create-wish.dto");
 const platform_express_1 = require("@nestjs/platform-express");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 let WishController = class WishController {
     wishService;
     constructor(wishService) {
@@ -34,10 +35,12 @@ let WishController = class WishController {
     async updateWish(id, dto) {
         return this.wishService.update(id, dto);
     }
-    bookWish(wishId, userId) {
+    bookWish(wishId, req) {
+        const userId = req.user['id'];
         return this.wishService.bookWish(wishId, userId);
     }
-    unbookWish(wishId, userId) {
+    unbookWish(wishId, req) {
+        const userId = req.user['id'];
         return this.wishService.unbookWish(wishId, userId);
     }
 };
@@ -73,19 +76,21 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], WishController.prototype, "updateWish", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Patch)(':id/book'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __param(1, (0, common_1.Body)('userId', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Number]),
+    __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", void 0)
 ], WishController.prototype, "bookWish", null);
 __decorate([
-    (0, common_1.Patch)(':id/unbook/:userId'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Patch)(':id/unbook/'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __param(1, (0, common_1.Param)('userId', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Number]),
+    __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", void 0)
 ], WishController.prototype, "unbookWish", null);
 exports.WishController = WishController = __decorate([

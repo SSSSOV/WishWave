@@ -16,15 +16,6 @@ const wishlist_wish_model_1 = require("../wishlist/wishlist-wish.model");
 const wishlist_model_1 = require("../wishlist/wishlist.model");
 const wishstatus_model_1 = require("../wishstatus/wishstatus.model");
 let Wish = class Wish extends sequelize_typescript_1.Model {
-    name;
-    image;
-    price;
-    product_link;
-    wishStatusId;
-    bookedByUserId;
-    bookedByUser;
-    wishlists;
-    wishstuses;
 };
 exports.Wish = Wish;
 __decorate([

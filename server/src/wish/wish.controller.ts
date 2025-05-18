@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { WishService } from './wish.service';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Wish } from './wish.model';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('wish')
 export class WishController {
@@ -30,13 +31,17 @@ export class WishController {
         return this.wishService.update(id, dto);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Patch(':id/book')
-    bookWish(@Param('id', ParseIntPipe) wishId: number, @Body('userId', ParseIntPipe) userId: number,) {
+    bookWish(@Param('id', ParseIntPipe) wishId: number,@Req() req) {
+        const userId = req.user['id'];
         return this.wishService.bookWish(wishId, userId);
     }
 
-    @Patch(':id/unbook/:userId')
-    unbookWish(@Param('id', ParseIntPipe) wishId: number, @Param('userId', ParseIntPipe) userId: number) {
+    @UseGuards(JwtAuthGuard)
+    @Patch(':id/unbook/')
+    unbookWish(@Param('id', ParseIntPipe) wishId: number, @Req() req) {
+        const userId = req.user['id'];
         return this.wishService.unbookWish(wishId, userId);
     }
 }

@@ -16,31 +16,31 @@ export class Wish extends Model<Wish, WishCreationAttrs> {
     declare id: number;
 
     @Column({type: DataType.STRING, allowNull: false})
-    name: string;
+    declare name: string;
 
     @Column({type: DataType.STRING, allowNull: true})
-    image: string;
+    declare image: string;
 
     @Column({type: DataType.FLOAT, allowNull: false})
-    price: number;
+    declare price: number;
 
     @Column({type: DataType.STRING, allowNull: true})
-    product_link: string;
+    declare product_link: string;
 
     @ForeignKey(() => WishStatus)
     @Column({type: DataType.INTEGER})
-    wishStatusId: Number;
+    declare wishStatusId: Number;
 
     @ForeignKey(() => User)
     @Column({type: DataType.INTEGER, allowNull: true})
-    bookedByUserId: number | null;
+    declare bookedByUserId: number | null;
     
     @BelongsTo(() => User)
-    bookedByUser: User;
+    declare bookedByUser: User;
 
     @BelongsToMany(() => WishList, () => WishListWish)
-    wishlists: WishList[];
+    declare wishlists: WishList[];
 
     @BelongsTo(() => WishStatus)
-    wishstuses: WishStatus;
+    declare wishstuses: WishStatus;
 }

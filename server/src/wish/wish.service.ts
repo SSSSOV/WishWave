@@ -50,6 +50,10 @@ export class WishService {
         return wish;
     }
 
+    async delete(id: number): Promise<void> {
+        
+    }
+
     async bookWish(wishId: number, userId: number): Promise<Wish> {
         const wish = await this.findById(wishId);
 

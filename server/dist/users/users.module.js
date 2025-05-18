@@ -19,6 +19,7 @@ const ban_model_1 = require("../ban/ban.model");
 const wishlist_model_1 = require("../wishlist/wishlist.model");
 const roles_module_1 = require("../roles/roles.module");
 const wish_model_1 = require("../wish/wish.model");
+const auth_module_1 = require("../auth/auth.module");
 let UsersModule = class UsersModule {
 };
 exports.UsersModule = UsersModule;
@@ -28,10 +29,11 @@ exports.UsersModule = UsersModule = __decorate([
         providers: [users_service_1.UsersService],
         imports: [
             sequelize_1.SequelizeModule.forFeature([users_model_1.User, friend_model_1.Friend, friend_users_model_1.FriendUsers, ban_model_1.Ban, roles_model_1.Role, wishlist_model_1.WishList, wish_model_1.Wish]),
-            roles_module_1.RolesModule
+            roles_module_1.RolesModule,
+            (0, common_1.forwardRef)(() => auth_module_1.AuthModule),
         ],
         exports: [
-            users_service_1.UsersService
+            users_service_1.UsersService,
         ]
     })
 ], UsersModule);
