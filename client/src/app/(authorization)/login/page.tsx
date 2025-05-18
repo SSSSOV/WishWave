@@ -8,6 +8,10 @@ import Section from "@/components/ui/section/Section";
 import type { Metadata } from "next";
 import styles from "@/app/home.module.css";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { $host } from "@/app/lib";
+import { api_login } from "@/app/lib/userAPI";
+import { Bounce, toast, ToastContainer } from "react-toastify";
 
 // export const metadata: Metadata = {
 //   title: "Авторизация - WishWave",
@@ -15,32 +19,80 @@ import { useRouter } from "next/navigation";
 // };
 
 export default function LoginPage() {
+  // Маршрутизатор
   const router = useRouter();
+
+  // Переменные
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  // Обработчик авторизации
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      // const { token } = api_login(email, password);
+      // Перенаправляем на защищенную страницу
+      // if (token) router.push("/main");
+    } catch (err) {
+      alert("Неверные учетные данные");
+    }
+  };
 
   return (
     <>
       <ThemeToggle isAbsolute></ThemeToggle>
       <ContentContainer topBarSize="none" navigationType="none">
-        <Section title="Авторизация" title_size="sm">
-          <Input labelText="Почта" leadingIcon="mail" type="email" id="email" />
-          <Input labelText="Пароль" leadingIcon="password" type="password" id="password" />
-          <Button variant="text" isPadNone>
-            Забыли пароль?
-          </Button>
-          <Button variant="filled" isFit={false}>
-            Войти
-          </Button>
+        <Section
+          align_items="right"
+          items_direction="row"
+          padding_top_size="lg"
+          padding_bot_size="lg">
+          <Monogram letter="ww" size="md" color="primary"></Monogram>
+          <Monogram icon="person" size="md" color="secondary"></Monogram>
+          <Monogram icon="login" size="md" color="tertiary"></Monogram>
         </Section>
-        <Section align_items="center">
+        <form action="login" onSubmit={handleSubmit}>
+          <Section title="Уже есть аккаунт? Входите!" title_size="md">
+            <Input
+              labelText="Почта"
+              leadingIcon="mail"
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <Input
+              labelText="Пароль"
+              leadingIcon="password"
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <Button variant="text" isPadNone>
+              Забыли пароль?
+            </Button>
+            <Button
+              variant="filled"
+              isFit={false}
+              // onClick={() => router.push("/main")}
+              type="submit">
+              Войти
+            </Button>
+          </Section>
+        </form>
+        <Section align_items="center" padding_top_size="lg">
           <Section items_direction="row">
             Нет аккаунта?
-            <Button variant="text" isPadNone onClick={() => router.push("/signup")}>
+            <Button variant="text" isPadNone onClick={() => router.replace("/signup")}>
               Создайте его
             </Button>
           </Section>
         </Section>
       </ContentContainer>
-      <Section align_items="center">
+      <Section align_items="center" padding_bot_size="lg" padding_top_size="lg">
         <span className={styles.text_center + " " + styles.label}>
           Продолжая, вы соглашаетесь с{" "}
           <a

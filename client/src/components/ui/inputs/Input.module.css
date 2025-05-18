@@ -8,7 +8,8 @@
   padding: 8px;
   border: 1px solid var(--outline);
   border-radius: 4px;
-  background: var(--surface);
+  /* background: var(--surface); */
+  background: transparent;
   transition: all 0.2s;
   height: 56px;
 }
@@ -71,4 +72,8 @@
 
 .text_field.error label {
   color: var(--error-color);
+}
+
+.w_full {
+  width: 100%;
 }

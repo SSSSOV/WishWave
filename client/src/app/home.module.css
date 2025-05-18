@@ -39,3 +39,27 @@
   color: var(--on-tertiary-container);
   box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.2);
 }
+
+.row {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  border-radius: var(--lg);
+}
+
+.scrollContainer {
+  display: flex;
+  gap: var(--sm);
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE и Edge */
+}
+
+.scrollContainer::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Опционально: плавный скролл */
+.scrollContainer {
+  scroll-behavior: smooth;
+}

@@ -18,8 +18,11 @@
 .item_label {
   font-size: 12px;
   font-weight: 700;
+  letter-spacing: -0.5px;
   width: 56px;
-  text-wrap: balance;
+  text-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .selected_item_icon {
   background-color: var(--secondary-container);

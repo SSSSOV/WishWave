@@ -1,6 +1,9 @@
 import { ThemeToggle } from "@/components/ui/buttons/ThemeToggle";
 import Section from "@/components/ui/section/Section";
 import type { Metadata } from "next";
+import styles from "@/app/home.module.css";
+import Button from "@/components/ui/buttons/Button";
+import Footer from "@/components/shared/footer/footer";
 
 export const metadata: Metadata = {
   title: "Настройки - WishWave",
@@ -13,6 +16,7 @@ export default function ProfilePage() {
       <Section title="Настройки темы:">
         <ThemeToggle></ThemeToggle>
       </Section>
+      <Footer></Footer>
     </>
   );
 }

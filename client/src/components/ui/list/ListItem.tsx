@@ -42,7 +42,7 @@ export default function ListItem({
           {leading_type == "monogram" ? (
             <Monogram letter={leading} />
           ) : leading_type == "icon" ? (
-            <span className={"material-symbols-rounded"}>{leading}</span>
+            <span className="material-symbols-rounded">{leading}</span>
           ) : (
             ""
           )}

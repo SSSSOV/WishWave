@@ -1,4 +1,8 @@
+import Button from "@/components/ui/buttons/Button";
+import Input from "@/components/ui/inputs/Input";
+import Monogram from "@/components/ui/monogram/Monogram";
 import NavigationBar from "@/components/ui/navigation_bar/NavigationBar";
+import Section from "@/components/ui/section/Section";
 import TopAppBar from "@/components/ui/top_app_bar/TopAppBar";
 import { Metadata } from "next";
 
@@ -8,5 +12,22 @@ export const metadata: Metadata = {
 };
 
 export default function AddPage() {
-  return <div>Добавить</div>;
+  return (
+    <>
+      <Section
+        title=""
+        padding_top_size="lg"
+        padding_bot_size="xs"
+        items_direction="row"
+        align_items="right">
+        <Monogram letter="Ф" size="sm"></Monogram>
+        <Input labelText="Ссылка на изображение" leadingIcon="image" isFull />
+      </Section>
+      <Section title="" padding_top_size="xs">
+        <Input labelText="Название" leadingIcon="match_case" />
+        <Input labelText="Цена" leadingIcon="currency_ruble" />
+        <Input labelText="Ссылка на маркетплейс" leadingIcon="link" />
+      </Section>
+    </>
+  );
 }
