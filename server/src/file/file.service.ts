@@ -11,7 +11,7 @@ export class FileService {
         try {
             const ext = path.extname(file.originalname);
             const fileName = uuid.v4() + ext;
-            const filePath = path.resolve(__dirname, '..', 'static')
+            const filePath = path.resolve(process.cwd(), 'static')
 
             if(!fs.existsSync(filePath)) {
                 fs.mkdirSync(filePath, {recursive: true})
@@ -28,7 +28,7 @@ export class FileService {
         try {
             const response = await axios.get(url, {responseType: 'arraybuffer'});
             const fileName = uuid.v4() + '.jpg';
-            const filePath = path.resolve(__dirname, '..', 'static');
+            const filePath = path.resolve(process.cwd(), 'static');
 
             if (!fs.existsSync(filePath)) {
                 fs.mkdirSync(filePath, { recursive: true});
