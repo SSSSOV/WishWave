@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { WishService } from './wish.service';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -29,6 +29,11 @@ export class WishController {
     @Patch(':id')
     async updateWish(@Param('id') id: number, @Body() dto: Partial<CreateWishDto>): Promise<Wish> {
         return this.wishService.update(id, dto);
+    }
+
+    @Delete(':id')
+    async deleteWish(@Param('id', ParseIntPipe) id: number) {
+        await this.wishService.delete(id);
     }
 
     @UseGuards(JwtAuthGuard)

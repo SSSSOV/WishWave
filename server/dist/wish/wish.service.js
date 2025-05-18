@@ -59,6 +59,8 @@ let WishService = class WishService {
         return wish;
     }
     async delete(id) {
+        const wish = await this.findById(id);
+        await wish.destroy();
     }
     async bookWish(wishId, userId) {
         const wish = await this.findById(wishId);

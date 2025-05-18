@@ -51,7 +51,8 @@ export class WishService {
     }
 
     async delete(id: number): Promise<void> {
-        
+        const wish = await this.findById(id);
+        await wish.destroy();
     }
 
     async bookWish(wishId: number, userId: number): Promise<Wish> {

@@ -35,6 +35,9 @@ let WishController = class WishController {
     async updateWish(id, dto) {
         return this.wishService.update(id, dto);
     }
+    async deleteWish(id) {
+        await this.wishService.delete(id);
+    }
     bookWish(wishId, req) {
         const userId = req.user['id'];
         return this.wishService.bookWish(wishId, userId);
@@ -75,6 +78,13 @@ __decorate([
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], WishController.prototype, "updateWish", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], WishController.prototype, "deleteWish", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Patch)(':id/book'),

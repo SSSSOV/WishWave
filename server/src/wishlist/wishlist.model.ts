@@ -6,6 +6,7 @@ import { User } from "src/users/users.model";
 
 interface WishListCreationAttrs {
     name: string;
+    userId:number;
 }
 
 @Table({tableName: 'wish_list'})
@@ -25,11 +26,11 @@ export class WishList extends Model<WishList, WishListCreationAttrs> {
     accesslevelId: number;
 
     @BelongsToMany(() => Wish, () => WishListWish)
-    wishs: Wish[];
+    wishes: Wish[];
 
     @BelongsTo(() => AccessLevel)
     accesslevels: AccessLevel;
 
     @BelongsTo(() => User)
-    users: User;
+    user: User;
 }
