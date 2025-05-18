@@ -8,4 +8,5 @@ export declare class WishService {
     create(dto: CreateWishDto, image: any): Promise<Wish>;
     getAll(): Promise<Wish[]>;
     findById(id: number): Promise<Wish>;
+    update(id: number, dto: Partial<CreateWishDto>): Promise<Wish>;
 }

@@ -7,4 +7,5 @@ export declare class WishController {
     createWish(dto: CreateWishDto, image: any): Promise<Wish>;
     getAllWishes(): Promise<Wish[]>;
     getWIshById(id: number): Promise<Wish>;
+    updateWish(id: number, dto: Partial<CreateWishDto>): Promise<Wish>;
 }

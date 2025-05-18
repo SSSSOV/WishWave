@@ -31,6 +31,9 @@ let WishController = class WishController {
     async getWIshById(id) {
         return this.wishService.findById(id);
     }
+    async updateWish(id, dto) {
+        return this.wishService.update(id, dto);
+    }
 };
 exports.WishController = WishController;
 __decorate([
@@ -55,6 +58,14 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], WishController.prototype, "getWIshById", null);
+__decorate([
+    (0, common_1.Patch)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:returntype", Promise)
+], WishController.prototype, "updateWish", null);
 exports.WishController = WishController = __decorate([
     (0, common_1.Controller)('wish'),
     __metadata("design:paramtypes", [wish_service_1.WishService])

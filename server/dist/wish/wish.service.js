@@ -49,6 +49,14 @@ let WishService = class WishService {
         }
         return wish;
     }
+    async update(id, dto) {
+        const wish = await this.wishRepository.findByPk(id);
+        if (!wish) {
+            throw new common_1.NotFoundException(`Желание с id ${id} не было найдено`);
+        }
+        await wish.update(dto);
+        return wish;
+    }
 };
 exports.WishService = WishService;
 exports.WishService = WishService = __decorate([

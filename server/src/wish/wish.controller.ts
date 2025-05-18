@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { WishService } from './wish.service';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -23,5 +23,10 @@ export class WishController {
     @Get(':id')
     async getWIshById(@Param('id') id: number): Promise<Wish> {
         return this.wishService.findById(id);
+    }
+
+    @Patch(':id')
+    async updateWish(@Param('id') id: number, @Body() dto: Partial<CreateWishDto>): Promise<Wish> {
+        return this.wishService.update(id, dto);
     }
 }

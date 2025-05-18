@@ -39,4 +39,13 @@ export class WishService {
         return wish;
     }
 
+    async update(id: number, dto: Partial<CreateWishDto>): Promise<Wish> {
+               const wish = await this.wishRepository.findByPk(id);
+        if (!wish) {
+            throw new NotFoundException(`Желание с id ${id} не было найдено`);
+        }
+        await wish.update(dto);
+        return wish;
+    }
+
 }
