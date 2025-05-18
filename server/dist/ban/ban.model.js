@@ -14,7 +14,6 @@ const sequelize_typescript_1 = require("sequelize-typescript");
 const users_model_1 = require("../users/users.model");
 let Ban = class Ban extends sequelize_typescript_1.Model {
     description;
-    userId;
     users;
 };
 exports.Ban = Ban;
@@ -27,13 +26,8 @@ __decorate([
     __metadata("design:type", String)
 ], Ban.prototype, "description", void 0);
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => users_model_1.User),
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
-    __metadata("design:type", Number)
-], Ban.prototype, "userId", void 0);
-__decorate([
-    (0, sequelize_typescript_1.BelongsTo)(() => users_model_1.User),
-    __metadata("design:type", users_model_1.User)
+    (0, sequelize_typescript_1.HasMany)(() => users_model_1.User),
+    __metadata("design:type", Array)
 ], Ban.prototype, "users", void 0);
 exports.Ban = Ban = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'bans' })

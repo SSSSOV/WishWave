@@ -6,7 +6,6 @@ interface AccessLevelCreationAttrs {
 export declare class AccessLevel extends Model<AccessLevel, AccessLevelCreationAttrs> {
     id: number;
     name: string;
-    wishlistId: number;
-    wishlists: WishList;
+    wishlists: WishList[];
 }
 export {};

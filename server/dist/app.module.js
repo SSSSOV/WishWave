@@ -30,6 +30,10 @@ const friend_model_1 = require("./friend/friend.model");
 const ban_model_1 = require("./ban/ban.model");
 const roles_model_1 = require("./roles/roles.model");
 const friendstatus_model_1 = require("./friendstatus/friendstatus.model");
+const auth_module_1 = require("./auth/auth.module");
+const file_module_1 = require("./file/file.module");
+const serve_static_1 = require("@nestjs/serve-static");
+const path = require("path");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -40,6 +44,13 @@ exports.AppModule = AppModule = __decorate([
         imports: [
             config_1.ConfigModule.forRoot({
                 envFilePath: `.${process.env.NODE_ENV}.env`
+            }),
+            serve_static_1.ServeStaticModule.forRoot({
+                rootPath: path.resolve(process.cwd(), 'static'),
+                serveRoot: '/static',
+                serveStaticOptions: {
+                    index: false,
+                }
             }),
             sequelize_1.SequelizeModule.forRoot({
                 dialect: 'postgres',
@@ -60,6 +71,8 @@ exports.AppModule = AppModule = __decorate([
             accesslevel_module_1.AccesslevelModule,
             wish_module_1.WishModule,
             wishstatus_module_1.WishstatusModule,
+            auth_module_1.AuthModule,
+            file_module_1.FileModule,
         ]
     })
 ], AppModule);

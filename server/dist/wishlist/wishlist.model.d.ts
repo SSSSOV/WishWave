@@ -4,12 +4,15 @@ import { AccessLevel } from "src/accesslevel/accesslevel.model";
 import { User } from "src/users/users.model";
 interface WishListCreationAttrs {
     name: string;
+    userId: number;
 }
 export declare class WishList extends Model<WishList, WishListCreationAttrs> {
     id: number;
     name: string;
-    wishs: Wish[];
-    accesslevels: AccessLevel[];
-    users: User[];
+    userId: number;
+    accesslevelId: number;
+    wishes: Wish[];
+    accesslevels: AccessLevel;
+    user: User;
 }
 export {};

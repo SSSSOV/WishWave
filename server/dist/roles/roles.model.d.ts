@@ -7,7 +7,6 @@ export declare class Role extends Model<Role, RoleCreationAttrs> {
     id: number;
     value: string;
     description: string;
-    userId: number;
-    users: User;
+    users: User[];
 }
 export {};

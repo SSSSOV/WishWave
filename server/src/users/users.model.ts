@@ -1,14 +1,17 @@
-import {BelongsTo, BelongsToMany, Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
+import {AllowNull, BelongsTo, BelongsToMany, Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
 import { Ban } from "src/ban/ban.model";
 import { FriendUsers } from "src/friend/friend-users.model";
 import { Friend } from "src/friend/friend.model";
 import { Role } from "src/roles/roles.model";
+import { Wish } from "src/wish/wish.model";
 import { WishList } from "src/wishlist/wishlist.model";
+import { WishStatus } from "src/wishstatus/wishstatus.model";
 
 interface UserCreationAttrs {
     login: string;
     password: string;
     email: string;
+    roleId: number;
 }
 
 @Table({tableName: 'users'})
@@ -17,30 +20,37 @@ export class User extends Model<User, UserCreationAttrs> {
     declare id: number;
 
     @Column({type: DataType.STRING, allowNull: true})
-    full_name: string;
+    declare full_name: string;
 
     @Column({type: DataType.STRING, unique: true, allowNull: false})
-    login: string;
+    declare login: string;
 
     @Column({type: DataType.STRING, allowNull: false})
-    password: string;
+    declare password: string;
 
     @Column({type: DataType.STRING, unique: true, allowNull: false})
-    email: string;
+    declare email: string;
 
-    @ForeignKey(() => WishList)
-    @Column({type: DataType.INTEGER})
-    wishlistId: number;
+    @ForeignKey(() => Role)
+    @Column({type: DataType.INTEGER, allowNull: false})
+    declare roleId: number;
+
+    @ForeignKey(() => Ban)
+    @Column({type: DataType.INTEGER, allowNull: true})
+    declare banId: number;
 
     @BelongsToMany(() => Friend, () => FriendUsers)
-    friends: Friend[];
+    declare friend: Friend[];
 
-    @HasMany(() => Ban)
-    bans: Ban[];
+    @BelongsTo(() => Ban)
+    declare ban: Ban;
 
-    @HasMany(() => Role)
-    rols: Role[];
+    @BelongsTo(() => Role)
+    declare role: Role;
 
-    @BelongsTo(() => WishList)
-    wishlists: WishList
+    @HasMany(() => WishList)
+    declare wishlist: WishList[];
+
+    @HasMany(() => Wish)
+    wishstatuses: Wish[];
 }

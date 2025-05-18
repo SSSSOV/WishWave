@@ -15,6 +15,8 @@ const wish_model_1 = require("./wish.model");
 const wishlist_model_1 = require("../wishlist/wishlist.model");
 const wishlist_wish_model_1 = require("../wishlist/wishlist-wish.model");
 const wishstatus_model_1 = require("../wishstatus/wishstatus.model");
+const file_module_1 = require("../file/file.module");
+const auth_module_1 = require("../auth/auth.module");
 let WishModule = class WishModule {
 };
 exports.WishModule = WishModule;
@@ -24,6 +26,8 @@ exports.WishModule = WishModule = __decorate([
         controllers: [wish_controller_1.WishController],
         imports: [
             sequelize_1.SequelizeModule.forFeature([wish_model_1.Wish, wishlist_model_1.WishList, wishlist_wish_model_1.WishListWish, wishstatus_model_1.WishStatus]),
+            file_module_1.FileModule,
+            auth_module_1.AuthModule
         ]
     })
 ], WishModule);

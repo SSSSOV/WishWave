@@ -6,7 +6,6 @@ interface FriendStatusCreationAttrs {
 export declare class FriendStatus extends Model<FriendStatus, FriendStatusCreationAttrs> {
     id: number;
     description: string;
-    friendId: number;
-    friends: Friend;
+    friends: Friend[];
 }
 export {};

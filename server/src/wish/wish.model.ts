@@ -1,4 +1,5 @@
-import {BelongsToMany, Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
+import {BelongsTo, BelongsToMany, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { User } from "src/users/users.model";
 import { WishListWish } from "src/wishlist/wishlist-wish.model";
 import { WishList } from "src/wishlist/wishlist.model";
 import { WishStatus } from "src/wishstatus/wishstatus.model";
@@ -6,6 +7,7 @@ import { WishStatus } from "src/wishstatus/wishstatus.model";
 interface WishCreationAttrs {
     name: string;
     price: number;
+    image: string;
 }
 
 @Table({tableName: 'wish'})
@@ -14,20 +16,31 @@ export class Wish extends Model<Wish, WishCreationAttrs> {
     declare id: number;
 
     @Column({type: DataType.STRING, allowNull: false})
-    name: string;
+    declare name: string;
 
     @Column({type: DataType.STRING, allowNull: true})
-    image: string;
+    declare image: string;
 
     @Column({type: DataType.FLOAT, allowNull: false})
-    price: number;
+    declare price: number;
 
     @Column({type: DataType.STRING, allowNull: true})
-    product_link: string;
+    declare product_link: string;
+
+    @ForeignKey(() => WishStatus)
+    @Column({type: DataType.INTEGER})
+    declare wishStatusId: number;
+
+    @ForeignKey(() => User)
+    @Column({type: DataType.INTEGER, allowNull: true})
+    declare bookedByUserId: number | null;
+    
+    @BelongsTo(() => User)
+    declare bookedByUser: User;
 
     @BelongsToMany(() => WishList, () => WishListWish)
-    wishlists: WishList[];
+    declare wishlists: WishList[];
 
-    @HasMany(() => WishStatus)
-    wishstuses: WishStatus[];
+    @BelongsTo(() => WishStatus)
+    declare wishstuses: WishStatus;
 }

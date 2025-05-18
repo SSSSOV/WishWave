@@ -15,17 +15,10 @@ const ban_model_1 = require("../ban/ban.model");
 const friend_users_model_1 = require("../friend/friend-users.model");
 const friend_model_1 = require("../friend/friend.model");
 const roles_model_1 = require("../roles/roles.model");
+const wish_model_1 = require("../wish/wish.model");
 const wishlist_model_1 = require("../wishlist/wishlist.model");
 let User = class User extends sequelize_typescript_1.Model {
-    full_name;
-    login;
-    password;
-    email;
-    wishlistId;
-    friends;
-    bans;
-    rols;
-    wishlists;
+    wishstatuses;
 };
 exports.User = User;
 __decorate([
@@ -49,26 +42,35 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => wishlist_model_1.WishList),
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
+    (0, sequelize_typescript_1.ForeignKey)(() => roles_model_1.Role),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, allowNull: false }),
     __metadata("design:type", Number)
-], User.prototype, "wishlistId", void 0);
+], User.prototype, "roleId", void 0);
+__decorate([
+    (0, sequelize_typescript_1.ForeignKey)(() => ban_model_1.Ban),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, allowNull: true }),
+    __metadata("design:type", Number)
+], User.prototype, "banId", void 0);
 __decorate([
     (0, sequelize_typescript_1.BelongsToMany)(() => friend_model_1.Friend, () => friend_users_model_1.FriendUsers),
     __metadata("design:type", Array)
-], User.prototype, "friends", void 0);
+], User.prototype, "friend", void 0);
 __decorate([
-    (0, sequelize_typescript_1.HasMany)(() => ban_model_1.Ban),
+    (0, sequelize_typescript_1.BelongsTo)(() => ban_model_1.Ban),
+    __metadata("design:type", ban_model_1.Ban)
+], User.prototype, "ban", void 0);
+__decorate([
+    (0, sequelize_typescript_1.BelongsTo)(() => roles_model_1.Role),
+    __metadata("design:type", roles_model_1.Role)
+], User.prototype, "role", void 0);
+__decorate([
+    (0, sequelize_typescript_1.HasMany)(() => wishlist_model_1.WishList),
     __metadata("design:type", Array)
-], User.prototype, "bans", void 0);
+], User.prototype, "wishlist", void 0);
 __decorate([
-    (0, sequelize_typescript_1.HasMany)(() => roles_model_1.Role),
+    (0, sequelize_typescript_1.HasMany)(() => wish_model_1.Wish),
     __metadata("design:type", Array)
-], User.prototype, "rols", void 0);
-__decorate([
-    (0, sequelize_typescript_1.BelongsTo)(() => wishlist_model_1.WishList),
-    __metadata("design:type", wishlist_model_1.WishList)
-], User.prototype, "wishlists", void 0);
+], User.prototype, "wishstatuses", void 0);
 exports.User = User = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'users' })
 ], User);

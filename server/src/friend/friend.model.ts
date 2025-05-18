@@ -1,4 +1,4 @@
-import {BelongsToMany, Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
+import {BelongsTo, BelongsToMany, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
 import { User } from "src/users/users.model";
 import { FriendUsers } from "./friend-users.model";
 import { FriendStatus } from "src/friendstatus/friendstatus.model";
@@ -13,15 +13,19 @@ export class Friend extends Model<Friend, FriendCreationAttrs> {
     @Column({type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true})
     declare id: number;
 
-    @Column({type: DataType.INTEGER, unique: true, allowNull: false})
+    @Column({type: DataType.INTEGER, allowNull: false})
     userid1: number;
 
-    @Column({type: DataType.INTEGER, unique: true, allowNull: false})
+    @Column({type: DataType.INTEGER, allowNull: false})
     userid2: number;
+
+    @ForeignKey(() => FriendStatus)
+    @Column({type: DataType.INTEGER})
+    friendstatusId: number;
 
     @BelongsToMany(() => User, () => FriendUsers)
     users: User[];
 
-    @HasMany(() => FriendStatus)
-    friendstatuses: FriendStatus[];
+    @BelongsTo(() => FriendStatus)
+    friendstatus: FriendStatus;
 }

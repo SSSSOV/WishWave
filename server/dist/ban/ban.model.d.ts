@@ -6,7 +6,6 @@ interface BanCreationAttrs {
 export declare class Ban extends Model<Ban, BanCreationAttrs> {
     id: number;
     description: string;
-    userId: number;
-    users: User;
+    users: User[];
 }
 export {};

@@ -21,7 +21,10 @@ import { Friend } from "./friend/friend.model";
 import { Ban } from "./ban/ban.model";
 import { Role } from "./roles/roles.model";
 import { FriendStatus } from "./friendstatus/friendstatus.model";
-
+import { AuthModule } from './auth/auth.module';
+import { FileModule } from './file/file.module';
+import { ServeStaticModule } from "@nestjs/serve-static";
+import * as path from 'path';
 
 
 @Module({
@@ -30,6 +33,13 @@ import { FriendStatus } from "./friendstatus/friendstatus.model";
     imports: [
         ConfigModule.forRoot({
             envFilePath: `.${process.env.NODE_ENV}.env`
+        }),
+        ServeStaticModule.forRoot({
+          rootPath: path.resolve(process.cwd(), 'static'),
+          serveRoot: '/static',
+          serveStaticOptions: {
+            index: false,
+          }
         }),
         SequelizeModule.forRoot({
           dialect: 'postgres',
@@ -50,6 +60,8 @@ import { FriendStatus } from "./friendstatus/friendstatus.model";
         AccesslevelModule,
         WishModule,
         WishstatusModule,
+        AuthModule,
+        FileModule,
       ]
 })
 export class AppModule {}
