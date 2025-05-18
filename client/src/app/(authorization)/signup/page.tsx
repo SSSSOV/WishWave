@@ -9,6 +9,7 @@ import type { Metadata } from "next";
 import styles from "@/app/home.module.css";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useState } from "react";
 
 // export const metadata: Metadata = {
 //   title: "Регистрация - WishWave",
@@ -16,20 +17,81 @@ import Link from "next/link";
 // };
 
 export default function SignupPage() {
+  // Маршрутизатор
   const router = useRouter();
+
+  // Переменные
+  const [email, setEmail] = useState("");
+  const [login, setLogin] = useState("");
+  const [password, setPassword] = useState("");
+
+  // Обработчик авторизации
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      // const { data } = await $host.post("/auth/login", { email, password });
+
+      // Сохраняем токен
+      // localStorage.setItem("authToken", data.token);
+      localStorage.setItem("authToken", "datatoken");
+
+      // Перенаправляем на защищенную страницу
+      router.push("/main");
+    } catch (err) {
+      alert("Неверные учетные данные");
+    }
+  };
 
   return (
     <>
       <ThemeToggle isAbsolute></ThemeToggle>
       <ContentContainer topBarSize="none" navigationType="none">
-        <Section title="Регистрация">
-          <Input labelText="Почта" leadingIcon="mail" type="email" id="email" />
-          <Input labelText="Пароль" leadingIcon="password" type="password" id="password" />
-          <Button variant="filled" isFit={false} type="submit">
-            Войти
-          </Button>
+        <Section
+          align_items="center"
+          items_direction="row"
+          padding_top_size="lg"
+          padding_bot_size="lg">
+          <Monogram letter="ww" size="md" color="primary"></Monogram>
+          <Monogram icon="person_add" size="md" color="secondary"></Monogram>
+          <Monogram icon="app_registration" size="md" color="tertiary"></Monogram>
         </Section>
-        <Section align_items="center">
+        <form action="signup" onSubmit={handleSubmit}>
+          <Section title="Нет аккаунта? Создайте!" title_size="md">
+            <Input
+              labelText="Почта"
+              leadingIcon="mail"
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input
+              labelText="Логин"
+              leadingIcon="person"
+              type="text"
+              id="login"
+              minLength={3}
+              maxLength={10}
+              value={login}
+              onChange={(e) => setLogin(e.target.value)}
+            />
+            <Input
+              labelText="Пароль"
+              leadingIcon="password"
+              type="password"
+              id="password"
+              minLength={5}
+              maxLength={20}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+            <Button variant="filled" isFit={false} type="submit">
+              Зарегистрироваться
+            </Button>
+          </Section>
+        </form>
+        <Section align_items="center" padding_top_size="lg">
           <Section items_direction="row">
             Уже есть аккаунт?
             <Button variant="text" isPadNone onClick={() => router.push("/login")}>
@@ -37,7 +99,7 @@ export default function SignupPage() {
             </Button>
           </Section>
         </Section>
-        <Section align_items="center">
+        <Section align_items="center" padding_bot_size="lg" padding_top_size="lg">
           <span className={styles.text_center + " " + styles.label}>
             Продолжая, вы соглашаетесь с{" "}
             <a

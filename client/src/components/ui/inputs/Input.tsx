@@ -7,6 +7,7 @@ export default function Input({
   trailingIcon,
   labelText,
   inputText,
+  isFull = false,
   id,
   ...props
 }: {
@@ -14,10 +15,11 @@ export default function Input({
   trailingIcon?: string;
   labelText?: string;
   inputText?: string;
+  isFull?: boolean;
   id?: string;
 } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
-    <div className={styles.text_field}>
+    <div className={styles.text_field + " " + (isFull ? styles.w_full : "")}>
       {leadingIcon ? <Button variant="text" icon={leadingIcon}></Button> : ""}
       {/* <span className={"material-symbols-rounded " + styles.icon}>search</span> */}
       <div className={styles.input_container}>

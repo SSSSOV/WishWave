@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Comfortaa, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { ToastContainer } from "react-toastify";
 
 const comfortaa = Comfortaa({
   variable: "--font-geist-sans",
@@ -29,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ru">
       <head>
         <link
           rel="stylesheet"
@@ -37,6 +38,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${comfortaa.className} ${comfortaa.className} antialiased`}>
+        <ToastContainer className="p-1 gap-1" />
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

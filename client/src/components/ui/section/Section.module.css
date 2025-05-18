@@ -4,7 +4,7 @@
   flex-direction: column;
   gap: 8px;
   /* align-items: stretch; */
-  /* background-color: var(--surface-container); */
+  background-color: var(--surface);
 }
 .row {
   flex-direction: row;
@@ -34,6 +34,9 @@
   align-items: end;
 }
 
+.pt_xs {
+  padding-top: var(--xs);
+}
 .pt_sm {
   padding-top: var(--sm);
 }
@@ -42,6 +45,10 @@
 }
 .pt_lg {
   padding-top: var(--lg);
+}
+
+.pb_xs {
+  padding-bottom: var(--xs);
 }
 .pb_sm {
   padding-bottom: var(--sm);

@@ -18,7 +18,7 @@ export default function NavItem({
         </span>
       </div>
 
-      {label ? <span className={styles.item_label}>{label}</span> : ""}
+      {label ? <p className={styles.item_label}>{label}</p> : ""}
     </button>
   );
 }

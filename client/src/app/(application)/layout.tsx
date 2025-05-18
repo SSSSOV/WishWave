@@ -3,9 +3,10 @@ import ContentContainer from "@/components/ui/content_container/ContentContainer
 import NavigationBar from "@/components/ui/navigation_bar/NavigationBar";
 import TopAppBar from "@/components/ui/top_app_bar/TopAppBar";
 import { usePathname, useRouter } from "next/navigation";
-import styles from "./home.module.css";
+import styles from "@/app/home.module.css";
 import { useEffect, useState } from "react";
 import NavigationRail from "@/components/ui/navigation_rail/NavigationRail";
+import Section from "@/components/ui/section/Section";
 
 export type PageConfig = {
   title: string;
@@ -128,7 +129,9 @@ export default function RootLayout({
       {isMobile ? (
         <>
           <TopAppBar title={PAGES.find((page) => page.path == pathName)?.title} variant="small" />
-          <ContentContainer size="sm">{children}</ContentContainer>
+          <ContentContainer navigationType="bar" topBarSize="sm">
+            {children}
+          </ContentContainer>
           <NavigationBar pages={PAGES} />
         </>
       ) : (
@@ -139,7 +142,7 @@ export default function RootLayout({
             title={PAGES.find((page) => page.path == pathName)?.title}
             variant="large"
           />
-          <ContentContainer navigationType="rail" size="lg">
+          <ContentContainer navigationType="rail" topBarSize="lg">
             {children}
           </ContentContainer>
         </>

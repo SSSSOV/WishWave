@@ -1,7 +1,7 @@
 import styles from "./Section.module.css";
 
 type align_items = "left" | "center" | "right";
-type size = "sm" | "md" | "lg";
+type size = "sm" | "md" | "lg" | "xs";
 type direction = "col" | "row";
 
 export default function Section({
@@ -42,7 +42,7 @@ export default function Section({
           ? styles.pt_md
           : padding_top_size == "lg"
           ? styles.pt_lg
-          : "") +
+          : styles.pt_xs) +
         " " +
         (padding_bot_size == "sm"
           ? styles.pb_sm
@@ -50,7 +50,7 @@ export default function Section({
           ? styles.pb_md
           : padding_bot_size == "lg"
           ? styles.pb_lg
-          : "")
+          : styles.pb_xs)
       }>
       {title ? (
         <span
