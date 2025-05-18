@@ -5,13 +5,34 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WishlistService = void 0;
 const common_1 = require("@nestjs/common");
+const sequelize_1 = require("@nestjs/sequelize");
+const wishlist_model_1 = require("./wishlist.model");
+const wish_model_1 = require("../wish/wish.model");
 let WishlistService = class WishlistService {
+    wishListRepository;
+    constructor(wishListRepository) {
+        this.wishListRepository = wishListRepository;
+    }
+    async create(dto, userId) {
+        return await this.wishListRepository.create({ ...dto, userId });
+    }
+    async getAllByUser(userId) {
+        return await this.wishListRepository.findAll({ where: { userId }, include: [{ model: wish_model_1.Wish, through: { attributes: [] } }] });
+    }
 };
 exports.WishlistService = WishlistService;
 exports.WishlistService = WishlistService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __param(0, (0, sequelize_1.InjectModel)(wishlist_model_1.WishList)),
+    __metadata("design:paramtypes", [Object])
 ], WishlistService);
 //# sourceMappingURL=wishlist.service.js.map

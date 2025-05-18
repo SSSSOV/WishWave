@@ -23,8 +23,8 @@ let WishController = class WishController {
     constructor(wishService) {
         this.wishService = wishService;
     }
-    createWish(dto, image) {
-        return this.wishService.create(dto, image);
+    createWishInList(listId, dto, image, req) {
+        return this.wishService.create(dto, image, listId);
     }
     getAllWishes() {
         return this.wishService.getAll();
@@ -49,14 +49,17 @@ let WishController = class WishController {
 };
 exports.WishController = WishController;
 __decorate([
-    (0, common_1.Post)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Post)(':listId/wishes'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image')),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.UploadedFile)()),
+    __param(0, (0, common_1.Param)('listId', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.UploadedFile)()),
+    __param(3, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_wish_dto_1.CreateWishDto, Object]),
+    __metadata("design:paramtypes", [Number, create_wish_dto_1.CreateWishDto, Object, Object]),
     __metadata("design:returntype", void 0)
-], WishController.prototype, "createWish", null);
+], WishController.prototype, "createWishInList", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),

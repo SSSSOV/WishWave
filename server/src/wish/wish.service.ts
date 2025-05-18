@@ -3,14 +3,14 @@ import { CreateWishDto } from './dto/create-wish.dto';
 import { Wish } from './wish.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { FileService } from 'src/file/file.service';
-import { WishStatus } from 'src/wishstatus/wishstatus.model';
+import { WishListWish } from 'src/wishlist/wishlist-wish.model';
 
 @Injectable()
 export class WishService {
 
-    constructor(@InjectModel(Wish) private wishRepository: typeof Wish, private fileService: FileService) {}
+    constructor(@InjectModel(Wish) private wishRepository: typeof Wish, private fileService: FileService, @InjectModel(WishListWish) private wishListWishRepository: typeof WishListWish) {}
 
-    async create(dto: CreateWishDto, image: any) {
+    async create(dto: CreateWishDto, image: any, listId: number) {
         let fileName: string | null = null;
 
         if(image) {
@@ -26,6 +26,9 @@ export class WishService {
 
         data.wishStatusId = 1;
         const wish = await this.wishRepository.create(data);
+
+        await this.wishListWishRepository.create({wishlistId: listId, wishId: wish.id});
+
         return wish;
     }
 

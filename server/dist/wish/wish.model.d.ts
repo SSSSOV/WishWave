@@ -13,7 +13,7 @@ export declare class Wish extends Model<Wish, WishCreationAttrs> {
     image: string;
     price: number;
     product_link: string;
-    wishStatusId: Number;
+    wishStatusId: number;
     bookedByUserId: number | null;
     bookedByUser: User;
     wishlists: WishList[];

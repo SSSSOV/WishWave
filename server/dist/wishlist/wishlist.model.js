@@ -19,9 +19,9 @@ let WishList = class WishList extends sequelize_typescript_1.Model {
     name;
     userId;
     accesslevelId;
-    wishs;
+    wishes;
     accesslevels;
-    users;
+    user;
 };
 exports.WishList = WishList;
 __decorate([
@@ -45,7 +45,7 @@ __decorate([
 __decorate([
     (0, sequelize_typescript_1.BelongsToMany)(() => wish_model_1.Wish, () => wishlist_wish_model_1.WishListWish),
     __metadata("design:type", Array)
-], WishList.prototype, "wishs", void 0);
+], WishList.prototype, "wishes", void 0);
 __decorate([
     (0, sequelize_typescript_1.BelongsTo)(() => accesslevel_model_1.AccessLevel),
     __metadata("design:type", accesslevel_model_1.AccessLevel)
@@ -53,7 +53,7 @@ __decorate([
 __decorate([
     (0, sequelize_typescript_1.BelongsTo)(() => users_model_1.User),
     __metadata("design:type", users_model_1.User)
-], WishList.prototype, "users", void 0);
+], WishList.prototype, "user", void 0);
 exports.WishList = WishList = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'wish_list' })
 ], WishList);

@@ -1,11 +1,13 @@
 import { CreateWishDto } from './dto/create-wish.dto';
 import { Wish } from './wish.model';
 import { FileService } from 'src/file/file.service';
+import { WishListWish } from 'src/wishlist/wishlist-wish.model';
 export declare class WishService {
     private wishRepository;
     private fileService;
-    constructor(wishRepository: typeof Wish, fileService: FileService);
-    create(dto: CreateWishDto, image: any): Promise<Wish>;
+    private wishListWishRepository;
+    constructor(wishRepository: typeof Wish, fileService: FileService, wishListWishRepository: typeof WishListWish);
+    create(dto: CreateWishDto, image: any, listId: number): Promise<Wish>;
     getAll(): Promise<Wish[]>;
     findById(id: number): Promise<Wish>;
     update(id: number, dto: Partial<CreateWishDto>): Promise<Wish>;

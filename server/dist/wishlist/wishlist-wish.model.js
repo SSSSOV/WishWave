@@ -14,8 +14,6 @@ const sequelize_typescript_1 = require("sequelize-typescript");
 const wishlist_model_1 = require("./wishlist.model");
 const wish_model_1 = require("../wish/wish.model");
 let WishListWish = class WishListWish extends sequelize_typescript_1.Model {
-    wishlistid;
-    wishid;
 };
 exports.WishListWish = WishListWish;
 __decorate([
@@ -26,12 +24,12 @@ __decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => wishlist_model_1.WishList),
     (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
     __metadata("design:type", Number)
-], WishListWish.prototype, "wishlistid", void 0);
+], WishListWish.prototype, "wishlistId", void 0);
 __decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => wish_model_1.Wish),
     (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
     __metadata("design:type", Number)
-], WishListWish.prototype, "wishid", void 0);
+], WishListWish.prototype, "wishId", void 0);
 exports.WishListWish = WishListWish = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'wishlist_wish', createdAt: false, updatedAt: false })
 ], WishListWish);

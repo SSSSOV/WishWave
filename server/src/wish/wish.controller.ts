@@ -10,10 +10,11 @@ export class WishController {
 
     constructor(private wishService: WishService) {}
 
-    @Post()
+    @UseGuards(JwtAuthGuard)
+    @Post(':listId/wishes')
     @UseInterceptors(FileInterceptor('image'))
-    createWish(@Body() dto: CreateWishDto, @UploadedFile() image) {
-        return this.wishService.create(dto, image)
+    createWishInList(@Param('listId', ParseIntPipe) listId: number, @Body() dto: CreateWishDto, @UploadedFile() image: Express.Multer.File, @Req() req) {
+        return this.wishService.create(dto, image, listId)
     }
 
     @Get()

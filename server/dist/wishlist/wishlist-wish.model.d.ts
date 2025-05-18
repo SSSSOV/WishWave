@@ -1,6 +1,11 @@
 import { Model } from "sequelize-typescript";
-export declare class WishListWish extends Model<WishListWish> {
-    id: number;
-    wishlistid: number;
-    wishid: number;
+interface WishListWishCreationAttrs {
+    wishlistId: number;
+    wishId: number;
 }
+export declare class WishListWish extends Model<WishListWish, WishListWishCreationAttrs> {
+    id: number;
+    wishlistId: number;
+    wishId: number;
+}
+export {};

@@ -17,14 +17,17 @@ const common_1 = require("@nestjs/common");
 const wish_model_1 = require("./wish.model");
 const sequelize_1 = require("@nestjs/sequelize");
 const file_service_1 = require("../file/file.service");
+const wishlist_wish_model_1 = require("../wishlist/wishlist-wish.model");
 let WishService = class WishService {
     wishRepository;
     fileService;
-    constructor(wishRepository, fileService) {
+    wishListWishRepository;
+    constructor(wishRepository, fileService, wishListWishRepository) {
         this.wishRepository = wishRepository;
         this.fileService = fileService;
+        this.wishListWishRepository = wishListWishRepository;
     }
-    async create(dto, image) {
+    async create(dto, image, listId) {
         let fileName = null;
         if (image) {
             fileName = await this.fileService.createFile(image);
@@ -38,6 +41,7 @@ let WishService = class WishService {
         }
         data.wishStatusId = 1;
         const wish = await this.wishRepository.create(data);
+        await this.wishListWishRepository.create({ wishlistId: listId, wishId: wish.id });
         return wish;
     }
     async getAll() {
@@ -88,6 +92,7 @@ exports.WishService = WishService;
 exports.WishService = WishService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, sequelize_1.InjectModel)(wish_model_1.Wish)),
-    __metadata("design:paramtypes", [Object, file_service_1.FileService])
+    __param(2, (0, sequelize_1.InjectModel)(wishlist_wish_model_1.WishListWish)),
+    __metadata("design:paramtypes", [Object, file_service_1.FileService, Object])
 ], WishService);
 //# sourceMappingURL=wish.service.js.map

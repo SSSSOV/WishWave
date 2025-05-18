@@ -16,6 +16,7 @@ const wish_model_1 = require("../wish/wish.model");
 const wishlist_wish_model_1 = require("./wishlist-wish.model");
 const accesslevel_model_1 = require("../accesslevel/accesslevel.model");
 const users_model_1 = require("../users/users.model");
+const auth_module_1 = require("../auth/auth.module");
 let WishlistModule = class WishlistModule {
 };
 exports.WishlistModule = WishlistModule;
@@ -25,6 +26,7 @@ exports.WishlistModule = WishlistModule = __decorate([
         controllers: [wishlist_controller_1.WishlistController],
         imports: [
             sequelize_1.SequelizeModule.forFeature([wishlist_model_1.WishList, wish_model_1.Wish, wishlist_wish_model_1.WishListWish, accesslevel_model_1.AccessLevel, users_model_1.User]),
+            auth_module_1.AuthModule
         ]
     })
 ], WishlistModule);
