@@ -22,4 +22,5 @@ export class WishstatusService {
         }
         return status;
     }
+
 }

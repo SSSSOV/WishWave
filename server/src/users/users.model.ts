@@ -3,6 +3,7 @@ import { Ban } from "src/ban/ban.model";
 import { FriendUsers } from "src/friend/friend-users.model";
 import { Friend } from "src/friend/friend.model";
 import { Role } from "src/roles/roles.model";
+import { Wish } from "src/wish/wish.model";
 import { WishList } from "src/wishlist/wishlist.model";
 import { WishStatus } from "src/wishstatus/wishstatus.model";
 
@@ -50,6 +51,6 @@ export class User extends Model<User, UserCreationAttrs> {
     @HasMany(() => WishList)
     declare wishlist: WishList[];
 
-    @HasMany(() => WishStatus)
-    wishstatuses: WishStatus[];
+    @HasMany(() => Wish)
+    wishstatuses: Wish[];
 }

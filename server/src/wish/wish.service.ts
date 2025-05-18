@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { Wish } from './wish.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { FileService } from 'src/file/file.service';
+import { WishStatus } from 'src/wishstatus/wishstatus.model';
 
 @Injectable()
 export class WishService {
@@ -23,6 +24,7 @@ export class WishService {
             data.image = fileName;
         }
 
+        data.wishStatusId = 1;
         const wish = await this.wishRepository.create(data);
         return wish;
     }
@@ -48,4 +50,31 @@ export class WishService {
         return wish;
     }
 
+    async bookWish(wishId: number, userId: number): Promise<Wish> {
+        const wish = await this.findById(wishId);
+
+        if (wish.bookedByUserId != null) {
+            throw new BadRequestException(`Желание с id ${wishId} уже забронировано`);
+        }
+
+        wish.wishStatusId = 2;
+        wish.bookedByUserId = userId;
+        return await wish.save();
+    }
+
+    async unbookWish(wishId: number, userId: number): Promise<Wish> {
+        const wish = await this.findById(wishId);
+
+        if (wish.bookedByUserId == null) {
+            throw new BadRequestException(`Желание с id ${wishId} не забронировано или бронь уже снята`);
+        }
+
+        if (wish.bookedByUserId !== userId) {
+            throw new BadRequestException(`Вы не можете снять бронь, т.к. не являетесь её владельцем`);
+        }
+
+        wish.wishStatusId = 1;
+        wish.bookedByUserId = null;
+        return await wish.save();
+    }
 }

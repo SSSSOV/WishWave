@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 import { WishstatusService } from './wishstatus.service';
 import { CreateWishStatusDto } from './dto/create-wishstatus.dto';
 

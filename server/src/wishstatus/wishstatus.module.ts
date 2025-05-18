@@ -10,7 +10,7 @@ import { User } from 'src/users/users.model';
   controllers: [WishstatusController],
   providers: [WishstatusService],
   imports: [
-    SequelizeModule.forFeature([WishStatus, Wish, User]),
+    SequelizeModule.forFeature([WishStatus, Wish]),
   ]
 })
 export class WishstatusModule {}

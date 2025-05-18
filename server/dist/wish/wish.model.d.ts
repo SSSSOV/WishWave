@@ -1,4 +1,5 @@
 import { Model } from "sequelize-typescript";
+import { User } from "src/users/users.model";
 import { WishList } from "src/wishlist/wishlist.model";
 import { WishStatus } from "src/wishstatus/wishstatus.model";
 interface WishCreationAttrs {
@@ -12,7 +13,9 @@ export declare class Wish extends Model<Wish, WishCreationAttrs> {
     image: string;
     price: number;
     product_link: string;
-    wishstatusId: Number;
+    wishStatusId: Number;
+    bookedByUserId: number | null;
+    bookedByUser: User;
     wishlists: WishList[];
     wishstuses: WishStatus;
 }

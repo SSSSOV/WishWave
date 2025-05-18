@@ -34,6 +34,12 @@ let WishController = class WishController {
     async updateWish(id, dto) {
         return this.wishService.update(id, dto);
     }
+    bookWish(wishId, userId) {
+        return this.wishService.bookWish(wishId, userId);
+    }
+    unbookWish(wishId, userId) {
+        return this.wishService.unbookWish(wishId, userId);
+    }
 };
 exports.WishController = WishController;
 __decorate([
@@ -66,6 +72,22 @@ __decorate([
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], WishController.prototype, "updateWish", null);
+__decorate([
+    (0, common_1.Patch)(':id/book'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Body)('userId', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Number]),
+    __metadata("design:returntype", void 0)
+], WishController.prototype, "bookWish", null);
+__decorate([
+    (0, common_1.Patch)(':id/unbook/:userId'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Param)('userId', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Number]),
+    __metadata("design:returntype", void 0)
+], WishController.prototype, "unbookWish", null);
 exports.WishController = WishController = __decorate([
     (0, common_1.Controller)('wish'),
     __metadata("design:paramtypes", [wish_service_1.WishService])

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { WishService } from './wish.service';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -28,5 +28,15 @@ export class WishController {
     @Patch(':id')
     async updateWish(@Param('id') id: number, @Body() dto: Partial<CreateWishDto>): Promise<Wish> {
         return this.wishService.update(id, dto);
+    }
+
+    @Patch(':id/book')
+    bookWish(@Param('id', ParseIntPipe) wishId: number, @Body('userId', ParseIntPipe) userId: number,) {
+        return this.wishService.bookWish(wishId, userId);
+    }
+
+    @Patch(':id/unbook/:userId')
+    unbookWish(@Param('id', ParseIntPipe) wishId: number, @Param('userId', ParseIntPipe) userId: number) {
+        return this.wishService.unbookWish(wishId, userId);
     }
 }

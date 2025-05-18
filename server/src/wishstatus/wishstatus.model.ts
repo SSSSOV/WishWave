@@ -14,13 +14,6 @@ export class WishStatus extends Model<WishStatus, WishStatusCreationAttrs> {
     @Column({type: DataType.STRING, unique: true, allowNull: false})
     name: string;
 
-    @ForeignKey(() => User)
-    @Column({type: DataType.INTEGER, allowNull: true})
-    bookedByUserId: number;
-
-    @BelongsTo(() => User)
-    bookedByUser: User;
-
     @HasMany(() => Wish)
     wishes: Wish[];
 }

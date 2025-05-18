@@ -15,8 +15,8 @@ const ban_model_1 = require("../ban/ban.model");
 const friend_users_model_1 = require("../friend/friend-users.model");
 const friend_model_1 = require("../friend/friend.model");
 const roles_model_1 = require("../roles/roles.model");
+const wish_model_1 = require("../wish/wish.model");
 const wishlist_model_1 = require("../wishlist/wishlist.model");
-const wishstatus_model_1 = require("../wishstatus/wishstatus.model");
 let User = class User extends sequelize_typescript_1.Model {
     wishstatuses;
 };
@@ -68,7 +68,7 @@ __decorate([
     __metadata("design:type", Array)
 ], User.prototype, "wishlist", void 0);
 __decorate([
-    (0, sequelize_typescript_1.HasMany)(() => wishstatus_model_1.WishStatus),
+    (0, sequelize_typescript_1.HasMany)(() => wish_model_1.Wish),
     __metadata("design:type", Array)
 ], User.prototype, "wishstatuses", void 0);
 exports.User = User = __decorate([
