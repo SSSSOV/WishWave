@@ -3,7 +3,6 @@ import { User } from "src/users/users.model";
 import { Wish } from "src/wish/wish.model";
 
 interface WishStatusCreationAttrs {
-    userid: number;
     name: string;
 }
 
