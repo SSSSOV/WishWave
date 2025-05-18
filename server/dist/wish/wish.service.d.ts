@@ -9,6 +9,7 @@ export declare class WishService {
     getAll(): Promise<Wish[]>;
     findById(id: number): Promise<Wish>;
     update(id: number, dto: Partial<CreateWishDto>): Promise<Wish>;
+    delete(id: number): Promise<void>;
     bookWish(wishId: number, userId: number): Promise<Wish>;
     unbookWish(wishId: number, userId: number): Promise<Wish>;
 }

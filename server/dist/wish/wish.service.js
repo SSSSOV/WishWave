@@ -58,6 +58,8 @@ let WishService = class WishService {
         await wish.update(dto);
         return wish;
     }
+    async delete(id) {
+    }
     async bookWish(wishId, userId) {
         const wish = await this.findById(wishId);
         if (wish.bookedByUserId != null) {
