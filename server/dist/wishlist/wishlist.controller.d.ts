@@ -1,8 +1,8 @@
 import { WishlistService } from './wishlist.service';
-import { CreateWishDto } from 'src/wish/dto/create-wish.dto';
+import { CreateWishlistDto } from './dto/create-wishlist.dto';
 export declare class WishlistController {
     private readonly wishListService;
     constructor(wishListService: WishlistService);
-    create(dto: CreateWishDto, req: any): Promise<import("./wishlist.model").WishList>;
+    create(dto: CreateWishlistDto, req: any): Promise<import("./wishlist.model").WishList>;
     getAll(req: any): Promise<import("./wishlist.model").WishList[]>;
 }

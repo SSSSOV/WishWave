@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { WishlistService } from './wishlist.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { CreateWishDto } from 'src/wish/dto/create-wish.dto';
+import { CreateWishlistDto } from './dto/create-wishlist.dto';
 
 @Controller('wishlist')
 export class WishlistController {
@@ -9,7 +9,7 @@ export class WishlistController {
     
     @UseGuards(JwtAuthGuard)
     @Post()
-    async create(@Body() dto: CreateWishDto, @Req() req) {
+    async create(@Body() dto: CreateWishlistDto, @Req() req) {
         const userId = req.user.id;
         return this.wishListService.create(dto, userId);
     }

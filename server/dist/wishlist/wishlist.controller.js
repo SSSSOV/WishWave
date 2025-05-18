@@ -16,7 +16,7 @@ exports.WishlistController = void 0;
 const common_1 = require("@nestjs/common");
 const wishlist_service_1 = require("./wishlist.service");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
-const create_wish_dto_1 = require("../wish/dto/create-wish.dto");
+const create_wishlist_dto_1 = require("./dto/create-wishlist.dto");
 let WishlistController = class WishlistController {
     wishListService;
     constructor(wishListService) {
@@ -38,7 +38,7 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_wish_dto_1.CreateWishDto, Object]),
+    __metadata("design:paramtypes", [create_wishlist_dto_1.CreateWishlistDto, Object]),
     __metadata("design:returntype", Promise)
 ], WishlistController.prototype, "create", null);
 __decorate([
