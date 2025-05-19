@@ -3,6 +3,7 @@ import { User } from "src/users/users.model";
 
 interface RoleCreationAttrs {
     value: string;
+    description?: string;
 }
 
 @Table({tableName: 'roles'})

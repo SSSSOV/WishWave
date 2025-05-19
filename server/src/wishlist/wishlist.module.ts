@@ -14,7 +14,8 @@ import { AuthModule } from 'src/auth/auth.module';
   controllers: [WishlistController],
   imports: [
     SequelizeModule.forFeature([WishList, Wish, WishListWish, AccessLevel, User]),
-    AuthModule
-  ]
+    AuthModule,
+  ],
+  exports: [WishlistService]
 })
 export class WishlistModule {}

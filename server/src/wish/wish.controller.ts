@@ -4,14 +4,13 @@ import { CreateWishDto } from './dto/create-wish.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Wish } from './wish.model';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { AccessGuard } from 'src/accesslevel/access.guard';
 
 @Controller('wish')
 export class WishController {
 
     constructor(private wishService: WishService) {}
 
-    @UseGuards(JwtAuthGuard, AccessGuard)
+    @UseGuards(JwtAuthGuard)
     @Post(':listId/wishes')
     @UseInterceptors(FileInterceptor('image'))
     createWishInList(@Param('listId', ParseIntPipe) listId: number, @Body() dto: CreateWishDto, @UploadedFile() image: Express.Multer.File, @Req() req) {

@@ -10,10 +10,10 @@ export class UsersService {
     constructor(@InjectModel(User) private userRepository: typeof User, private roleService: RolesService) {}
 
     async createUser(dto: createUserDto) {
-        const role = await this.roleService.getRoleByValue("USER");
+        const role = await this.roleService.getRoleByValue("user");
 
         if (!role) {
-            throw new Error('Role "USER" not found');
+            throw new Error('Role "user" not found');
         }
 
         const user = await this.userRepository.create({...dto, roleId: role.id,});

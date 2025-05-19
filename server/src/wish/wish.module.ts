@@ -8,6 +8,7 @@ import { WishListWish } from 'src/wishlist/wishlist-wish.model';
 import { WishStatus } from 'src/wishstatus/wishstatus.model';
 import { FileModule } from 'src/file/file.module';
 import { AuthModule } from 'src/auth/auth.module';
+import { WishlistModule } from 'src/wishlist/wishlist.module';
 
 @Module({
   providers: [WishService],
@@ -15,7 +16,8 @@ import { AuthModule } from 'src/auth/auth.module';
   imports: [
     SequelizeModule.forFeature([Wish, WishList, WishListWish, WishStatus]),
     FileModule,
-    AuthModule
+    AuthModule,
+    WishlistModule
   ]
 })
 export class WishModule {}

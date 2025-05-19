@@ -24,12 +24,13 @@ import { FriendStatus } from "./friendstatus/friendstatus.model";
 import { AuthModule } from './auth/auth.module';
 import { FileModule } from './file/file.module';
 import { ServeStaticModule } from "@nestjs/serve-static";
+import { SeedService } from './seed/seed.service';
 import * as path from 'path';
 
 
 @Module({
     controllers: [],
-    providers: [],
+    providers: [SeedService],
     imports: [
         ConfigModule.forRoot({
             envFilePath: `.${process.env.NODE_ENV}.env`
@@ -51,6 +52,7 @@ import * as path from 'path';
           models: [WishStatus, Wish, WishListWish, WishList, AccessLevel, User, FriendUsers, Friend, Ban, Role, FriendStatus],
           autoLoadModels: true
         }),
+        SequelizeModule.forFeature([AccessLevel, Role, WishStatus]),
         UsersModule,
         RolesModule,
         BanModule,
