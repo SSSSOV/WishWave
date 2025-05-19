@@ -16,4 +16,7 @@ export class WishlistService {
         return await this.wishListRepository.findAll({where: {userId}, include: [{model: Wish, through: {attributes: []}}]});
     }
 
+    async findByIdWithAccess(id: number) {
+        return await this.wishListRepository.findByPk(id, {include: ['accesslevels']});
+    }
 }
