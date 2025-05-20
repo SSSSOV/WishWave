@@ -34,6 +34,43 @@ export class WishlistService {
         return await this.wishListRepository.findByPk(id, {include: [AccessLevel]});
     }
 
+        async getWishesByListId(userId: number, wishlistId: number) {
+        const wishlist = await this.wishListRepository.findByPk(wishlistId, {include: [
+            { model: Wish, through: { attributes: [] } },
+            { model: AccessLevel, as: 'accesslevel' }, 
+            { model: User, as: 'user' }                 
+        ]})
+
+        if(!wishlist) {
+            throw new NotFoundException('Список желаний не найден');
+        }
+
+        const canAccess = await this.canAccessWishList(userId, wishlistId);
+        if (!canAccess) {
+            throw new ForbiddenException('Доступ к списку запрещен');
+        }
+
+        return wishlist.wishes;
+    }
+
+    async update(wishlistId: number, dto: Partial<CreateWishlistDto>): Promise<WishList> {
+        const wl = await this.wishListRepository.findByPk(wishlistId);
+        if (!wl) {
+            throw new NotFoundException('Список не найден');
+        }
+        await wl.update(dto);
+        return wl;
+    }
+
+    async remove(wishlistId: number): Promise<{message: string}> {
+        const wl = await this.wishListRepository.findByPk(wishlistId);
+        if (!wl) {
+            throw new NotFoundException('Список не найден');
+        }
+        await wl.destroy();
+        return {message: `Список ${wishlistId} удален`}
+    }
+
     async canAccessWishList(userId: number | null, wishlistId: number, shareToken?: string): Promise<boolean> {
         const wishlist = await this.wishListRepository.findOne({
             where: { id: wishlistId },
@@ -89,23 +126,12 @@ export class WishlistService {
         }
     }
 
-
-    async getWishesByListId(userId: number, wishlistId: number) {
-        const wishlist = await this.wishListRepository.findByPk(wishlistId, {include: [
-            { model: Wish, through: { attributes: [] } },
-            { model: AccessLevel, as: 'accesslevel' }, 
-            { model: User, as: 'user' }                 
-        ]})
-
-        if(!wishlist) {
-            throw new NotFoundException('Список желаний не найден');
+    async isOwner(userId: number, wishlistId: number): Promise <boolean> {
+        const wl = await this.wishListRepository.findByPk(wishlistId, {attributes: ['userId']});
+        if (!wl) {
+            throw new NotFoundException('Список не найден');
         }
-
-        const canAccess = await this.canAccessWishList(userId, wishlistId);
-        if (!canAccess) {
-            throw new ForbiddenException('Доступ к списку запрещен');
-        }
-
-        return wishlist.wishes;
+        return wl.userId === userId;
     }
+
 }

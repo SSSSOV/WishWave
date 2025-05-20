@@ -1,4 +1,4 @@
-import { Body, Controller, ForbiddenException, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, ForbiddenException, Get, Param, ParseIntPipe, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { WishlistService } from './wishlist.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateWishlistDto } from './dto/create-wishlist.dto';
@@ -19,6 +19,26 @@ export class WishlistController {
     async getAll(@Req() req) {
         const userId = req.user.id;
         return this.wishListService.getAllByUser(userId);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Patch(':id')
+    async update(@Param('id', ParseIntPipe) wishlistId: number, @Body() dto: Partial<CreateWishlistDto>, @Req() req) {
+        const userId = req.user.id;
+        if (!(await this.wishListService.isOwner(userId, wishlistId))) {
+            throw new ForbiddenException('Только владелец может редактировать список')
+        }
+        return this.wishListService.update(wishlistId, dto);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete(':id')
+    async remove(@Param('id', ParseIntPipe) wishlistId: number, @Req() req) {
+        const userId = req.user.id;
+        if (!(await this.wishListService.isOwner(userId, wishlistId))) {
+            throw new ForbiddenException('Только владелец может удалить список')
+        }
+        return this.wishListService.remove(wishlistId);
     }
 
     @UseGuards(JwtAuthGuard)
