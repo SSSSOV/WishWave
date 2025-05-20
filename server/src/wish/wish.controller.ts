@@ -19,10 +19,8 @@ export class WishController {
     @UseInterceptors(FileInterceptor('image'))
     async createWishInList(@Param('listId', ParseIntPipe) listId: number, @Body() dto: CreateWishDto, @UploadedFile() image: Express.Multer.File, @Req() req) {
         const userId = req.user.id;
-        const canAccess = await this.wishlistService.canAccessWishList(userId, listId);
-
-        if (!canAccess) {
-            throw new ForbiddenException('У вас нет прав доступа к добавлению желания в этот список')
+        if (!(await this.wishlistService.isOwner(userId, listId))) {
+            throw new ForbiddenException('Только владелец списка может добавлять в него желания');
         }
 
         return this.wishService.create(dto, image, listId)
@@ -42,14 +40,35 @@ export class WishController {
 
     @UseGuards(JwtAuthGuard)
     @Patch(':id')
-    async updateWish(@Param('id') id: number, @Body() dto: Partial<CreateWishDto>): Promise<Wish> {
-        return this.wishService.update(id, dto);
+    async updateWish(@Param('id') wishId: number, @Body() dto: Partial<CreateWishDto>, @Req() req): Promise<Wish> {
+        const userId = req.user.id;
+        const record = await this.wishListWishRepository.findOne({where: {wishId}});
+        if (!record) {
+            throw new NotFoundException('Желание не найдено в списках')
+        }
+
+        if (!(await this.wishlistService.isOwner(userId, record.wishlistId))) {
+            throw new ForbiddenException('Только владелец может редактировать желание')
+        }
+
+        return this.wishService.update(wishId, dto);
     }
 
     @UseGuards(JwtAuthGuard)
     @Delete(':id')
-    async deleteWish(@Param('id', ParseIntPipe) id: number) {
-        await this.wishService.delete(id);
+    async deleteWish(@Param('id', ParseIntPipe) wishId: number, @Req() req) {
+        const userId = req.user.id;
+        const record = await this.wishListWishRepository.findOne({where: {wishId}});
+        if (!record) {
+            throw new NotFoundException('Желание не найдено в списках')
+        }
+
+        if (!(await this.wishlistService.isOwner(userId, record.wishlistId))) {
+            throw new ForbiddenException('Только владелец может удалять желание')
+        }
+
+        await this.wishService.delete(wishId);
+        return {message: `Желание ${wishId} удалено`};
     }
 
     @UseGuards(JwtAuthGuard)
