@@ -16,6 +16,9 @@ export class WishList extends Model<WishList, WishListCreationAttrs> {
     @Column({type: DataType.STRING, allowNull: false})
     declare name: string;
 
+    @Column({type: DataType.STRING, unique: true, allowNull: true, field: 'share_token'})
+    declare shareToken: string | null;
+
     @ForeignKey(() => User)
     @Column({type: DataType.INTEGER, allowNull: false})
     declare userId: number;

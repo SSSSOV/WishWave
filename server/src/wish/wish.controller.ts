@@ -60,10 +60,10 @@ export class WishController {
         if (!record) {
             throw new NotFoundException('Желание не найдено в списках');
         }
-        const wishlistId = record.wishlistId;
-
-        const canAccess = await this.wishlistService.canAccessWishList(userId, wishlistId);
-        if (!canAccess) {
+        
+        const shareToken = req.query.token as string | undefined;
+        const can = await this.wishlistService.canAccessWishList(userId, record.wishlistId, shareToken);
+        if (!can) {
             throw new ForbiddenException('Нет доступа к бронироваю этого желания');
         }
         return this.wishService.bookWish(wishId, userId);
@@ -71,8 +71,21 @@ export class WishController {
 
     @UseGuards(JwtAuthGuard)
     @Patch(':id/unbook/')
-    unbookWish(@Param('id', ParseIntPipe) wishId: number, @Req() req) {
-        const userId = req.user['id'];
+    async unbookWish(@Param('id', ParseIntPipe) wishId: number, @Req() req) {
+        const userId = req.user?.id ?? null;
+        const record = await this.wishListWishRepository.findOne({where: {wishId}});
+        if(!record) {
+            throw new NotFoundException('Желание не найдено в списках');
+        }
+        const wishlistId = record.wishlistId;
+
+        const shareToken = req.query.token as string | undefined;
+
+        const can = await this.wishlistService.canAccessWishList(userId, record.wishlistId, shareToken);
+        if (!can) {
+            throw new ForbiddenException('Нет доступа к бронироваю этого желания');
+        } 
+
         return this.wishService.unbookWish(wishId, userId);
     }
 }

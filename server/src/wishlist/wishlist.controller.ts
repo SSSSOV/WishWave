@@ -24,8 +24,14 @@ export class WishlistController {
     @UseGuards(JwtAuthGuard)
     @Get(':id')
     async getOne(@Param('id') id: number, @Req() req) {
-        const userId = req.user.id;
-        const wishlistId = +id;
+        const wishlistId = id;
+        const shareToken = req.query.token as string | undefined;
+        const userId = req.user?.id ?? null;
+        
+        const can = await this.wishListService.canAccessWishList(userId, wishlistId, shareToken);
+        if (!can) {
+            throw new ForbiddenException('Доступ к списку запрещен')
+        }
 
         return this.wishListService.getWishesByListId(userId, wishlistId);
     }

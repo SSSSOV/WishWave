@@ -9,13 +9,21 @@ import { Op } from 'sequelize';
 import { Friend } from 'src/friend/friend.model';
 import { FriendUsers } from 'src/friend/friend-users.model';
 import { FriendStatus } from 'src/friendstatus/friendstatus.model';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class WishlistService {
     constructor(@InjectModel(WishList) private wishListRepository: typeof WishList, @InjectModel(Friend) private friendRepository: typeof Friend) {}
 
     async create(dto: CreateWishlistDto, userId: number) {
-        return await this.wishListRepository.create({...dto, userId});
+        let shareToken: string | null = null;
+
+        if (dto.accesslevelId === 3) {
+            shareToken = uuidv4();
+        }
+
+        const list = await this.wishListRepository.create({...dto, userId, shareToken});
+        return list;
     }
 
     async getAllByUser(userId: number) {
@@ -26,10 +34,10 @@ export class WishlistService {
         return await this.wishListRepository.findByPk(id, {include: [AccessLevel]});
     }
 
-    async canAccessWishList(userId: number, wishlistId: number): Promise<boolean> {
+    async canAccessWishList(userId: number | null, wishlistId: number, shareToken?: string): Promise<boolean> {
         const wishlist = await this.wishListRepository.findOne({
             where: { id: wishlistId },
-            attributes: ['id', 'userId'],
+            attributes: ['id', 'userId', 'shareToken'],
             include: [{
             model: AccessLevel,
             as: 'accesslevel',
@@ -42,14 +50,14 @@ export class WishlistService {
             throw new NotFoundException('Список желаний не найден или уровень доступа не найден');
         }
 
-        if (wishlist.userId === userId) {
+        if (userId !== null && wishlist.userId === userId) {
             return true;
         }
 
         const plain = wishlist.get({plain: true}) as{
             id:number;
-            userId: number;
-            accesslevel?: {name: string};
+            shareToken?: string;
+            accesslevel: {name: string};
         };
 
         if(!plain.accesslevel) {
@@ -59,21 +67,25 @@ export class WishlistService {
         const level = plain.accesslevel.name;
         switch (level) {
             case 'public':
-            return true;
+                return userId !== null;
             case 'private':
+                return false;
             case 'linkOnly':
-            return false;
+                if (!plain.shareToken || shareToken !== plain.shareToken) {
+                    return false;
+                }
+                return true;
             case 'friends':
-            const relation = await this.friendRepository.findOne({
-                include: [
-                { model: FriendUsers, where: { userId } },
-                { model: FriendUsers, where: { userId: wishlist.userId } },
-                { model: FriendStatus, where: { name: { [Op.or]: ['accepted', 'друзья'] } } },
-                ]
-            });
-            return Boolean(relation);
+                const relation = await this.friendRepository.findOne({
+                    include: [
+                    { model: FriendUsers, where: { userId } },
+                    { model: FriendUsers, where: { userId: wishlist.userId } },
+                    { model: FriendStatus, where: { name: { [Op.or]: ['accepted', 'друзья'] } } },
+                    ]
+                });
+                return Boolean(relation);
             default:
-            return false;
+                return false;
         }
     }
 
@@ -88,12 +100,6 @@ export class WishlistService {
         if(!wishlist) {
             throw new NotFoundException('Список желаний не найден');
         }
-
-        // console.log('wishlist raw:', wishlist.toJSON());
-        // console.log('wishlist:', wishlist);
-        // console.log('wishlist.accesslevel:', wishlist.accesslevel);
-        // console.log('wishlist.get():', wishlist.get());
-
 
         const canAccess = await this.canAccessWishList(userId, wishlistId);
         if (!canAccess) {
