@@ -39,7 +39,7 @@ export class User extends Model<User, UserCreationAttrs> {
 
     @ForeignKey(() => Ban)
     @Column({type: DataType.INTEGER, allowNull: true})
-    declare banId: number;
+    declare banId: number | null;
 
     @BelongsToMany(() => Friend, () => FriendUsers)
     declare friend: Friend[];
