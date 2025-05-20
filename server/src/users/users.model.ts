@@ -11,7 +11,9 @@ interface UserCreationAttrs {
     login: string;
     password: string;
     email: string;
+    full_name?: string;
     roleId: number;
+    banId?: number;
 }
 
 @Table({tableName: 'users'})

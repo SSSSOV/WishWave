@@ -2,7 +2,9 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { AccessLevel } from 'src/accesslevel/accesslevel.model';
 import { Role } from 'src/roles/roles.model';
+import { User } from 'src/users/users.model';
 import { WishStatus } from 'src/wishstatus/wishstatus.model';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class SeedService implements OnModuleInit {
@@ -10,12 +12,14 @@ export class SeedService implements OnModuleInit {
     @InjectModel(AccessLevel) private accessLevelModel: typeof AccessLevel,
     @InjectModel(Role) private roleModel: typeof Role,
     @InjectModel(WishStatus) private wishStatusModel: typeof WishStatus,
+    @InjectModel(User) private userModel: typeof User,
   ) {}
 
   async onModuleInit() {
     await this.seedAccessLevels();
     await this.seedRoles();
     await this.seedWishStatuses();
+    await this.seedAdminUser();
   }
 
   async seedAccessLevels() {
@@ -41,5 +45,24 @@ export class SeedService implements OnModuleInit {
     for (const name of statuses) {
       await this.wishStatusModel.findOrCreate({ where: { name } });
     }
+  }
+
+  async seedAdminUser() {
+    const adminRole = await this.roleModel.findOne({where: {value: 'admin'}});
+    if (!adminRole) {
+      return
+    }
+
+    const login = 'root'
+    const email = 'root@mail.ru'
+    const existing = await this.userModel.findOne({where: {login}});
+    if (existing) {
+      return
+    }
+
+    const passwordHash = await bcrypt.hash('root', 10);
+    await this.userModel.create({login, email, password: passwordHash, roleId: adminRole.id, full_name: 'Администратор'});
+    
+    console.log('root created!')
   }
 }
