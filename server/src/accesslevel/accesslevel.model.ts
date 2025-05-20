@@ -15,4 +15,4 @@ export class AccessLevel extends Model<AccessLevel, AccessLevelCreationAttrs> {
 
     @HasMany(() => WishList)
     wishlists: WishList[];
-}
+} 

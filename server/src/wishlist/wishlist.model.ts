@@ -5,8 +5,7 @@ import { AccessLevel } from "src/accesslevel/accesslevel.model";
 import { User } from "src/users/users.model";
 
 interface WishListCreationAttrs {
-    name: string;
-    userId:number;
+
 }
 
 @Table({tableName: 'wish_list'})
@@ -15,22 +14,22 @@ export class WishList extends Model<WishList, WishListCreationAttrs> {
     declare id: number;
 
     @Column({type: DataType.STRING, allowNull: false})
-    name: string;
+    declare name: string;
 
     @ForeignKey(() => User)
     @Column({type: DataType.INTEGER, allowNull: false})
-    userId: number;
+    declare userId: number;
 
     @ForeignKey(() => AccessLevel)
     @Column({type: DataType.INTEGER, allowNull: false})
-    accesslevelId: number;
+    declare accesslevelId: number;
 
     @BelongsToMany(() => Wish, () => WishListWish)
     wishes: Wish[];
 
-    @BelongsTo(() => AccessLevel)
-    accesslevels: AccessLevel;
+    @BelongsTo(() => AccessLevel, {foreignKey: 'accesslevelId', as: 'accesslevel' }) 
+    accesslevel: AccessLevel;
 
-    @BelongsTo(() => User)
+    @BelongsTo(() => User,  {foreignKey: 'userId'})
     user: User;
 }

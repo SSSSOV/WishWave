@@ -50,7 +50,8 @@ import * as path from 'path';
           password: process.env.POSTGRES_PASSWORD,
           database:  process.env.POSTGRES_DB,
           models: [WishStatus, Wish, WishListWish, WishList, AccessLevel, User, FriendUsers, Friend, Ban, Role, FriendStatus],
-          autoLoadModels: true
+          autoLoadModels: true,
+          logging: console.log
         }),
         SequelizeModule.forFeature([AccessLevel, Role, WishStatus]),
         UsersModule,

@@ -1,19 +1,27 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, ForbiddenException, Get, Param, ParseIntPipe, Patch, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { WishService } from './wish.service';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Wish } from './wish.model';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { WishlistService } from 'src/wishlist/wishlist.service';
 
 @Controller('wish')
 export class WishController {
 
-    constructor(private wishService: WishService) {}
+    constructor(private wishService: WishService, private wishlistService: WishlistService) {}
 
     @UseGuards(JwtAuthGuard)
     @Post(':listId/wishes')
     @UseInterceptors(FileInterceptor('image'))
-    createWishInList(@Param('listId', ParseIntPipe) listId: number, @Body() dto: CreateWishDto, @UploadedFile() image: Express.Multer.File, @Req() req) {
+    async createWishInList(@Param('listId', ParseIntPipe) listId: number, @Body() dto: CreateWishDto, @UploadedFile() image: Express.Multer.File, @Req() req) {
+        const userId = req.user.id;
+        const canAccess = await this.wishlistService.canAccessWishList(userId, listId);
+
+        if (!canAccess) {
+            throw new ForbiddenException('У вас нет прав доступа к добавлению желания в этот список')
+        }
+
         return this.wishService.create(dto, image, listId)
     }
 
