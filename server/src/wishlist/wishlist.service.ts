@@ -33,16 +33,30 @@ export class WishlistService {
             include: [{
             model: AccessLevel,
             as: 'accesslevel',
-            attributes: ['name']
+            attributes: ['name'],
+            required: true
             }]
         });
+
         if (!wishlist) {
-            throw new NotFoundException('Список желаний не найден');
+            throw new NotFoundException('Список желаний не найден или уровень доступа не найден');
         }
+
         if (wishlist.userId === userId) {
             return true;
         }
-        const level = wishlist.accesslevel.name;
+
+        const plain = wishlist.get({plain: true}) as{
+            id:number;
+            userId: number;
+            accesslevel?: {name: string};
+        };
+
+        if(!plain.accesslevel) {
+            throw new NotFoundException('Не найден уровень доступа для этого списка');
+        }
+
+        const level = plain.accesslevel.name;
         switch (level) {
             case 'public':
             return true;

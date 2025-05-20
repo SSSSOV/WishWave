@@ -1,15 +1,18 @@
-import { Body, Controller, Delete, ForbiddenException, Get, Param, ParseIntPipe, Patch, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, ForbiddenException, Get, NotFoundException, Param, ParseIntPipe, Patch, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { WishService } from './wish.service';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Wish } from './wish.model';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { WishlistService } from 'src/wishlist/wishlist.service';
+import { where } from 'sequelize';
+import { InjectModel } from '@nestjs/sequelize';
+import { WishListWish } from 'src/wishlist/wishlist-wish.model';
 
 @Controller('wish')
 export class WishController {
 
-    constructor(private wishService: WishService, private wishlistService: WishlistService) {}
+    constructor(private wishService: WishService, private wishlistService: WishlistService, @InjectModel(WishListWish) private wishListWishRepository: typeof WishListWish) {}
 
     @UseGuards(JwtAuthGuard)
     @Post(':listId/wishes')
@@ -51,8 +54,18 @@ export class WishController {
 
     @UseGuards(JwtAuthGuard)
     @Patch(':id/book')
-    bookWish(@Param('id', ParseIntPipe) wishId: number,@Req() req) {
+    async bookWish(@Param('id', ParseIntPipe) wishId: number,@Req() req) {
         const userId = req.user['id'];
+        const record = await this.wishListWishRepository.findOne({where: {wishId}});
+        if (!record) {
+            throw new NotFoundException('Желание не найдено в списках');
+        }
+        const wishlistId = record.wishlistId;
+
+        const canAccess = await this.wishlistService.canAccessWishList(userId, wishlistId);
+        if (!canAccess) {
+            throw new ForbiddenException('Нет доступа к бронироваю этого желания');
+        }
         return this.wishService.bookWish(wishId, userId);
     }
 
