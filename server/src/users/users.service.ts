@@ -3,6 +3,9 @@ import { User } from './users.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { createUserDto } from './dto/create-user.dto';
 import { RolesService } from 'src/roles/roles.service';
+import { Wish } from 'src/wish/wish.model';
+import { WishStatus } from 'src/wishstatus/wishstatus.model';
+import { WishList } from 'src/wishlist/wishlist.model';
 
 @Injectable()
 export class UsersService {
@@ -41,8 +44,14 @@ export class UsersService {
         return users;
     }
     
-    async getUserById(id: number) {
-        const user = await this.userRepository.findByPk(id, {include: {all: true}});
+    async getUserById(id: number): Promise<User> {
+        const user = await this.userRepository.findByPk(id, {attributes: {exclude: ['password']}, include: [{
+            model: WishList, as: 'wishlist', include: [{
+                model: Wish, through: {attributes: []}, include: [{
+                    model: WishStatus, attributes: ['id', 'name']
+                }]
+            }] 
+        }]});
         if (!user) {
             throw Error('пользователь не найден (id)')
         }

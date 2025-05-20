@@ -10,6 +10,7 @@ import { Friend } from 'src/friend/friend.model';
 import { FriendUsers } from 'src/friend/friend-users.model';
 import { FriendStatus } from 'src/friendstatus/friendstatus.model';
 import { v4 as uuidv4 } from 'uuid';
+import { WishStatus } from 'src/wishstatus/wishstatus.model';
 
 @Injectable()
 export class WishlistService {
@@ -34,9 +35,9 @@ export class WishlistService {
         return await this.wishListRepository.findByPk(id, {include: [AccessLevel]});
     }
 
-        async getWishesByListId(userId: number, wishlistId: number) {
+    async getWishesByListId(userId: number, wishlistId: number) {
         const wishlist = await this.wishListRepository.findByPk(wishlistId, {include: [
-            { model: Wish, through: { attributes: [] } },
+            { model: Wish, through: { attributes: [] }, include: [{model: WishStatus, attributes: ['id', 'name']}] },
             { model: AccessLevel, as: 'accesslevel' }, 
             { model: User, as: 'user' }                 
         ]})
