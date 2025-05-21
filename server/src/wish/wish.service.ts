@@ -50,22 +50,38 @@ export class WishService {
             throw new NotFoundException(`Желание с id ${id} не было найдено`);
         }
 
-        const data: any = {...dto};
+        const oldImage = wish.image;
+        let filename: string | null = null;
 
         if (image) {
-            const filename = await this.fileService.createFile(image);
-            data.image = filename;
+            filename = await this.fileService.createFile(image);
         } else if (dto.image && dto.image.startsWith('http')) {
-            data.image = await this.fileService.downloadImage(dto.image);
+            filename = await this.fileService.downloadImage(dto.image);
         }
 
-        await wish.update(dto as any);
+        const updateData: any = {...dto};
+        if(filename) {
+            updateData.image = filename;
+        } else {
+            delete updateData.image;
+        }
+
+        await wish.update(updateData);
+        if (oldImage && filename && oldImage !== filename) {
+            await this.fileService.deleteFile(oldImage);
+        }
+
         return wish;
     }
 
     async delete(id: number): Promise<void> {
         const wish = await this.findById(id);
+        const imageToDelete = wish.image;
         await wish.destroy();
+
+        if (imageToDelete) {
+            await this.fileService.deleteFile(imageToDelete);
+        }
     }
 
     async bookWish(wishId: number, userId: number): Promise<Wish> {

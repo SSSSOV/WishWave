@@ -29,13 +29,12 @@ export class UsersService {
         return user;
     }
 
-    async updateUser(id:number, dto: UpdateUserDto, image?: Express.Multer.File): Promise<User> {
-        let filename: string | null = null;
-
+    async updateUser(id: number, dto: UpdateUserDto, image?: Express.Multer.File): Promise<User> {
         const user = await this.userRepository.findByPk(id);
-        if (!user) {
-            throw new Error('Пользователь не найден');
-        }
+        if (!user) throw new Error('Пользователь не найден');
+
+        const oldImage = user.image;
+        let filename: string | null = null;
 
         if (image) {
             filename = await this.fileService.createFile(image);
@@ -43,13 +42,23 @@ export class UsersService {
             filename = await this.fileService.downloadImage(dto.image);
         }
 
+        const updateData: any = { ...dto };
         if (filename) {
-            dto.image = filename;
+            updateData.image = filename;
         } else {
-            delete dto.image;
+            delete updateData.image;
         }
 
-        await user.update(dto as any);
+        console.log('About to update user:', updateData);
+
+        await user.update(updateData);
+
+        console.log({ oldImage, incomingFile: !!image, dtoImageUrl: dto.image, filename });
+
+        if (oldImage && filename && oldImage !== filename) {
+            await this.fileService.deleteFile(oldImage);
+        }
+
         return user;
     }
 
@@ -87,16 +96,20 @@ export class UsersService {
 
     async deleteUserById(userId: number) {
         const user = await this.userRepository.findByPk(userId);
-        
-        if (!user) {
-            throw new Error('Пользователь не найден');
-        }
+        if (!user) throw new Error('Пользователь не найден');
 
+        const oldImage = user.image;
         const login = user.login;
 
         await user.destroy();
+
+        if (oldImage) {
+            await this.fileService.deleteFile(oldImage);
+        }
+
         return { message: `Пользователь ${login} с ID ${userId} удалён` };
     }
+
 
     async updatePassword(userId: number, oldPassword: string, newPassword: string): Promise<void> {
         const user = await this.userRepository.findByPk(userId);

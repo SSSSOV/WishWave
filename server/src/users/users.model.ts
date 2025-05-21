@@ -34,16 +34,16 @@ export class User extends Model<User, UserCreationAttrs> {
     declare email: string;
 
     @Column({type: DataType.STRING, allowNull: true})
-    image: string | null;
+    declare image: string | null;
 
     @Column({type: DataType.DATEONLY, allowNull: true})
-    birthDate: string | null;
+    declare birthDate: string | null;
 
     @Column({type: DataType.STRING, allowNull: true})
-    phone: string | null;
+    declare phone: string | null;
 
     @Column({type: DataType.JSONB, allowNull: true})
-    socials: {[key: string]: string} | null;
+    declare socials: {[key: string]: string} | null;
 
     @ForeignKey(() => Role)
     @Column({type: DataType.INTEGER, allowNull: false})
