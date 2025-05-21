@@ -12,14 +12,27 @@ export class WishlistController {
     @Post()
     async create(@Body() dto: CreateWishlistDto, @Req() req) {
         const userId = req.user.id;
-        return this.wishListService.create(dto, userId);
+        const list = await this.wishListService.create(dto, userId);
+
+        const plain = list.get({plain: true}) as any;
+        if (plain.shareToken) {
+            plain.shareToken = `${req.protocol}://${req.get('host')}/api/wishlist/${plain.id}?token=${plain.shareToken}`;
+        }
+        return plain;
     }
 
     @UseGuards(JwtAuthGuard)
     @Get()
     async getAll(@Req() req) {
         const userId = req.user.id;
-        return this.wishListService.getAllByUser(userId);
+        const lists = await this.wishListService.getAllByUser(userId);
+
+        return lists.map(list => {const plain = list.get({plain: true}) as any;
+            if (plain.accesslevelId === 3 && plain.shareToken){
+                plain.shareToken = `${req.protocol}://${req.get('host')}/api/wishlist/${plain.id}?token=${plain.shareToken}`;
+            }
+            return plain;
+        });
     }
 
     @UseGuards(JwtAuthGuard)
