@@ -30,14 +30,23 @@ export class UsersService {
     }
 
     async updateUser(id:number, dto: UpdateUserDto, image?: Express.Multer.File): Promise<User> {
+        let filename: string | null = null;
+
         const user = await this.userRepository.findByPk(id);
         if (!user) {
             throw new Error('Пользователь не найден');
         }
 
         if (image) {
-            const filename = await this.fileService.createFile(image);
+            filename = await this.fileService.createFile(image);
+        } else if (dto.image && typeof dto.image === 'string' && dto.image.startsWith('http')) {
+            filename = await this.fileService.downloadImage(dto.image);
+        }
+
+        if (filename) {
             dto.image = filename;
+        } else {
+            delete dto.image;
         }
 
         await user.update(dto as any);
