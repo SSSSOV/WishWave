@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { User } from './users.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { createUserDto } from './dto/create-user.dto';
@@ -6,11 +6,14 @@ import { RolesService } from 'src/roles/roles.service';
 import { Wish } from 'src/wish/wish.model';
 import { WishStatus } from 'src/wishstatus/wishstatus.model';
 import { WishList } from 'src/wishlist/wishlist.model';
+import { FileService } from 'src/file/file.service';
+import { UpdateUserDto } from './dto/update-user.dto';
+import * as bcrypt from 'bcryptjs'
 
 @Injectable()
 export class UsersService {
 
-    constructor(@InjectModel(User) private userRepository: typeof User, private roleService: RolesService) {}
+    constructor(@InjectModel(User) private userRepository: typeof User, private roleService: RolesService, private fileService: FileService) {}
 
     async createUser(dto: createUserDto) {
         const role = await this.roleService.getRoleByValue("user");
@@ -26,13 +29,18 @@ export class UsersService {
         return user;
     }
 
-    async updateUser(id:number, dto: Partial<createUserDto>) {
+    async updateUser(id:number, dto: UpdateUserDto, image?: Express.Multer.File): Promise<User> {
         const user = await this.userRepository.findByPk(id);
         if (!user) {
             throw new Error('Пользователь не найден');
         }
 
-        await user.update(dto);
+        if (image) {
+            const filename = await this.fileService.createFile(image);
+            dto.image = filename;
+        }
+
+        await user.update(dto as any);
         return user;
     }
 
@@ -79,5 +87,20 @@ export class UsersService {
 
         await user.destroy();
         return { message: `Пользователь ${login} с ID ${userId} удалён` };
+    }
+
+    async updatePassword(userId: number, oldPassword: string, newPassword: string): Promise<void> {
+        const user = await this.userRepository.findByPk(userId);
+        if (!user) {
+            throw new BadRequestException('Пользователь не найден');
+        }
+
+        const matches = await bcrypt.compare(oldPassword, user.password);
+        if (!matches) {
+            throw new BadRequestException('Старый пароль неверен');
+        }
+
+        const hash = await bcrypt.hash(newPassword, 10);
+        await user.update({ password: hash });
     }
 }

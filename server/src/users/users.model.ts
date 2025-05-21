@@ -33,6 +33,18 @@ export class User extends Model<User, UserCreationAttrs> {
     @Column({type: DataType.STRING, unique: true, allowNull: false})
     declare email: string;
 
+    @Column({type: DataType.STRING, allowNull: true})
+    image: string | null;
+
+    @Column({type: DataType.DATEONLY, allowNull: true})
+    birthDate: string | null;
+
+    @Column({type: DataType.STRING, allowNull: true})
+    phone: string | null;
+
+    @Column({type: DataType.JSONB, allowNull: true})
+    socials: {[key: string]: string} | null;
+
     @ForeignKey(() => Role)
     @Column({type: DataType.INTEGER, allowNull: false})
     declare roleId: number;

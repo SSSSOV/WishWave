@@ -1,13 +1,17 @@
-import { Body, Controller, Delete, ForbiddenException, Get, Param, ParseIntPipe, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, ForbiddenException, Get, Param, ParseIntPipe, Patch, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { createUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UserResponseDto } from './dto/user-response.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { FileService } from 'src/file/file.service';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller('users')
 export class UsersController {
 
-    constructor(private readonly usersService: UsersService) { }
+    constructor(private readonly usersService: UsersService, private fileService: FileService) { }
 
     @UseGuards(JwtAuthGuard)
     @Get()
@@ -55,13 +59,27 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Patch(':id')
-    async updateUser(@Param('id', ParseIntPipe) id: number,@Body() dto: Partial<createUserDto>, @Req() req): Promise<UserResponseDto> {
+    @UseInterceptors(FileInterceptor('image'))
+    async updateUser(@Param('id', ParseIntPipe) id: number, @UploadedFile() image: Express.Multer.File, @Body() dto: UpdateUserDto, @Req() req): Promise<UserResponseDto> {
         if (req.user.id !== id) {
             throw new ForbiddenException('Можно редактировать только свой профиль')
         }
-        const updated = await this.usersService.updateUser(id, dto);
+        const updated = await this.usersService.updateUser(id, dto, image);
         const plain = updated.get({plain: true}) as any;
         const {password, wishlist, ...rest} = plain;
-        return {...rest, wishlists: Array.isArray(wishlist) ? wishlist: []} as UserResponseDto;
+        return {...rest, wishlists: Array.isArray(wishlist) ? wishlist: []};
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Patch(':id/password')
+    async changePassword(@Param('id', ParseIntPipe) id: number, @Body() dto: ChangePasswordDto, @Req() req) {
+        if (req.user.id !== id) {
+            throw new ForbiddenException('Нельзя менять пароль у другого пользователя')
+        }
+        if (dto.newPassword !== dto.confirmPassword) {
+            throw new BadRequestException('Новые пароли не совпадают')
+        }
+        await this.usersService.updatePassword(id, dto.oldPassword, dto.newPassword);
+        return {message: 'Пароль успешно изменен'};
     }
 }
