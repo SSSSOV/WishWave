@@ -4,7 +4,7 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UpdateRoleDto } from './dto/update-role.dto';
 
-@Controller('roles')
+@Controller('role')
 @UseGuards(JwtAuthGuard)
 export class RolesController {
     constructor(private roleService: RolesService) {}
@@ -26,13 +26,7 @@ export class RolesController {
         this.ensureAdmin(req);
         return this.roleService.getAllRoles();
     }
-
-    @Get('/:value')
-    getByValue(@Param('value') value: string, @Req() req) {
-        this.ensureAdmin(req);
-        return this.roleService.getRoleByValue(value);
-    }
-
+    
     @Patch(':id')
     async update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateRoleDto, @Req() req) {
         this.ensureAdmin(req);

@@ -8,7 +8,7 @@ import { FileService } from 'src/file/file.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 
-@Controller('users')
+@Controller('user')
 export class UsersController {
 
     constructor(private readonly usersService: UsersService, private fileService: FileService) { }

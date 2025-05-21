@@ -11,7 +11,7 @@ interface UserCreationAttrs {
     login: string;
     password: string;
     email: string;
-    full_name?: string;
+    fullName?: string;
     roleId: number;
     banId?: number;
 }
@@ -22,7 +22,7 @@ export class User extends Model<User, UserCreationAttrs> {
     declare id: number;
 
     @Column({type: DataType.STRING, allowNull: true})
-    declare full_name: string;
+    declare fullName: string;
 
     @Column({type: DataType.STRING, unique: true, allowNull: false})
     declare login: string;

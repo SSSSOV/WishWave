@@ -163,7 +163,7 @@ export class WishlistService {
             name: originalWish.name,
             price: originalWish.price,
             image: originalWish.image,
-            product_link: originalWish.product_link,
+            productLink: originalWish.productLink,
             wishStatusId: 1,
             bookedByUserId: null
         });

@@ -2,5 +2,5 @@ export class CreateWishDto {
     readonly name: string;
     readonly price: number;
     readonly image?: string;
-    readonly product_link?: string;
+    readonly productLink?: string;
 }

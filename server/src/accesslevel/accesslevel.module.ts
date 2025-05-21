@@ -5,13 +5,15 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { AccessLevel } from './accesslevel.model';
 import { WishList } from 'src/wishlist/wishlist.model';
 import { WishlistModule } from 'src/wishlist/wishlist.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   controllers: [AccesslevelController],
   providers: [AccesslevelService],
   imports: [
     SequelizeModule.forFeature([AccessLevel, WishList]),
-    WishlistModule
+    WishlistModule,
+    AuthModule
   ]
 })
 export class AccesslevelModule {}

@@ -8,7 +8,7 @@ interface WishCreationAttrs {
     name: string;
     price: number;
     image: string | null;
-    product_link?: string;
+    productLink?: string;
     wishStatusId?: number;
     bookedByUserId?: number | null;
 }
@@ -28,7 +28,7 @@ export class Wish extends Model<Wish, WishCreationAttrs> {
     declare price: number;
 
     @Column({type: DataType.STRING, allowNull: true})
-    declare product_link: string;
+    declare productLink: string;
 
     @ForeignKey(() => WishStatus)
     @Column({type: DataType.INTEGER})

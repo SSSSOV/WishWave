@@ -5,7 +5,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Wish } from './wish.model';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { WishlistService } from 'src/wishlist/wishlist.service';
-import { where } from 'sequelize';
 import { InjectModel } from '@nestjs/sequelize';
 import { WishListWish } from 'src/wishlist/wishlist-wish.model';
 
@@ -15,7 +14,7 @@ export class WishController {
     constructor(private wishService: WishService, private wishlistService: WishlistService, @InjectModel(WishListWish) private wishListWishRepository: typeof WishListWish) {}
 
     @UseGuards(JwtAuthGuard)
-    @Post(':listId/wishes')
+    @Post(':listId')
     @UseInterceptors(FileInterceptor('image', {limits: {fileSize: 2 * 1024 * 1024}}))
     async createWishInList(@Param('listId', ParseIntPipe) listId: number, @Body() dto: CreateWishDto, @UploadedFile() image: Express.Multer.File, @Req() req) {
         const userId = req.user.id;

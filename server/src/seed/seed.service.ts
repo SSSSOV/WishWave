@@ -61,7 +61,7 @@ export class SeedService implements OnModuleInit {
     }
 
     const passwordHash = await bcrypt.hash('root', 10);
-    await this.userModel.create({login, email, password: passwordHash, roleId: adminRole.id, full_name: 'Администратор'});
+    await this.userModel.create({login, email, password: passwordHash, roleId: adminRole.id, fullName: 'Администратор'});
     
     console.log('root created!')
   }

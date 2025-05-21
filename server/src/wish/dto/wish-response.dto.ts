@@ -7,7 +7,7 @@ export class WishResponsDto {
     @ApiProperty() name: string;
     @ApiProperty() price: number;
     @ApiProperty({required: false}) image?: string; 
-    @ApiProperty({required: false}) product_link?: string;
+    @ApiProperty({required: false}) productLink?: string;
 
     @ApiProperty({type: () => WishStatusDto, description: 'Статус желания'})
     status: WishStatusDto;

@@ -4,7 +4,7 @@ import { WishListResponseDto } from "src/wishlist/dto/wishlist-response.dto";
 
 export class UserResponseDto {
     @ApiProperty() id: number;
-    @ApiProperty({required: false}) full_name?: string;
+    @ApiProperty({required: false}) fullName?: string;
     @ApiProperty({required: false}) image?: string;
     @ApiProperty({required: false, format: 'date'}) birthDate?: string;
     @ApiProperty({required: false}) phone?: string;
