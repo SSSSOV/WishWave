@@ -44,12 +44,22 @@ export class WishService {
         return wish;
     }
 
-    async update(id: number, dto: Partial<CreateWishDto>): Promise<Wish> {
-               const wish = await this.wishRepository.findByPk(id);
+    async update(id: number, dto: Partial<CreateWishDto>, image?: Express.Multer.File): Promise<Wish> {
+        const wish = await this.wishRepository.findByPk(id);
         if (!wish) {
             throw new NotFoundException(`Желание с id ${id} не было найдено`);
         }
-        await wish.update(dto);
+
+        const data: any = {...dto};
+
+        if (image) {
+            const filename = await this.fileService.createFile(image);
+            data.image = filename;
+        } else if (dto.image && dto.image.startsWith('http')) {
+            data.image = await this.fileService.downloadImage(dto.image);
+        }
+
+        await wish.update(dto as any);
         return wish;
     }
 

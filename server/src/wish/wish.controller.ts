@@ -40,7 +40,8 @@ export class WishController {
 
     @UseGuards(JwtAuthGuard)
     @Patch(':id')
-    async updateWish(@Param('id') wishId: number, @Body() dto: Partial<CreateWishDto>, @Req() req): Promise<Wish> {
+    @UseInterceptors(FileInterceptor('image', {limits: {fileSize: 2 * 1024 * 1024}}))
+    async updateWish(@Param('id') wishId: number, @UploadedFile() image: Express.Multer.File, @Body() dto: Partial<CreateWishDto>, @Req() req): Promise<Wish> {
         const userId = req.user.id;
         const record = await this.wishListWishRepository.findOne({where: {wishId}});
         if (!record) {
@@ -51,7 +52,7 @@ export class WishController {
             throw new ForbiddenException('Только владелец может редактировать желание')
         }
 
-        return this.wishService.update(wishId, dto);
+        return this.wishService.update(wishId, dto, image);
     }
 
     @UseGuards(JwtAuthGuard)
