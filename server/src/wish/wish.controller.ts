@@ -16,7 +16,7 @@ export class WishController {
 
     @UseGuards(JwtAuthGuard)
     @Post(':listId/wishes')
-    @UseInterceptors(FileInterceptor('image'))
+    @UseInterceptors(FileInterceptor('image', {limits: {fileSize: 2 * 1024 * 1024}}))
     async createWishInList(@Param('listId', ParseIntPipe) listId: number, @Body() dto: CreateWishDto, @UploadedFile() image: Express.Multer.File, @Req() req) {
         const userId = req.user.id;
         if (!(await this.wishlistService.isOwner(userId, listId))) {

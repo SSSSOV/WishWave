@@ -59,7 +59,7 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Patch(':id')
-    @UseInterceptors(FileInterceptor('image'))
+    @UseInterceptors(FileInterceptor('image', {limits: {fileSize: 2 * 1024 * 1024}}))
     async updateUser(@Param('id', ParseIntPipe) id: number, @UploadedFile() image: Express.Multer.File, @Body() dto: UpdateUserDto, @Req() req): Promise<UserResponseDto> {
         if (req.user.id !== id) {
             throw new ForbiddenException('Можно редактировать только свой профиль')
