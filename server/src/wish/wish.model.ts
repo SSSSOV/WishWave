@@ -7,7 +7,10 @@ import { WishStatus } from "src/wishstatus/wishstatus.model";
 interface WishCreationAttrs {
     name: string;
     price: number;
-    image: string;
+    image: string | null;
+    product_link?: string;
+    wishStatusId?: number;
+    bookedByUserId?: number | null;
 }
 
 @Table({tableName: 'wish'})

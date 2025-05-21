@@ -11,10 +11,14 @@ import { FriendUsers } from 'src/friend/friend-users.model';
 import { FriendStatus } from 'src/friendstatus/friendstatus.model';
 import { v4 as uuidv4 } from 'uuid';
 import { WishStatus } from 'src/wishstatus/wishstatus.model';
+import { WishListWish } from './wishlist-wish.model';
 
 @Injectable()
 export class WishlistService {
-    constructor(@InjectModel(WishList) private wishListRepository: typeof WishList, @InjectModel(Friend) private friendRepository: typeof Friend) {}
+    constructor(@InjectModel(WishList) private wishListRepository: typeof WishList, 
+        @InjectModel(Friend) private friendRepository: typeof Friend, 
+        @InjectModel(Wish) private wishRepository: typeof Wish,
+        @InjectModel(WishListWish) private wishListWishRepository: typeof WishListWish) {}
 
     async create(dto: CreateWishlistDto, userId: number) {
         let shareToken: string | null = null;
@@ -133,6 +137,40 @@ export class WishlistService {
             throw new NotFoundException('Список не найден');
         }
         return wl.userId === userId;
+    }
+
+    async duplicate(userId: number, wishId: number, targetListId: number): Promise<Wish> {
+        if(!(await this.isOwner(userId, targetListId))) {
+            throw new ForbiddenException('Вы не можете копировать желание в чужой список')
+        }
+
+        const origin = await this.wishListWishRepository.findOne({where: {wishId}, attributes: ['wishlistId']});
+        if (!origin) {
+            throw new NotFoundException('Желание не найдено ни в одном списке')
+        }
+
+        const already = await this.wishListWishRepository.findOne({where: {wishId, wishlistId: targetListId}});
+        if (already) {
+            throw new ForbiddenException('Желание уже есть в целевом списке')
+        }
+
+        const originalWish = await this.wishRepository.findByPk(wishId);
+        if(!originalWish) {
+            throw new NotFoundException('Желание не найдено')
+        }
+
+        const cloned = await this.wishRepository.create({
+            name: originalWish.name,
+            price: originalWish.price,
+            image: originalWish.image,
+            product_link: originalWish.product_link,
+            wishStatusId: 1,
+            bookedByUserId: null
+        });
+
+        await this.wishListWishRepository.create({wishlistId: targetListId, wishId: cloned.id});
+
+        return cloned;
     }
 
 }

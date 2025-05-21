@@ -2,6 +2,7 @@ import { Body, Controller, Delete, ForbiddenException, Get, Param, ParseIntPipe,
 import { WishlistService } from './wishlist.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateWishlistDto } from './dto/create-wishlist.dto';
+import { DuplicateWishDto } from './dto/duplicate-wish.dto';
 
 @Controller('wishlist')
 export class WishlistController {
@@ -19,6 +20,13 @@ export class WishlistController {
     async getAll(@Req() req) {
         const userId = req.user.id;
         return this.wishListService.getAllByUser(userId);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Patch('duplicate')
+    async duplicateWish(@Body() dto: DuplicateWishDto, @Req() req) {
+        const userId = req.user.id;
+        return this.wishListService.duplicate(userId, dto.wishId, dto.targetListId);
     }
 
     @UseGuards(JwtAuthGuard)
@@ -55,4 +63,5 @@ export class WishlistController {
 
         return this.wishListService.getWishesByListId(userId, wishlistId);
     }
+
 }
