@@ -32,8 +32,16 @@ export class WishService {
         return wish;
     }
 
-    async getAll() {
-        return await this.wishRepository.findAll();
+    async findAllByListIds(listIds: number[]): Promise<Wish[]> {
+        if (listIds.length === 0) return [];
+        
+        const links = await this.wishListWishRepository.findAll({where: {wishlistId: listIds}, attributes: ['wishId']});
+        const wishIds = Array.from(new Set(links.map(link => link.wishId)));
+        if (wishIds.length === 0) {
+            return [];
+        }
+
+        return this.wishRepository.findAll({where: {id: wishIds}});
     }
 
     async findById(id: number): Promise<Wish> {

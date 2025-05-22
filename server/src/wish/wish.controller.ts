@@ -27,14 +27,27 @@ export class WishController {
 
     @UseGuards(JwtAuthGuard)
     @Get()
-    getAllWishes() {
-        return this.wishService.getAll();
+    async getAllWishes(@Req() req) {
+        const userId = req.user.id;
+        const ownLists = await this.wishlistService.getAllByUser(userId);
+        const listIds = ownLists.map(l => l.id);
+        return this.wishService.findAllByListIds(listIds);
     }
 
     @UseGuards(JwtAuthGuard)
     @Get(':id')
-    async getWIshById(@Param('id') id: number): Promise<Wish> {
-        return this.wishService.findById(id);
+    async getWIshById(@Param('id') wishId: number, @Req() req): Promise<Wish> {
+        const wish = await this.wishService.findById(wishId);
+        const link = await this.wishListWishRepository.findOne({where: {wishId}});
+        if (!link) {
+            throw new NotFoundException('Желание не найдено ни в одном списке')
+        }
+
+        const can = await this.wishlistService.canAccessWishList(req.user.id, link.wishlistId, req.query.token as string | undefined);
+        if (!can) {
+            throw new ForbiddenException('Доступ к желанию запрещен')
+        }
+        return wish;
     }
 
     @UseGuards(JwtAuthGuard)
