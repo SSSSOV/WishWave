@@ -11,6 +11,8 @@ import { WishList } from 'src/wishlist/wishlist.model';
 import { RolesModule } from 'src/roles/roles.module';
 import { Wish } from 'src/wish/wish.model';
 import { AuthModule } from 'src/auth/auth.module';
+import { FileModule } from 'src/file/file.module';
+import { FileService } from 'src/file/file.service';
 
 @Module({
   controllers: [UsersController],
@@ -18,10 +20,11 @@ import { AuthModule } from 'src/auth/auth.module';
   imports: [
     SequelizeModule.forFeature([User, Friend, FriendUsers, Ban, Role, WishList, Wish]),
     RolesModule,
+    FileModule,
     forwardRef(() => AuthModule),
   ],
   exports: [
-    UsersService,
+    UsersService
   ]
 })
 export class UsersModule {}

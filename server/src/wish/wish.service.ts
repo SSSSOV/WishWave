@@ -32,8 +32,16 @@ export class WishService {
         return wish;
     }
 
-    async getAll() {
-        return await this.wishRepository.findAll();
+    async findAllByListIds(listIds: number[]): Promise<Wish[]> {
+        if (listIds.length === 0) return [];
+        
+        const links = await this.wishListWishRepository.findAll({where: {wishlistId: listIds}, attributes: ['wishId']});
+        const wishIds = Array.from(new Set(links.map(link => link.wishId)));
+        if (wishIds.length === 0) {
+            return [];
+        }
+
+        return this.wishRepository.findAll({where: {id: wishIds}});
     }
 
     async findById(id: number): Promise<Wish> {
@@ -44,18 +52,44 @@ export class WishService {
         return wish;
     }
 
-    async update(id: number, dto: Partial<CreateWishDto>): Promise<Wish> {
-               const wish = await this.wishRepository.findByPk(id);
+    async update(id: number, dto: Partial<CreateWishDto>, image?: Express.Multer.File): Promise<Wish> {
+        const wish = await this.wishRepository.findByPk(id);
         if (!wish) {
             throw new NotFoundException(`Желание с id ${id} не было найдено`);
         }
-        await wish.update(dto);
+
+        const oldImage = wish.image;
+        let filename: string | null = null;
+
+        if (image) {
+            filename = await this.fileService.createFile(image);
+        } else if (dto.image && dto.image.startsWith('http')) {
+            filename = await this.fileService.downloadImage(dto.image);
+        }
+
+        const updateData: any = {...dto};
+        if(filename) {
+            updateData.image = filename;
+        } else {
+            delete updateData.image;
+        }
+
+        await wish.update(updateData);
+        if (oldImage && filename && oldImage !== filename) {
+            await this.fileService.deleteFile(oldImage);
+        }
+
         return wish;
     }
 
     async delete(id: number): Promise<void> {
         const wish = await this.findById(id);
+        const imageToDelete = wish.image;
         await wish.destroy();
+
+        if (imageToDelete) {
+            await this.fileService.deleteFile(imageToDelete);
+        }
     }
 
     async bookWish(wishId: number, userId: number): Promise<Wish> {

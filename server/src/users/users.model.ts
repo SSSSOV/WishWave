@@ -11,7 +11,9 @@ interface UserCreationAttrs {
     login: string;
     password: string;
     email: string;
+    fullName?: string;
     roleId: number;
+    banId?: number;
 }
 
 @Table({tableName: 'users'})
@@ -20,7 +22,7 @@ export class User extends Model<User, UserCreationAttrs> {
     declare id: number;
 
     @Column({type: DataType.STRING, allowNull: true})
-    declare full_name: string;
+    declare fullName: string;
 
     @Column({type: DataType.STRING, unique: true, allowNull: false})
     declare login: string;
@@ -31,13 +33,25 @@ export class User extends Model<User, UserCreationAttrs> {
     @Column({type: DataType.STRING, unique: true, allowNull: false})
     declare email: string;
 
+    @Column({type: DataType.STRING, allowNull: true})
+    declare image: string | null;
+
+    @Column({type: DataType.DATEONLY, allowNull: true})
+    declare birthDate: string | null;
+
+    @Column({type: DataType.STRING, allowNull: true})
+    declare phone: string | null;
+
+    @Column({type: DataType.JSONB, allowNull: true})
+    declare socials: {[key: string]: string} | null;
+
     @ForeignKey(() => Role)
     @Column({type: DataType.INTEGER, allowNull: false})
     declare roleId: number;
 
     @ForeignKey(() => Ban)
     @Column({type: DataType.INTEGER, allowNull: true})
-    declare banId: number;
+    declare banId: number | null;
 
     @BelongsToMany(() => Friend, () => FriendUsers)
     declare friend: Friend[];

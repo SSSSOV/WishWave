@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, ForbiddenException, Get, Param, ParseIntPipe, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { WishlistService } from './wishlist.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateWishlistDto } from './dto/create-wishlist.dto';
+import { DuplicateWishDto } from './dto/duplicate-wish.dto';
 
 @Controller('wishlist')
 export class WishlistController {
@@ -11,13 +12,66 @@ export class WishlistController {
     @Post()
     async create(@Body() dto: CreateWishlistDto, @Req() req) {
         const userId = req.user.id;
-        return this.wishListService.create(dto, userId);
+        const list = await this.wishListService.create(dto, userId);
+
+        const plain = list.get({plain: true}) as any;
+        if (plain.shareToken) {
+            plain.shareToken = `${req.protocol}://${req.get('host')}/api/wishlist/${plain.id}?token=${plain.shareToken}`;
+        }
+        return plain;
     }
 
     @UseGuards(JwtAuthGuard)
     @Get()
     async getAll(@Req() req) {
         const userId = req.user.id;
-        return this.wishListService.getAllByUser(userId);
+        const lists = await this.wishListService.getAllByUser(userId);
+
+        return lists.map(list => {const plain = list.get({plain: true}) as any;
+            if (plain.accesslevelId === 3 && plain.shareToken){
+                plain.shareToken = `${req.protocol}://${req.get('host')}/api/wishlist/${plain.id}?token=${plain.shareToken}`;
+            }
+            return plain;
+        });
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Patch('duplicate')
+    async duplicateWish(@Body() dto: DuplicateWishDto, @Req() req) {
+        const userId = req.user.id;
+        return this.wishListService.duplicate(userId, dto.wishId, dto.targetListId);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Patch(':id')
+    async update(@Param('id', ParseIntPipe) wishlistId: number, @Body() dto: Partial<CreateWishlistDto>, @Req() req) {
+        const userId = req.user.id;
+        if (!(await this.wishListService.isOwner(userId, wishlistId))) {
+            throw new ForbiddenException('Только владелец может редактировать список')
+        }
+        return this.wishListService.update(wishlistId, dto);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete(':id')
+    async remove(@Param('id', ParseIntPipe) wishlistId: number, @Req() req) {
+        const userId = req.user.id;
+        if (!(await this.wishListService.isOwner(userId, wishlistId))) {
+            throw new ForbiddenException('Только владелец может удалить список')
+        }
+        return this.wishListService.remove(wishlistId);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get(':id')
+    async getOne(@Param('id') id: number, @Req() req) {
+        const userId = req.user.id as number;
+        const shareToken = req.query.token as string | undefined;
+        if (!(await this.wishListService.canAccessWishList(userId, id, shareToken))) {
+            throw new ForbiddenException('Доступ к списку запрещен')
+        }
+        const wishes = await this.wishListService.getWishesByListId(userId, id);
+        return {wishes};
+    }
+
 }

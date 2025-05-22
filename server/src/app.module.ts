@@ -24,55 +24,46 @@ import { FriendStatus } from "./friendstatus/friendstatus.model";
 import { AuthModule } from "./auth/auth.module";
 import { FileModule } from "./file/file.module";
 import { ServeStaticModule } from "@nestjs/serve-static";
-import * as path from "path";
+import { SeedService } from './seed/seed.service';
+import * as path from 'path';
 
 @Module({
-  controllers: [],
-  providers: [],
-  imports: [
-    ConfigModule.forRoot({
-      envFilePath: `.${process.env.NODE_ENV}.env`,
-    }),
-    ServeStaticModule.forRoot({
-      rootPath: path.resolve(process.cwd(), "static"),
-      serveRoot: "/static",
-      serveStaticOptions: {
-        index: false,
-      },
-    }),
-    SequelizeModule.forRoot({
-      dialect: "postgres",
-      host: process.env.POSTGRES_HOST,
-      port: Number(process.env.POSTGRES_PORT),
-      username: process.env.POSTGRES_USER,
-      password: process.env.POSTGRES_PASSWORD,
-      database: process.env.POSTGRES_DB,
-      models: [
-        WishStatus,
-        Wish,
-        WishListWish,
-        WishList,
-        AccessLevel,
-        User,
-        FriendUsers,
-        Friend,
-        Ban,
-        Role,
-        FriendStatus,
-      ],
-      autoLoadModels: true,
-    }),
-    UsersModule,
-    RolesModule,
-    BanModule,
-    FriendModule,
-    WishlistModule,
-    FriendstatusModule,
-    AccesslevelModule,
-    WishModule,
-    WishstatusModule,
-    AuthModule,
-    FileModule,
-  ],
+    controllers: [],
+    providers: [SeedService],
+    imports: [
+        ConfigModule.forRoot({
+            envFilePath: `.${process.env.NODE_ENV}.env`
+        }),
+        ServeStaticModule.forRoot({
+          rootPath: path.resolve(process.cwd(), 'static'),
+          serveRoot: '/static',
+          serveStaticOptions: {
+            index: false,
+          }
+        }),
+        SequelizeModule.forRoot({
+          dialect: 'postgres',
+          host: process.env.POSTGRES_HOST,
+          port: Number(process.env.POSTGRES_PORT),
+          username: process.env.POSTGRES_USER,
+          password: process.env.POSTGRES_PASSWORD,
+          database:  process.env.POSTGRES_DB,
+          models: [WishStatus, Wish, WishListWish, WishList, AccessLevel, User, FriendUsers, Friend, Ban, Role, FriendStatus],
+          autoLoadModels: true,
+          logging: console.log
+        }),
+        SequelizeModule.forFeature([AccessLevel, Role, WishStatus, User]),
+        UsersModule,
+        RolesModule,
+        BanModule,
+        FriendModule,
+        WishlistModule,
+        FriendstatusModule,
+        AccesslevelModule,
+        WishModule,
+        WishstatusModule,
+        AuthModule,
+        FileModule,
+      ]
 })
 export class AppModule {}

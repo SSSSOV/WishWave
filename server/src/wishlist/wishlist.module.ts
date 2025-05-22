@@ -8,13 +8,17 @@ import { WishListWish } from './wishlist-wish.model';
 import { AccessLevel } from 'src/accesslevel/accesslevel.model';
 import { User } from 'src/users/users.model';
 import { AuthModule } from 'src/auth/auth.module';
+import { Friend } from 'src/friend/friend.model';
+import { FriendUsers } from 'src/friend/friend-users.model';
+import { FriendStatus } from 'src/friendstatus/friendstatus.model';
 
 @Module({
   providers: [WishlistService],
   controllers: [WishlistController],
   imports: [
-    SequelizeModule.forFeature([WishList, Wish, WishListWish, AccessLevel, User]),
-    AuthModule
-  ]
+    SequelizeModule.forFeature([WishList, Wish, WishListWish, AccessLevel, User, Friend, FriendUsers, FriendStatus]),
+    AuthModule,
+  ],
+  exports: [WishlistService]
 })
 export class WishlistModule {}

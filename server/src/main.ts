@@ -12,7 +12,9 @@ async function start() {
     credentials: true, // Если используете куки/авторизацию
   });
 
-  await app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+    app.setGlobalPrefix('api');
+
+    await app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
 }
 
 start();

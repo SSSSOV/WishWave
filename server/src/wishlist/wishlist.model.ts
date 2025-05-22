@@ -5,8 +5,7 @@ import { AccessLevel } from "src/accesslevel/accesslevel.model";
 import { User } from "src/users/users.model";
 
 interface WishListCreationAttrs {
-    name: string;
-    userId:number;
+
 }
 
 @Table({tableName: 'wish_list'})
@@ -15,22 +14,31 @@ export class WishList extends Model<WishList, WishListCreationAttrs> {
     declare id: number;
 
     @Column({type: DataType.STRING, allowNull: false})
-    name: string;
+    declare name: string;
+
+    @Column({type: DataType.STRING, allowNull: true})
+    declare description: string | null;
+
+    @Column({type: DataType.DATEONLY, allowNull: true})
+    declare eventDate: string | null;
+
+    @Column({type: DataType.STRING, unique: true, allowNull: true, field: 'share_token'})
+    declare shareToken: string | null;
 
     @ForeignKey(() => User)
     @Column({type: DataType.INTEGER, allowNull: false})
-    userId: number;
+    declare userId: number;
 
     @ForeignKey(() => AccessLevel)
     @Column({type: DataType.INTEGER, allowNull: false})
-    accesslevelId: number;
+    declare accesslevelId: number;
 
-    @BelongsToMany(() => Wish, () => WishListWish)
+    @BelongsToMany(() => Wish, () => WishListWish, "wishlist_id", "wish_id")
     wishes: Wish[];
 
-    @BelongsTo(() => AccessLevel)
-    accesslevels: AccessLevel;
+    @BelongsTo(() => AccessLevel, {foreignKey: 'accesslevelId', as: 'accesslevel' }) 
+    accesslevel: AccessLevel;
 
-    @BelongsTo(() => User)
+    @BelongsTo(() => User,  {foreignKey: 'userId'})
     user: User;
 }

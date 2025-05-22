@@ -7,7 +7,10 @@ import { WishStatus } from "src/wishstatus/wishstatus.model";
 interface WishCreationAttrs {
     name: string;
     price: number;
-    image: string;
+    image: string | null;
+    productLink?: string;
+    wishStatusId?: number;
+    bookedByUserId?: number | null;
 }
 
 @Table({tableName: 'wish'})
@@ -25,7 +28,7 @@ export class Wish extends Model<Wish, WishCreationAttrs> {
     declare price: number;
 
     @Column({type: DataType.STRING, allowNull: true})
-    declare product_link: string;
+    declare productLink: string;
 
     @ForeignKey(() => WishStatus)
     @Column({type: DataType.INTEGER})
@@ -38,7 +41,7 @@ export class Wish extends Model<Wish, WishCreationAttrs> {
     @BelongsTo(() => User)
     declare bookedByUser: User;
 
-    @BelongsToMany(() => WishList, () => WishListWish)
+    @BelongsToMany(() => WishList, () => WishListWish, "wish_id", "wishlist_id") 
     declare wishlists: WishList[];
 
     @BelongsTo(() => WishStatus)

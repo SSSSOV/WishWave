@@ -41,4 +41,15 @@ export class FileService {
         }
     }
 
+    async deleteFile(filename: string): Promise<void> {
+        try {
+            const filePath = path.resolve(process.cwd(), 'static', filename);
+            if (fs.existsSync(filePath)){
+                await fs.promises.unlink(filePath);
+            }
+        } catch (e) {
+            console.error('Не удалось удалить файл', filename, e)
+        }
+    }
+
 }

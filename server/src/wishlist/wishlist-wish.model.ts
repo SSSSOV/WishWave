@@ -13,10 +13,10 @@ export class WishListWish extends Model<WishListWish, WishListWishCreationAttrs>
     declare id: number;
 
     @ForeignKey(()=>WishList)
-    @Column({type: DataType.INTEGER})
+    @Column({type: DataType.INTEGER, field: "wishlist_id"})
     declare wishlistId: number;
 
     @ForeignKey(()=>Wish)
-    @Column({type: DataType.INTEGER})
+    @Column({type: DataType.INTEGER, field: "wish_id"})
     declare wishId: number;
 }

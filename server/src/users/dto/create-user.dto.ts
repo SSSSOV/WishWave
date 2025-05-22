@@ -1,6 +1,8 @@
+import { ApiProperty } from "@nestjs/swagger";
+import { MinLength } from "class-validator";
+
 export class createUserDto {
-    readonly login: string;
-    readonly password: string;
-    readonly email: string;
-    readonly full_name?: string;
+    @ApiProperty() @MinLength(1) login: string;
+    @ApiProperty() @MinLength(1) password: string;
+    @ApiProperty() @MinLength(1) email: string;
 }
