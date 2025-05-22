@@ -52,7 +52,7 @@ import * as path from 'path';
           autoLoadModels: true,
           logging: console.log
         }),
-        SequelizeModule.forFeature([AccessLevel, Role, WishStatus, User]),
+        SequelizeModule.forFeature([AccessLevel, Role, WishStatus, User, FriendStatus]),
         UsersModule,
         RolesModule,
         BanModule,

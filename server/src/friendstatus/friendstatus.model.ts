@@ -2,7 +2,7 @@ import {BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from "s
 import { Friend } from "src/friend/friend.model";
 
 interface FriendStatusCreationAttrs {
-    description: string;
+    name: string;
 }
 
 @Table({tableName: 'friend_status'})
@@ -11,7 +11,7 @@ export class FriendStatus extends Model<FriendStatus, FriendStatusCreationAttrs>
     declare id: number;
 
     @Column({type: DataType.STRING, unique: true, allowNull: false})
-    description: string;
+    name: string;
     
     @HasMany(() => Friend)
     friends: Friend[];
