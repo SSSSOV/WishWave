@@ -3,7 +3,6 @@
 import { useTheme } from "@/context/ThemeContext";
 import Button from "./Button";
 import style from "./ThemeToggle.module.css";
-// import { MoonIcon, SunIcon } from '@heroicons/react/24/outline'; // Или любые другие иконки
 
 export function ThemeToggle({
   isAbsolute,

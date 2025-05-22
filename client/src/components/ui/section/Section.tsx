@@ -11,6 +11,7 @@ export default function Section({
   padding_bot_size,
   align_items,
   items_direction = "col",
+  withoutPad = false,
   children,
 }: {
   title?: string;
@@ -19,6 +20,7 @@ export default function Section({
   padding_bot_size?: size;
   align_items?: align_items;
   items_direction?: direction;
+  withoutPad?: boolean;
   children?: React.ReactNode;
 }) {
   return (
@@ -50,7 +52,9 @@ export default function Section({
           ? styles.pb_md
           : padding_bot_size == "lg"
           ? styles.pb_lg
-          : styles.pb_xs)
+          : styles.pb_xs) +
+        " " +
+        (withoutPad ? styles.without_pad : "")
       }>
       {title ? (
         <span

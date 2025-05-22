@@ -14,6 +14,7 @@ type ListItemProps = {
   trailing?: string;
   overline?: string;
   headline: string;
+  isLoading?: boolean;
   onClick?: MouseEventHandler<HTMLDivElement>;
 };
 
@@ -24,7 +25,8 @@ export default function ListItem({
   trailing_type,
   trailing = "arrow_right",
   overline,
-  headline = "headline",
+  headline = " ",
+  isLoading = false,
   onClick,
 }: ListItemProps) {
   return (
@@ -40,7 +42,7 @@ export default function ListItem({
       {leading_type ? (
         <div className={style.leading_element}>
           {leading_type == "monogram" ? (
-            <Monogram letter={leading} />
+            <Monogram letter={leading} isLoading={isLoading} />
           ) : leading_type == "icon" ? (
             <span className="material-symbols-rounded">{leading}</span>
           ) : (
@@ -53,7 +55,11 @@ export default function ListItem({
 
       <div className={style.content}>
         <span className={style.overline}>{overline}</span>
-        <span className={style.headline}>{headline}</span>
+        {isLoading ? (
+          <div className={style.load_div}></div>
+        ) : (
+          <span className={style.headline}>{headline}</span>
+        )}
       </div>
 
       {trailing_type ? (

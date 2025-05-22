@@ -1,15 +1,15 @@
 import { Module } from "@nestjs/common";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { ConfigModule } from "@nestjs/config";
-import { UsersModule } from './users/users.module';
-import { RolesModule } from './roles/roles.module';
-import { BanModule } from './ban/ban.module';
-import { FriendModule } from './friend/friend.module';
-import { WishlistModule } from './wishlist/wishlist.module';
-import { FriendstatusModule } from './friendstatus/friendstatus.module';
-import { AccesslevelModule } from './accesslevel/accesslevel.module';
-import { WishModule } from './wish/wish.module';
-import { WishstatusModule } from './wishstatus/wishstatus.module';
+import { UsersModule } from "./users/users.module";
+import { RolesModule } from "./roles/roles.module";
+import { BanModule } from "./ban/ban.module";
+import { FriendModule } from "./friend/friend.module";
+import { WishlistModule } from "./wishlist/wishlist.module";
+import { FriendstatusModule } from "./friendstatus/friendstatus.module";
+import { AccesslevelModule } from "./accesslevel/accesslevel.module";
+import { WishModule } from "./wish/wish.module";
+import { WishstatusModule } from "./wishstatus/wishstatus.module";
 import { WishStatus } from "./wishstatus/wishstatus.model";
 import { Wish } from "./wish/wish.model";
 import { WishListWish } from "./wishlist/wishlist-wish.model";
@@ -21,12 +21,11 @@ import { Friend } from "./friend/friend.model";
 import { Ban } from "./ban/ban.model";
 import { Role } from "./roles/roles.model";
 import { FriendStatus } from "./friendstatus/friendstatus.model";
-import { AuthModule } from './auth/auth.module';
-import { FileModule } from './file/file.module';
+import { AuthModule } from "./auth/auth.module";
+import { FileModule } from "./file/file.module";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { SeedService } from './seed/seed.service';
 import * as path from 'path';
-
 
 @Module({
     controllers: [],

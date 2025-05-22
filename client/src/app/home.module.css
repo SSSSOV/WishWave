@@ -2,21 +2,25 @@
   font-size: 28px;
   line-height: 36px;
   font-weight: 700;
+  text-align: justify;
 }
 .title {
   font-size: 20px;
   line-height: 28px;
   font-weight: 500;
+  text-align: justify;
 }
 .body {
   font-size: 14px;
   line-height: 20px;
   font-weight: 400;
+  text-align: justify;
 }
 .label {
   font-size: 12px;
   line-height: 16px;
   font-weight: 700;
+  text-align: justify;
 }
 .link {
   text-decoration: underline;

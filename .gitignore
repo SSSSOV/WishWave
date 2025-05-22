@@ -1,13 +1,8 @@
-# Игнорировать скомпилированные файлы Nest.js/TypeScript
-/dist
-
 packages/*/package-lock.json
 sample/**/package-lock.json
 
-
 # dependencies
 node_modules/
-dist/
 
 # IDE
 /.idea
@@ -27,14 +22,14 @@ dist/
 [._]sw[a-p]
 
 # bundle
-/packages/**/*.d.ts
-/packages/**/*.js
+packages/**/*.d.ts
+packages/**/*.js
 
 # misc
 .DS_Store
-/lerna-debug.log
-/npm-debug.log
-/yarn-error.log
+lerna-debug.log
+npm-debug.log
+yarn-error.log
 /**/npm-debug.log
 /packages/**/.npmignore
 /packages/**/LICENSE
@@ -52,8 +47,8 @@ dist/
 /.nyc_output
 /packages/graphql
 /benchmarks/memory
-/build/config\.gypi
+build/config\.gypi
 
 .npmrc
-/pnpm-lock.yaml
+pnpm-lock.yaml
 /.history

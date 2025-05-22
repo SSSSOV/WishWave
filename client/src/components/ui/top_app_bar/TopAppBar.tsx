@@ -31,7 +31,7 @@ export default function TopAppBar({
           <span>{title}</span>
         </div>
         <div className={styles.trailing_icon}>
-          <Button variant="text" icon="notifications"></Button>
+          {/* <Button variant="text" icon="notifications"></Button> */}
           <Button variant="text" icon="settings" href="/settings"></Button>
         </div>
       </div>
