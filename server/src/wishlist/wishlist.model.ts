@@ -33,7 +33,7 @@ export class WishList extends Model<WishList, WishListCreationAttrs> {
     @Column({type: DataType.INTEGER, allowNull: false})
     declare accesslevelId: number;
 
-    @BelongsToMany(() => Wish, () => WishListWish)
+    @BelongsToMany(() => Wish, () => WishListWish, "wishlist_id", "wish_id")
     wishes: Wish[];
 
     @BelongsTo(() => AccessLevel, {foreignKey: 'accesslevelId', as: 'accesslevel' }) 

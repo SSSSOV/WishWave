@@ -40,12 +40,19 @@ export class WishlistService {
     }
 
     async getWishesByListId(userId: number, wishlistId: number) {
+        const links = await this.wishListWishRepository.findAll({
+            where: { wishlistId },
+            raw: true,
+        });
+        console.log('↪️ LINKS FOR LIST', wishlistId, links);
+
         const wishlist = await this.wishListRepository.findByPk(wishlistId, {include: [
-            { model: Wish, through: { attributes: [] }, include: [{model: WishStatus, attributes: ['id', 'name']}] },
+            { model: Wish, as: 'wishes', through: { attributes: [] }, include: [{model: WishStatus, attributes: ['id', 'name']}] },
             { model: AccessLevel, as: 'accesslevel' }, 
             { model: User, as: 'user' }                 
         ]})
 
+        console.log('↪️ WISHLIST AFTER FIND:', wishlist?.get({ plain: true }));
         if(!wishlist) {
             throw new NotFoundException('Список желаний не найден');
         }
@@ -55,7 +62,8 @@ export class WishlistService {
             throw new ForbiddenException('Доступ к списку запрещен');
         }
 
-        return wishlist.wishes;
+        const plain = wishlist.get({plain: true});
+        return plain.wishes as Wish[];
     }
 
     async update(wishlistId: number, dto: Partial<CreateWishlistDto>): Promise<WishList> {

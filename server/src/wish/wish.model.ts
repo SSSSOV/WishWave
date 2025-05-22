@@ -41,7 +41,7 @@ export class Wish extends Model<Wish, WishCreationAttrs> {
     @BelongsTo(() => User)
     declare bookedByUser: User;
 
-    @BelongsToMany(() => WishList, () => WishListWish)
+    @BelongsToMany(() => WishList, () => WishListWish, "wish_id", "wishlist_id") 
     declare wishlists: WishList[];
 
     @BelongsTo(() => WishStatus)
