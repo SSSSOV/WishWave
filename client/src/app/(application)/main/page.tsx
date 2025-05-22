@@ -1,6 +1,6 @@
 "use client";
 import Button from "@/components/ui/buttons/Button";
-import ContentContainer from "@/components/ui/content_container/ContentContainer";
+import ContentContainer from "@/components/ui/content/Content";
 import Monogram from "@/components/ui/monogram/Monogram";
 import Section from "@/components/ui/section/Section";
 import type { Metadata } from "next";

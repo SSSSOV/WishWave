@@ -14,12 +14,12 @@ export const metadata: Metadata = {
 export default function MyPage() {
   return (
     <>
-      <Section>
+      <Section padding_top_size="lg">
         <Input labelText="Название" leadingIcon="search" trailingIcon="cancel"></Input>
       </Section>
 
-      <Section>
-        <List>
+      <Section title="Все ваши списки" padding_top_size="lg">
+        <List withoutPad>
           <ListItem
             condition={2}
             headline="День рождения!"

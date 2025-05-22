@@ -1,15 +1,16 @@
 "use client";
 import Button from "@/components/ui/buttons/Button";
 import { ThemeToggle } from "@/components/ui/buttons/ThemeToggle";
-import ContentContainer from "@/components/ui/content_container/ContentContainer";
+import ContentContainer from "@/components/ui/content/Content";
 import Input from "@/components/ui/inputs/Input";
 import Monogram from "@/components/ui/monogram/Monogram";
 import Section from "@/components/ui/section/Section";
-import type { Metadata } from "next";
-import styles from "@/app/home.module.css";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { useState } from "react";
+import { api_signup } from "@/app/lib/userAPI";
+import { Bounce, toast } from "react-toastify";
+import { AxiosError } from "axios";
+import styles from "@/app/home.module.css";
 
 // export const metadata: Metadata = {
 //   title: "Регистрация - WishWave",
@@ -29,16 +30,21 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // const { data } = await $host.post("/auth/login", { email, password });
-
-      // Сохраняем токен
-      // localStorage.setItem("authToken", data.token);
-      localStorage.setItem("authToken", "datatoken");
+      const data = await api_signup(email, login, password);
 
       // Перенаправляем на защищенную страницу
-      router.push("/main");
+      router.replace("/main");
     } catch (err) {
-      alert("Неверные учетные данные");
+      if (err instanceof AxiosError)
+        toast.error(err.response?.data?.message, {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: true,
+          draggable: true,
+          theme: "colored",
+          transition: Bounce,
+          className: "rounded-full mx-1 p-1 min-h-1 m-0",
+        });
     }
   };
 

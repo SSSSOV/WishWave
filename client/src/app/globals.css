@@ -138,3 +138,13 @@ body {
   background-color: var(--surface);
   border-color: var(--outline);
 }
+hr {
+  border-color: var(--surface-container-highest);
+}
+span {
+  text-align: justify;
+}
+
+p {
+  text-align: justify;
+}

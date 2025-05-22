@@ -1,12 +1,18 @@
-import { NestFactory } from "@nestjs/core"
-import { AppModule } from "./app.module"
-
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
 
 async function start() {
-    const PORT = process.env.PORT || 5000
-    const app = await NestFactory.create(AppModule)
+  const PORT = process.env.PORT || 5000;
+  const app = await NestFactory.create(AppModule);
 
-    await app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
+  // Разрешаем запросы с фронтенда
+  app.enableCors({
+    origin: process.env.CLIENT_URL, // Укажите ваш фронтенд-URL
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true, // Если используете куки/авторизацию
+  });
+
+  await app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 }
 
-start()
+start();

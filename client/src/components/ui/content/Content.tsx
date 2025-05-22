@@ -1,32 +1,36 @@
-import styles from "./ContentConteiner.module.css";
+import style from "./Content.module.css";
 type top_app_bar_size = "sm" | "md" | "lg" | "none";
 type navigation_type = "bar" | "rail" | "none";
 
-export default function ContentContainer({
+export default function Content({
   topBarSize = "sm",
   isScreen = false,
   navigationType = "none",
+  withoutPad = false,
   children,
 }: {
   topBarSize?: top_app_bar_size;
   isScreen?: boolean;
   navigationType?: navigation_type;
+  withoutPad?: boolean;
   children?: React.ReactNode;
 }) {
   return (
     <div
       className={
+        (withoutPad ? "" : style.content) +
+        " " +
         (topBarSize == "sm"
-          ? styles.top_sm
+          ? style.top_sm
           : topBarSize == "md"
-          ? styles.top_md
+          ? style.top_md
           : topBarSize == "lg"
-          ? styles.top_lg
-          : styles.top_none) +
+          ? style.top_lg
+          : style.top_none) +
         " " +
-        (isScreen ? styles.screen : "") +
+        (isScreen ? style.screen : "") +
         " " +
-        (navigationType == "bar" ? styles.nav_bar : navigationType == "rail" ? styles.nav_rail : "")
+        (navigationType == "bar" ? style.nav_bar : navigationType == "rail" ? style.nav_rail : "")
       }>
       {children}
     </div>

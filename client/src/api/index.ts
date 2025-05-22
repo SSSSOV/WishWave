@@ -1,25 +1,11 @@
 import axios from "axios";
 
-const $host = axios.create({
+const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_SERVER_URL, // Базовый URL сервера
   timeout: 5000,
 });
 
-const $authHost = axios.create({
-  baseURL: "https://your-api-server.com/api", // Базовый URL сервера
-  timeout: 5000,
-});
-
-// Добавляем интерсептор для авторизации
-$authHost.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-export { $host, $authHost };
+export default api;
 
 /*
   API Routes:
