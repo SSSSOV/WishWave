@@ -2,27 +2,37 @@
   padding: 8px 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--sm);
   /* align-items: stretch; */
-  background-color: var(--surface);
+  /* background-color: var(--surface); */
+  width: 100%;
+}
+.without_pad {
+  padding: 8px 0px;
 }
 .row {
   flex-direction: row;
 }
-.title_sm {
+
+.title_xs {
   font-size: 12px;
   line-height: 16px;
   font-weight: 700;
 }
-.title_md {
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
+.title_sm {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 700;
 }
-.title_lg {
+.title_md {
   font-size: 20px;
   line-height: 28px;
-  font-weight: 500;
+  font-weight: 700;
+}
+.title_lg {
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 700;
 }
 .left {
   align-items: start;

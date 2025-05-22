@@ -76,3 +76,28 @@
   background-color: var(--tertiary-container);
   color: var(--on-tertiary-container);
 }
+
+.load_div {
+  border-radius: var(--full);
+  background: linear-gradient(
+    90deg,
+    var(--primary-container),
+    var(--secondary-container),
+    var(--tertiary-container)
+  );
+  background-size: 400% 400%;
+  animation: gradient 2s ease infinite;
+  transform: translate3d(0, 0);
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

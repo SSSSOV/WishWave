@@ -1,8 +1,10 @@
 packages/*/package-lock.json
 sample/**/package-lock.json
 
+
 # dependencies
 node_modules/
+dist/
 
 # IDE
 /.idea

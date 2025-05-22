@@ -8,52 +8,73 @@ export default function Monogram({
   icon,
   color = "primary",
   size = "xs",
+  isLoading,
 }: {
   letter?: string;
   icon?: string;
   color?: color;
   size?: monogram_size;
+  isLoading?: boolean;
 }) {
   return (
-    <div
-      className={
-        (size == "xs"
-          ? style.container_xs
-          : size == "sm"
-          ? style.container_sm
-          : size == "md"
-          ? style.container_md
-          : size == "lg"
-          ? style.container_lg
-          : " ") +
-        " " +
-        (color == "primary"
-          ? style.primary
-          : color == "secondary"
-          ? style.secondary
-          : color == "tertiary"
-          ? style.tertiary
-          : " ")
-      }>
-      {letter ? (
-        <span className={style.letter}>{letter}</span>
-      ) : (
-        <span
+    <>
+      {isLoading ? (
+        <div
           className={
-            "material-symbols-rounded " +
+            style.load_div +
+            " " +
             (size == "xs"
-              ? style.icon_xs
+              ? style.container_xs
               : size == "sm"
-              ? style.icon_sm
+              ? style.container_sm
               : size == "md"
-              ? style.icon_md
+              ? style.container_md
               : size == "lg"
-              ? style.icon_lg
+              ? style.container_lg
+              : " ")
+          }></div>
+      ) : (
+        <div
+          className={
+            (size == "xs"
+              ? style.container_xs
+              : size == "sm"
+              ? style.container_sm
+              : size == "md"
+              ? style.container_md
+              : size == "lg"
+              ? style.container_lg
+              : " ") +
+            " " +
+            (color == "primary"
+              ? style.primary
+              : color == "secondary"
+              ? style.secondary
+              : color == "tertiary"
+              ? style.tertiary
               : " ")
           }>
-          {icon}
-        </span>
+          {letter ? (
+            <span className={style.letter}>{letter}</span>
+          ) : (
+            <span
+              className={
+                "material-symbols-rounded " +
+                (size == "xs"
+                  ? style.icon_xs
+                  : size == "sm"
+                  ? style.icon_sm
+                  : size == "md"
+                  ? style.icon_md
+                  : size == "lg"
+                  ? style.icon_lg
+                  : " ")
+              }>
+              {icon}
+            </span>
+          )}
+        </div>
       )}
-    </div>
+    </>
   );
 }

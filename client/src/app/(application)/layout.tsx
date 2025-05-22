@@ -1,25 +1,28 @@
 "use client";
-import ContentContainer from "@/components/ui/content_container/ContentContainer";
+import Content from "@/components/ui/content/Content";
 import NavigationBar from "@/components/ui/navigation_bar/NavigationBar";
 import TopAppBar from "@/components/ui/top_app_bar/TopAppBar";
 import { usePathname, useRouter } from "next/navigation";
 import styles from "@/app/home.module.css";
-import { useEffect, useState } from "react";
+import { createContext, StrictMode, useEffect, useState } from "react";
 import NavigationRail from "@/components/ui/navigation_rail/NavigationRail";
 import Section from "@/components/ui/section/Section";
+import Container from "@/components/ui/container/Container";
 
 export type PageConfig = {
   title: string;
-  label: string;
+  label?: string;
   path: string;
-  icon: string;
-  isNav: boolean;
+  icon?: string;
+  isNav?: boolean;
 };
 export type NavItemConfig = {
   label: string;
   icon: string;
   action: () => void;
 };
+
+export const Context = createContext(null);
 
 export default function RootLayout({
   children,
@@ -84,6 +87,34 @@ export default function RootLayout({
       icon: "account_circle",
       isNav: false,
     },
+    {
+      title: "Фото",
+      path: "/profile/image",
+    },
+    {
+      title: "Имя",
+      path: "/profile/name",
+    },
+    {
+      title: "Дата рождения",
+      path: "/profile/birthday",
+    },
+    {
+      title: "Пол",
+      path: "/profile/gender",
+    },
+    {
+      title: "Логин",
+      path: "/profile/login",
+    },
+    {
+      title: "Пароль",
+      path: "/profile/password",
+    },
+    {
+      title: "Почта",
+      path: "/profile/email",
+    },
   ];
 
   const NAVS: NavItemConfig[] = [
@@ -129,9 +160,9 @@ export default function RootLayout({
       {isMobile ? (
         <>
           <TopAppBar title={PAGES.find((page) => page.path == pathName)?.title} variant="small" />
-          <ContentContainer navigationType="bar" topBarSize="sm">
-            {children}
-          </ContentContainer>
+          <Content navigationType="bar" topBarSize="sm" withoutPad>
+            <Container>{children}</Container>
+          </Content>
           <NavigationBar pages={PAGES} />
         </>
       ) : (
@@ -142,9 +173,11 @@ export default function RootLayout({
             title={PAGES.find((page) => page.path == pathName)?.title}
             variant="large"
           />
-          <ContentContainer navigationType="rail" topBarSize="lg">
-            {children}
-          </ContentContainer>
+          <Content navigationType="rail" topBarSize="lg">
+            <Container gap="md" withPad>
+              {children}
+            </Container>
+          </Content>
         </>
       )}
     </>
