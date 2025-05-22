@@ -71,7 +71,6 @@ export class WishlistController {
             throw new ForbiddenException('Доступ к списку запрещен')
         }
         const wishes = await this.wishListService.getWishesByListId(userId, id);
-        console.log('🟢 Controller: returning wishes for list', id, wishes);
         return {wishes};
     }
 

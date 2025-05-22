@@ -44,7 +44,6 @@ export class WishlistService {
             where: { wishlistId },
             raw: true,
         });
-        console.log('↪️ LINKS FOR LIST', wishlistId, links);
 
         const wishlist = await this.wishListRepository.findByPk(wishlistId, {include: [
             { model: Wish, as: 'wishes', through: { attributes: [] }, include: [{model: WishStatus, attributes: ['id', 'name']}] },
@@ -52,7 +51,6 @@ export class WishlistService {
             { model: User, as: 'user' }                 
         ]})
 
-        console.log('↪️ WISHLIST AFTER FIND:', wishlist?.get({ plain: true }));
         if(!wishlist) {
             throw new NotFoundException('Список желаний не найден');
         }
