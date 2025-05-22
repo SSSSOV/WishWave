@@ -5,12 +5,14 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { WishStatus } from './wishstatus.model';
 import { Wish } from 'src/wish/wish.model';
 import { User } from 'src/users/users.model';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   controllers: [WishstatusController],
   providers: [WishstatusService],
   imports: [
     SequelizeModule.forFeature([WishStatus, Wish]),
+    AuthModule
   ]
 })
 export class WishstatusModule {}
