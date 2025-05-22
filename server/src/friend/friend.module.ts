@@ -6,12 +6,14 @@ import { Friend } from './friend.model';
 import { User } from 'src/users/users.model';
 import { FriendUsers } from './friend-users.model';
 import { FriendStatus } from 'src/friendstatus/friendstatus.model';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   providers: [FriendService],
   controllers: [FriendController],
   imports: [
     SequelizeModule.forFeature([Friend, User, FriendUsers, FriendStatus]),
+    AuthModule
   ]
 })
 export class FriendModule {}
