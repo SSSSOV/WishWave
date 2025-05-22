@@ -71,12 +71,13 @@ export class WishController {
     @Delete(':id')
     async deleteWish(@Param('id', ParseIntPipe) wishId: number, @Req() req) {
         const userId = req.user.id;
+        const userRole = req.user.roles?.value;
         const record = await this.wishListWishRepository.findOne({where: {wishId}});
         if (!record) {
             throw new NotFoundException('Желание не найдено в списках')
         }
-
-        if (!(await this.wishlistService.isOwner(userId, record.wishlistId))) {
+        const isOwner = await this.wishlistService.isOwner(userId, record.wishlistId);
+        if (!isOwner && userRole !== 'admin') {
             throw new ForbiddenException('Только владелец может удалять желание')
         }
 
