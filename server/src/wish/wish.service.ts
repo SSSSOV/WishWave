@@ -4,6 +4,9 @@ import { Wish } from './wish.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { FileService } from 'src/file/file.service';
 import { WishListWish } from 'src/wishlist/wishlist-wish.model';
+import { WishStatus } from 'src/wishstatus/wishstatus.model';
+import { WishList } from 'src/wishlist/wishlist.model';
+import { User } from 'src/users/users.model';
 
 @Injectable()
 export class WishService {
@@ -118,5 +121,19 @@ export class WishService {
         wish.wishStatusId = 1;
         wish.bookedByUserId = null;
         return await wish.save();
+    }
+
+    async getBookedWishes(userId: number): Promise<Wish[]> {
+        const wishes = await this.wishRepository.findAll({
+            where: {bookedByUserId: userId},
+            include: [
+                {model: WishStatus, attributes: ['id', 'name']},
+                {model: WishList, through: {attributes: []}, 
+                include:[
+                    {model: User, attributes: ['id', 'login', 'fullName', 'email', 'image']}
+                ]}
+            ]
+        })
+        return wishes;
     }
 }

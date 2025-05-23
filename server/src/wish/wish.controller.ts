@@ -7,6 +7,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { WishlistService } from 'src/wishlist/wishlist.service';
 import { InjectModel } from '@nestjs/sequelize';
 import { WishListWish } from 'src/wishlist/wishlist-wish.model';
+import { BookedWishDto } from './dto/booked-wish.do';
 
 @Controller('wish')
 export class WishController {
@@ -33,6 +34,22 @@ export class WishController {
         const listIds = ownLists.map(l => l.id);
         return this.wishService.findAllByListIds(listIds);
     }
+    
+    @UseGuards(JwtAuthGuard)
+    @Get('booked')
+    async getBooked(@Req() req): Promise<BookedWishDto[]> {
+        const userId = req.user.id;
+        const wishes = await this.wishService.getBookedWishes(userId);
+
+        return wishes.map(w => {const plain = (w as any).get({plain: true});
+            const dto: BookedWishDto = {
+                id: plain.id, name: plain.name, price: plain.price, image: plain.image, productLink: plain.productLink, bookedByUserId: plain.bookedByUserId, wishlists: Array.isArray(plain.wishlists) ? plain.wishlists.map((l: any)=> ({
+                    id: l.id, name: l.name, owner: {id: l.user.id, login: l.user.login, fullName: l.user.fullName, email: l.user.email, image: l.user.image}
+                })): []
+            };
+            return dto;
+        })
+    }
 
     @UseGuards(JwtAuthGuard)
     @Get(':id')
@@ -49,6 +66,7 @@ export class WishController {
         }
         return wish;
     }
+    
 
     @UseGuards(JwtAuthGuard)
     @Patch(':id')
