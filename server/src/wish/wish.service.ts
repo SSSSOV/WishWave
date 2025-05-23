@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { Wish } from './wish.model';
 import { InjectModel } from '@nestjs/sequelize';
@@ -7,11 +7,16 @@ import { WishListWish } from 'src/wishlist/wishlist-wish.model';
 import { WishStatus } from 'src/wishstatus/wishstatus.model';
 import { WishList } from 'src/wishlist/wishlist.model';
 import { User } from 'src/users/users.model';
+import { WishlistService } from 'src/wishlist/wishlist.service';
 
 @Injectable()
 export class WishService {
 
-    constructor(@InjectModel(Wish) private wishRepository: typeof Wish, private fileService: FileService, @InjectModel(WishListWish) private wishListWishRepository: typeof WishListWish) {}
+    constructor(@InjectModel(Wish) private wishRepository: typeof Wish, 
+    private fileService: FileService, 
+    @InjectModel(WishListWish) private wishListWishRepository: typeof WishListWish,
+    @InjectModel(WishStatus) private wishStatusRepository: typeof WishStatus,
+    private readonly wishlistService: WishlistService) {}
 
     async create(dto: CreateWishDto, image: any, listId: number) {
         let fileName: string | null = null;
@@ -98,6 +103,14 @@ export class WishService {
     async bookWish(wishId: number, userId: number): Promise<Wish> {
         const wish = await this.findById(wishId);
 
+        const completed = await this.wishStatusRepository.findOne({where: {name: 'completed'}});
+        if (!completed) {
+            throw new NotFoundException('Статус "completed" не найден')
+        }
+        if (wish.wishStatusId === completed.id) {
+            throw new BadRequestException(`Желание с id ${wishId} уже завершено и не может быть забронировано`)
+        }
+
         if (wish.bookedByUserId != null) {
             throw new BadRequestException(`Желание с id ${wishId} уже забронировано`);
         }
@@ -135,5 +148,34 @@ export class WishService {
             ]
         })
         return wishes;
+    }
+
+    async completeWish(wishId: number, userId: number): Promise<Wish> {
+        const link = await this.wishListWishRepository.findOne({where: {wishId}});
+        if (!link) {
+            throw new NotFoundException('Желание не найдено ни в одном списке')
+        }
+
+        const isOwner = await this.wishlistService.isOwner(userId, link.wishlistId);
+        if (!isOwner) {
+            throw new ForbiddenException('Только владелец списка может завершать желания')
+        }
+
+        const wish = await this.wishRepository.findByPk(wishId);
+        if(!wish) {
+            throw new NotFoundException(`Желание с id ${wishId} не найдено`)
+        }
+
+        const completedStatus = await this.wishStatusRepository.findOne({where: {name: 'completed'}});
+        if (!completedStatus) {
+            throw new NotFoundException('Статус "completed" не найден ')
+        }
+        if (wish.wishStatusId === completedStatus.id) {
+            throw new BadRequestException('Желание уже завершено')
+        }
+
+        wish.bookedByUserId = null;
+        wish.wishStatusId = completedStatus.id;
+        return wish.save();
     }
 }

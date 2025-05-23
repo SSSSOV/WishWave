@@ -34,7 +34,7 @@ export class WishController {
         const listIds = ownLists.map(l => l.id);
         return this.wishService.findAllByListIds(listIds);
     }
-    
+
     @UseGuards(JwtAuthGuard)
     @Get('booked')
     async getBooked(@Req() req): Promise<BookedWishDto[]> {
@@ -138,5 +138,11 @@ export class WishController {
         } 
 
         return this.wishService.unbookWish(wishId, userId);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Patch(':id/complete')
+    complete(@Param('id', ParseIntPipe) wishId: number, @Req() req) {
+        return this.wishService.completeWish(wishId, req.user.id);
     }
 }
