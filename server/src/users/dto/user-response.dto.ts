@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { WishListResponseDto } from "src/wishlist/dto/wishlist-response.dto";
 
 
@@ -13,5 +13,6 @@ export class UserResponseDto {
     @ApiProperty() email: string;
     @ApiProperty() roleId: number;
     @ApiProperty({required: false}) banId?: number;
+    @ApiPropertyOptional({enum: ['male', 'female']}) gender?: 'male' | 'female';
     @ApiProperty({type: () => [WishListResponseDto], description: 'Списки желаний пользователя'}) wishlists: WishListResponseDto[];
 }
