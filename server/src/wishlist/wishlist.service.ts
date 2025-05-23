@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { WishList } from './wishlist.model';
 import { CreateWishlistDto } from './dto/create-wishlist.dto';
@@ -191,6 +191,31 @@ export class WishlistService {
         await this.wishListWishRepository.create({wishlistId: targetListId, wishId: cloned.id});
 
         return cloned;
+    }
+
+    async copyToList(userId: number, wishId: number, targetListId: number): Promise<void> {
+        const link = await this.wishListWishRepository.findOne({where: {wishId}});
+        if (!link) {
+            throw new NotFoundException('Оригинальное желание не найдено ни в одном списке')
+        }
+
+        const originList = await this.wishListRepository.findByPk(link.wishlistId, {attributes: ['userId']});
+        if (!originList) {
+            throw new NotFoundException('Список не найден')
+        }
+        if (originList.userId !== userId) {
+            throw new ForbiddenException('Копировать можно только свои желания')
+        }
+        if (!(await this.isOwner(userId, targetListId))) {
+            throw new ForbiddenException('Нельзя копировать в чужой список')
+        }
+
+        const already = await this.wishListWishRepository.findOne({where: {wishId, wishlistId: targetListId}});
+        if (already) {
+            throw new ConflictException('Желание уже есть в целевом списке')
+        }
+
+        await this.wishListWishRepository.create({wishlistId: targetListId, wishId});
     }
 
 }

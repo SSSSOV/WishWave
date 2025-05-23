@@ -53,6 +53,14 @@ export class WishlistController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @Patch(':targetListId/copy/:wishId')
+    async copyWish(@Param('targetListId', ParseIntPipe) targetListId: number, @Param('wishId', ParseIntPipe) wishId: number, @Req() req) {
+        const userId = req.user.id;
+        await this.wishListService.copyToList(userId, wishId, targetListId);
+        return {message: `Желание ${wishId} скопировано в список ${targetListId}`};
+    }
+
+    @UseGuards(JwtAuthGuard)
     @Delete(':id')
     async remove(@Param('id', ParseIntPipe) wishlistId: number, @Req() req) {
         const userId = req.user.id;
