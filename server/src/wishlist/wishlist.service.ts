@@ -7,7 +7,6 @@ import { AccessLevel } from 'src/accesslevel/accesslevel.model';
 import { User } from 'src/users/users.model';
 import { Op } from 'sequelize';
 import { Friend } from 'src/friend/friend.model';
-import { FriendUsers } from 'src/friend/friend-users.model';
 import { FriendStatus } from 'src/friendstatus/friendstatus.model';
 import { v4 as uuidv4 } from 'uuid';
 import { WishStatus } from 'src/wishstatus/wishstatus.model';
@@ -18,7 +17,16 @@ export class WishlistService {
     constructor(@InjectModel(WishList) private wishListRepository: typeof WishList, 
         @InjectModel(Friend) private friendRepository: typeof Friend, 
         @InjectModel(Wish) private wishRepository: typeof Wish,
-        @InjectModel(WishListWish) private wishListWishRepository: typeof WishListWish) {}
+        @InjectModel(WishListWish) private wishListWishRepository: typeof WishListWish,
+        @InjectModel(FriendStatus) private statusRepository: typeof FriendStatus) {}
+
+    private async getStatusId(name: string): Promise<number> {
+        const st = await this.statusRepository.findOne({where: {name}});
+        if(!st) {
+            throw new NotFoundException(`Статус дружбы ${name} не найден`);
+        }
+        return st.id
+    }
 
     async create(dto: CreateWishlistDto, userId: number) {
         let shareToken: string | null = null;
@@ -124,14 +132,20 @@ export class WishlistService {
                 }
                 return true;
             case 'friends':
-                const relation = await this.friendRepository.findOne({
-                    include: [
-                    { model: FriendUsers, where: { userId } },
-                    { model: FriendUsers, where: { userId: wishlist.userId } },
-                    { model: FriendStatus, where: { name: { [Op.or]: ['accepted', 'друзья'] } } },
-                    ]
+                if (userId === null) { 
+                    return false;
+                }
+                const acceptedId = await this.getStatusId('accepted');
+                const friendship = await this.friendRepository.findOne({
+                    where : {
+                        friendstatusId: acceptedId,
+                        [Op.or]: [
+                            {userid1: userId, userid2: wishlist.userId},
+                            {userid1: wishlist.userId, userid2: userId}
+                        ]
+                    }
                 });
-                return Boolean(relation);
+                return !!friendship;
             default:
                 return false;
         }

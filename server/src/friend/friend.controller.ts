@@ -52,7 +52,7 @@ export class FriendController {
     }
 
     @Delete(':friendshipId')
-    remove(@Param('riendshipId') id: string, @Req() req) {
+    remove(@Param('friendshipId') id: string, @Req() req) {
         return this.friendService.unfriend(req.user.id, +id);
     }
 
