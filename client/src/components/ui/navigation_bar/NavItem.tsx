@@ -3,12 +3,12 @@ import styles from "./NavItem.module.css";
 export default function NavItem({
   isSelected = false,
   label,
-  icon,
+  icon = "star",
   ...props
 }: {
   isSelected?: boolean;
   label?: string;
-  icon: string;
+  icon?: string;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button className={styles.nav_item} {...props}>

@@ -12,6 +12,7 @@
   position: fixed;
   top: 0;
   width: 100%;
+  z-index: 100;
 }
 .with_rail {
   margin-left: 72px;
@@ -38,6 +39,7 @@
   position: fixed;
   top: 0;
   width: 100%;
+  z-index: 100;
 }
 .top_app_bar_lg {
   gap: calc(2 * var(--xl));

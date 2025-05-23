@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 type variant = "elevated" | "filled" | "filled_tonal" | "outlined" | "text";
+type color = "primary" | "secondary" | "tertiary" | "access" | "warning" | "error";
 
 export default function Button({
   children,
@@ -13,6 +14,7 @@ export default function Button({
   isFit = true,
   icon,
   href,
+  color = "primary",
   ...props
 }: {
   children?: React.ReactNode;
@@ -20,6 +22,7 @@ export default function Button({
   isPadNone?: boolean;
   isFit?: boolean;
   icon?: string;
+  color?: color;
   href?: string;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   let buttonClasses = "";
@@ -29,6 +32,13 @@ export default function Button({
   else if (variant == "filled_tonal") buttonClasses = styles.filled_tonal_button;
   else if (variant == "outlined") buttonClasses = styles.outlined_button;
   else if (variant == "text") buttonClasses = styles.text_button;
+
+  if (color == "primary") buttonClasses += " " + styles.primary;
+  else if (color == "secondary") buttonClasses += " " + styles.secondary;
+  else if (color == "tertiary") buttonClasses += " " + styles.tertiary;
+  else if (color == "access") buttonClasses += " " + styles.access;
+  else if (color == "warning") buttonClasses += " " + styles.warning;
+  else if (color == "error") buttonClasses += " " + styles.error;
 
   if (icon && children) {
     buttonClasses = buttonClasses + " " + styles.with_icon;

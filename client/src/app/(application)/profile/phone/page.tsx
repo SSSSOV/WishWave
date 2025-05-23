@@ -1,14 +1,13 @@
 "use client";
+import { useUnit } from "effector-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import Button from "@/components/ui/buttons/Button";
 import Input from "@/components/ui/inputs/Input";
 import Section from "@/components/ui/section/Section";
 import { $isAuth, $user, handleUpdateInfo } from "@/context/user";
-import { IUser } from "@/types/user";
-import { useUnit } from "effector-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
-export default function NamePage() {
+export default function PhonePage() {
   //Роутер
   const router = useRouter();
 
@@ -16,20 +15,18 @@ export default function NamePage() {
   const [isAuth, user, handle] = useUnit([$isAuth, $user, handleUpdateInfo]);
 
   // Переменные
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
+  const [phone, setPhone] = useState("");
 
   // Эффекты
   useEffect(() => {
-    setFirstname(user.fullname ? user.fullname?.split(" ")[0] : "");
-    setLastname(user.fullname ? user.fullname?.split(" ")[1] : "");
+    setPhone(user.phone ? user.phone : "");
   }, []);
 
   // Обработчики
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      handle({ fullname: firstname + " " + lastname });
+      handle({ phone });
       router.back();
     } catch (error) {
       console.log(error);
@@ -40,8 +37,7 @@ export default function NamePage() {
     <>
       <form action="" onSubmit={handleSubmit}>
         <Section padding_top_size="lg">
-          <Input labelText="Имя" value={firstname} onChange={(e) => setFirstname(e.target.value)} />
-          <Input labelText="Фамилия" value={lastname} onChange={(e) => setLastname(e.target.value)} />
+          <Input labelText="Номер телефона" value={phone} onChange={(e) => setPhone(e.target.value)} type="tel" />
         </Section>
         <Section title="Кто может видеть ваше имя" padding_top_size="lg">
           <p>

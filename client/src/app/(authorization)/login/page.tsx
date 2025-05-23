@@ -7,11 +7,11 @@ import Monogram from "@/components/ui/monogram/Monogram";
 import Section from "@/components/ui/section/Section";
 import styles from "@/app/home.module.css";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { createEvent, createStore } from "effector";
+import { useEffect, useState } from "react";
 import { useUnit } from "effector-react";
+import { $isAuth, $user, handleSignIn } from "@/context/user";
 import toast from "react-hot-toast";
-import { useUser } from "@/context/UserContext";
+import Container from "@/components/ui/container/Container";
 
 export default function LoginPage() {
   // Маршрутизатор
@@ -21,92 +21,84 @@ export default function LoginPage() {
   const [loginOrEmail, setLogin] = useState("");
   const [password, setPassword] = useState("");
 
-  const { user, signIn } = useUser();
+  // Контекст
+  const [handle, isAuth] = useUnit([handleSignIn, $isAuth]);
 
   // Обработчик авторизации
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      console.log(user);
-      await signIn(loginOrEmail, password);
-      console.log(user);
-      toast.success("asas");
+      handle({ loginOrEmail, password });
     } catch (error) {
-      toast.error(String(error));
+      console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (isAuth) router.replace("profile/");
+  }, [isAuth]);
 
   return (
     <>
       <ThemeToggle isAbsolute></ThemeToggle>
       <Content topBarSize="none" navigationType="none">
-        <Section
-          align_items="right"
-          items_direction="row"
-          padding_top_size="lg"
-          padding_bot_size="lg">
-          <Monogram letter="ww" size="md" color="primary"></Monogram>
-          <Monogram icon="person" size="md" color="secondary"></Monogram>
-          <Monogram icon="login" size="md" color="tertiary"></Monogram>
-        </Section>
-        <form action="login" onSubmit={handleSubmit}>
-          <Section title="Уже есть аккаунт? Входите!" title_size="md">
-            <Input
-              labelText="Логин или почта"
-              leadingIcon="person"
-              type="text"
-              id="login"
-              value={loginOrEmail}
-              onChange={(e) => setLogin(e.target.value)}
-              required
-            />
-            <Input
-              labelText="Пароль"
-              leadingIcon="password"
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <Button variant="text" isPadNone>
-              Забыли пароль?
-            </Button>
-            <Button variant="filled" isFit={false} type="submit">
-              Войти
-            </Button>
+        <Container>
+          <Section align_items="right" items_direction="row" padding_bot_size="lg" padding_top_size="lg">
+            <Monogram monogram_type="monogram" letter="ww" size="md" color="primary"></Monogram>
+            <Monogram monogram_type="icon" icon="person" size="md" color="secondary"></Monogram>
+            <Monogram monogram_type="icon" icon="login" size="md" color="tertiary"></Monogram>
           </Section>
-        </form>
-        <Section align_items="center" padding_top_size="lg">
-          <Section items_direction="row">
-            Нет аккаунта?
-            <Button variant="text" isPadNone onClick={() => router.replace("/signup")}>
-              Создайте его
-            </Button>
+          <form action="login" onSubmit={handleSubmit}>
+            <Section title="Уже есть аккаунт? Входите!" title_size="md">
+              <Input
+                labelText="Логин или почта"
+                leadingIcon="person"
+                type="text"
+                id="login"
+                value={loginOrEmail}
+                onChange={(e) => setLogin(e.target.value)}
+                required
+              />
+              <Input
+                labelText="Пароль"
+                leadingIcon="password"
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <Button variant="text" isPadNone>
+                Забыли пароль?
+              </Button>
+              <Button variant="filled" isFit={false} type="submit">
+                Войти
+              </Button>
+            </Section>
+          </form>
+          <Section align_items="center" padding_top_size="lg">
+            <Section items_direction="row" isFit>
+              Нет аккаунта?
+              <Button variant="text" isPadNone onClick={() => router.replace("/signup")}>
+                Создайте его
+              </Button>
+            </Section>
           </Section>
-        </Section>
+          <Section align_items="center" padding_bot_size="lg" padding_top_size="lg">
+            <span className={styles.text_center + " " + styles.label}>
+              Продолжая, вы соглашаетесь с{" "}
+              <a className={styles.link} href="/documents#terms" target="_blank" rel="noopener noreferrer">
+                Условиями обслуживания WishWave
+              </a>{" "}
+              и подтверждаете, что ознакомились с нашей{" "}
+              <a className={styles.link} href="/documents#policy" target="_blank" rel="noopener noreferrer">
+                Политикой конфиденциальности
+              </a>
+              .
+            </span>
+          </Section>
+        </Container>
       </Content>
-      <Section align_items="center" padding_bot_size="lg" padding_top_size="lg">
-        <span className={styles.text_center + " " + styles.label}>
-          Продолжая, вы соглашаетесь с{" "}
-          <a
-            className={styles.link}
-            href="/documents#terms"
-            target="_blank"
-            rel="noopener noreferrer">
-            Условиями обслуживания WishWave
-          </a>{" "}
-          и подтверждаете, что ознакомились с нашей{" "}
-          <a
-            className={styles.link}
-            href="/documents#policy"
-            target="_blank"
-            rel="noopener noreferrer">
-            Политикой конфиденциальности
-          </a>
-          .
-        </span>
-      </Section>
     </>
   );
 }

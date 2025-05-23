@@ -8,6 +8,8 @@ import { createContext, StrictMode, useEffect, useState } from "react";
 import NavigationRail from "@/components/ui/navigation_rail/NavigationRail";
 import Section from "@/components/ui/section/Section";
 import Container from "@/components/ui/container/Container";
+import { useUnit } from "effector-react";
+import { $user, handleFetchUser } from "@/context/user";
 
 export type PageConfig = {
   title: string;
@@ -29,9 +31,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [isMobile, setIsMobile] = useState(false);
+  // Роутер
   const router = useRouter();
 
+  // Контекст
+  const [user, fetchUser] = useUnit([$user, handleFetchUser]);
+
+  // Переменные
+  const [isMobile, setIsMobile] = useState(false);
+  const pathName = usePathname();
+
+  // Эффекты
   useEffect(() => {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 768); // Брекпоинт, например, 768px
@@ -42,7 +52,10 @@ export default function RootLayout({
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
 
-  const pathName = usePathname();
+  useEffect(() => {
+    console.log("clientsrcapp(application)layout.tsx");
+    fetchUser();
+  }, []);
 
   const PAGES: PageConfig[] = [
     {
@@ -88,7 +101,7 @@ export default function RootLayout({
       isNav: false,
     },
     {
-      title: "Фото",
+      title: "Фото профиля",
       path: "/profile/image",
     },
     {
@@ -168,11 +181,7 @@ export default function RootLayout({
       ) : (
         <>
           <NavigationRail pages={PAGES}></NavigationRail>
-          <TopAppBar
-            withRail
-            title={PAGES.find((page) => page.path == pathName)?.title}
-            variant="large"
-          />
+          <TopAppBar withRail title={PAGES.find((page) => page.path == pathName)?.title} variant="large" />
           <Content navigationType="rail" topBarSize="lg">
             <Container gap="md" withPad>
               {children}
