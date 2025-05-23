@@ -6,11 +6,13 @@ import Input from "@/components/ui/inputs/Input";
 import Monogram from "@/components/ui/monogram/Monogram";
 import Section from "@/components/ui/section/Section";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { api_signup } from "@/app/lib/userAPI";
+import { useEffect, useState } from "react";
 import { Bounce, toast } from "react-toastify";
 import { AxiosError } from "axios";
 import styles from "@/app/home.module.css";
+import { $isAuth, handleSignUp } from "@/context/user";
+import { useUnit } from "effector-react";
+import Container from "@/components/ui/container/Container";
 
 // export const metadata: Metadata = {
 //   title: "Регистрация - WishWave",
@@ -26,106 +28,84 @@ export default function SignupPage() {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
 
+  // Контекст
+  const [handle, isAuth] = useUnit([handleSignUp, $isAuth]);
+
   // Обработчик авторизации
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const data = await api_signup(email, login, password);
-
-      // Перенаправляем на защищенную страницу
-      router.replace("/main");
-    } catch (err) {
-      if (err instanceof AxiosError)
-        toast.error(err.response?.data?.message, {
-          position: "top-center",
-          autoClose: 1000,
-          hideProgressBar: true,
-          draggable: true,
-          theme: "colored",
-          transition: Bounce,
-          className: "rounded-full mx-1 p-1 min-h-1 m-0",
-        });
+      handle({ login, email, password });
+    } catch (error) {
+      console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (isAuth) router.replace("profile/");
+  }, [isAuth]);
 
   return (
     <>
       <ThemeToggle isAbsolute></ThemeToggle>
       <ContentContainer topBarSize="none" navigationType="none">
-        <Section
-          align_items="center"
-          items_direction="row"
-          padding_top_size="lg"
-          padding_bot_size="lg">
-          <Monogram letter="ww" size="md" color="primary"></Monogram>
-          <Monogram icon="person_add" size="md" color="secondary"></Monogram>
-          <Monogram icon="app_registration" size="md" color="tertiary"></Monogram>
-        </Section>
-        <form action="signup" onSubmit={handleSubmit}>
-          <Section title="Нет аккаунта? Создайте!" title_size="md">
-            <Input
-              labelText="Почта"
-              leadingIcon="mail"
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <Input
-              labelText="Логин"
-              leadingIcon="person"
-              type="text"
-              id="login"
-              minLength={3}
-              maxLength={10}
-              value={login}
-              onChange={(e) => setLogin(e.target.value)}
-            />
-            <Input
-              labelText="Пароль"
-              leadingIcon="password"
-              type="password"
-              id="password"
-              minLength={5}
-              maxLength={20}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+        <Container>
+          <Section align_items="center" items_direction="row" padding_bot_size="lg" padding_top_size="lg">
+            <Monogram monogram_type="monogram" letter="ww" size="md" color="primary"></Monogram>
+            <Monogram monogram_type="icon" icon="person_add" size="md" color="secondary"></Monogram>
+            <Monogram monogram_type="icon" icon="app_registration" size="md" color="tertiary"></Monogram>
+          </Section>
+          <form action="signup" onSubmit={handleSubmit}>
+            <Section title="Нет аккаунта? Создайте!" title_size="md">
+              <Input labelText="Почта" leadingIcon="mail" type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Input
+                labelText="Логин"
+                leadingIcon="person"
+                type="text"
+                id="login"
+                minLength={3}
+                maxLength={10}
+                value={login}
+                onChange={(e) => setLogin(e.target.value)}
+              />
+              <Input
+                labelText="Пароль"
+                leadingIcon="password"
+                type="password"
+                id="password"
+                minLength={5}
+                maxLength={20}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
 
-            <Button variant="filled" isFit={false} type="submit">
-              Зарегистрироваться
-            </Button>
+              <Button variant="filled" isFit={false} type="submit">
+                Зарегистрироваться
+              </Button>
+            </Section>
+          </form>
+          <Section align_items="center" padding_top_size="lg">
+            <Section items_direction="row" isFit>
+              Уже есть аккаунт?
+              <Button variant="text" isPadNone onClick={() => router.push("/login")}>
+                Войдите
+              </Button>
+            </Section>
           </Section>
-        </form>
-        <Section align_items="center" padding_top_size="lg">
-          <Section items_direction="row">
-            Уже есть аккаунт?
-            <Button variant="text" isPadNone onClick={() => router.push("/login")}>
-              Войдите
-            </Button>
+          <Section align_items="center" padding_bot_size="lg" padding_top_size="lg">
+            <span className={styles.text_center + " " + styles.label}>
+              Продолжая, вы соглашаетесь с{" "}
+              <a className={styles.link} href="/documents#terms" target="_blank" rel="noopener noreferrer">
+                Условиями обслуживания WishWave
+              </a>{" "}
+              и подтверждаете, что ознакомились с нашей{" "}
+              <a className={styles.link} href="/documents#policy" target="_blank" rel="noopener noreferrer">
+                Политикой конфиденциальности
+              </a>
+              .
+            </span>
           </Section>
-        </Section>
-        <Section align_items="center" padding_bot_size="lg" padding_top_size="lg">
-          <span className={styles.text_center + " " + styles.label}>
-            Продолжая, вы соглашаетесь с{" "}
-            <a
-              className={styles.link}
-              href="/documents#terms"
-              target="_blank"
-              rel="noopener noreferrer">
-              Условиями обслуживания WishWave
-            </a>{" "}
-            и подтверждаете, что ознакомились с нашей{" "}
-            <a
-              className={styles.link}
-              href="/documents#policy"
-              target="_blank"
-              rel="noopener noreferrer">
-              Политикой конфиденциальности
-            </a>
-            .
-          </span>
-        </Section>
+        </Container>
       </ContentContainer>
     </>
   );

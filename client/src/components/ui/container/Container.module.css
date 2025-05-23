@@ -1,9 +1,10 @@
 .container {
   max-width: 864px;
   margin: auto;
-  background-color: var(--surface);
   display: flex;
   flex-direction: column;
+  background-color: var(--surface);
+  min-height: 100%;
 }
 
 .with_pad {

@@ -3,7 +3,7 @@ import { Comfortaa, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { ToastContainer } from "react-toastify";
-import { UserProvider } from "@/context/UserContext";
+import { Toaster } from "react-hot-toast";
 
 const comfortaa = Comfortaa({
   variable: "--font-geist-sans",
@@ -37,12 +37,29 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         />
+        <meta name="theme-color" color="#1a211f" />
       </head>
       <body className={`${comfortaa.className} ${comfortaa.className} antialiased`}>
         <ToastContainer className="p-1 gap-1" />
-        <ThemeProvider>
-          <UserProvider>{children}</UserProvider>
-        </ThemeProvider>
+        <div>
+          <Toaster
+            toastOptions={{
+              // Define default options
+              className: "toast",
+              duration: 2000,
+              removeDelay: 1000,
+
+              // Default options for specific types
+              success: {
+                className: "toast success",
+              },
+              error: {
+                className: "toast error",
+              },
+            }}
+          />
+        </div>
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

@@ -5,15 +5,7 @@ import { useRouter } from "next/navigation";
 
 type top_app_bar_variant = "center" | "small" | "medium" | "large";
 
-export default function TopAppBar({
-  title,
-  variant,
-  withRail = false,
-}: {
-  title?: string;
-  variant?: top_app_bar_variant;
-  withRail?: boolean;
-}) {
+export default function TopAppBar({ title, variant, withRail = false }: { title?: string; variant?: top_app_bar_variant; withRail?: boolean }) {
   const router = useRouter();
 
   return !variant || variant == "center" || variant == "small" ? (
@@ -38,12 +30,7 @@ export default function TopAppBar({
     </>
   ) : (
     <>
-      <div
-        className={
-          (variant == "medium" ? styles.top_app_bar_md : styles.top_app_bar_lg) +
-          " " +
-          (withRail ? styles.with_rail : "")
-        }>
+      <div className={(variant == "medium" ? styles.top_app_bar_md : styles.top_app_bar_lg) + " " + (withRail ? styles.with_rail : "")}>
         <div className={styles.icons}>
           <div className={styles.leading_icon}>
             <Button

@@ -2,11 +2,15 @@
   padding: 8px 16px;
   display: flex;
   flex-direction: column;
-  gap: var(--sm);
+  gap: var(--md);
   /* align-items: stretch; */
   /* background-color: var(--surface); */
+}
+
+.full {
   width: 100%;
 }
+
 .without_pad {
   padding: 8px 0px;
 }

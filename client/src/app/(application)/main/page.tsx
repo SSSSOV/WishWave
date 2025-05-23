@@ -6,6 +6,8 @@ import Section from "@/components/ui/section/Section";
 import type { Metadata } from "next";
 import styles from "@/app/home.module.css";
 import { useRef } from "react";
+import { useUnit } from "effector-react";
+import { $count, clrClicked, incClicked } from "@/context/counter";
 
 // export const metadata: Metadata = {
 //   title: "Главная - WishWave",
@@ -23,6 +25,8 @@ export default function MainPage() {
       scrollContainerRef.current.scrollLeft += e.deltaY;
     }
   };
+
+  const [count, onIncClicked, onClrClicked] = useUnit([$count, incClicked, clrClicked]);
 
   return (
     <>
