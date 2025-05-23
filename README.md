@@ -110,7 +110,6 @@ Development of a web application for a wish list service for a diploma
 
 ---
 
-````markdown
 # API Documentation
 
 ## Authentication
@@ -128,7 +127,6 @@ Development of a web application for a wish list service for a diploma
   "password": "string"
 }
 ```
-````
 
 **Responses:**
 
