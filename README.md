@@ -258,7 +258,7 @@ _(User can only change own password)_
 ```json
 {
   "name": "string",
-  "price": number,
+  "price": "number",
   "image": "string",
   "productLink": "string"
 }
@@ -287,7 +287,7 @@ _Unbook a wish (checks booking ownership)_
 ```json
 {
   "name": "string",
-  "accesslevelId": number,
+  "accesslevelId": "number",
   "description": "string",
   "eventDate": "string"
 }
@@ -301,8 +301,8 @@ _Unbook a wish (checks booking ownership)_
 
 ```json
 {
-  "targetListId": number,
-  "wishId": number
+  "targetListId": "number",
+  "wishId": "number"
 }
 ```
 
