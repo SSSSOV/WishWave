@@ -121,8 +121,6 @@ export const fetchUserFx = createEffect(async () => {
       return;
     }
 
-    console.log(data);
-
     const userData: IUser = {
       id: data.id.toString(),
       login: data.login,
