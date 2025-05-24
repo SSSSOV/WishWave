@@ -249,4 +249,17 @@ export class WishlistService {
         await this.wishListWishRepository.create({wishlistId: targetListId, wishId});
     }
 
+    async searchFriendLists(requestId: number, friendId: number, nameSearch: string): Promise<WishList[]> {
+        const acceptedId = await this.getStatusId('accepted');
+        const friendship = await this.friendRepository.findOne({where: {friendstatusId: acceptedId, [Op.or]: [
+            {userid1: requestId, userid2: friendId}, {userid1: friendId, userid2: requestId}
+        ]}});
+        if (!friendship) {
+            throw new ForbiddenException('Вы не являетесь друзьями')
+        }
+
+        const lists = await this.wishListRepository.findAll({where: {userId: friendId, name: {[Op.iLike]: `%${nameSearch}%`}}, include: [{model: AccessLevel, as: 'accesslevel'}]});
+        return lists;
+    }
+
 }
