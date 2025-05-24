@@ -5,4 +5,5 @@ export class CreateWishlistDto {
     @ApiProperty() accesslevelId: number;
     @ApiProperty({required: false, type: 'string'}) description?: string;
     @ApiProperty({required: false, type: 'string', format: 'date'}) eventDate?: string;
+    
 }

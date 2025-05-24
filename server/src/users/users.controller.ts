@@ -1,5 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, ForbiddenException, Get, Param, ParseIntPipe, Patch, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
-import { createUserDto } from './dto/create-user.dto';
+import { BadRequestException, Body, Controller, Delete, ForbiddenException, Get, Param, ParseIntPipe, Patch, Post, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UserResponseDto } from './dto/user-response.dto';
@@ -26,6 +25,31 @@ export class UsersController {
             return dto;
     })
     } 
+
+    @UseGuards(JwtAuthGuard)
+    @Get('search')
+    async findByEmailOrLogin(@Req() req, @Query('email') email?: string, @Query('login') login?: string): Promise<UserResponseDto> {
+        if (!email && !login) {
+            throw new BadRequestException('Укажите email или login')
+        }
+
+        let user;
+        if (email) {
+            user = await this.usersService.getUserByEmail(email);
+        } else {
+            user = await this.usersService.getUserByLogin(login!);
+        }
+
+        if(!user) {
+            throw new BadRequestException('Пользователь не найден')
+        }
+
+        const plain = user.get({plain: true}) as any;
+        const {password, wishlist, ...rest} = plain;
+        const dto: UserResponseDto = {...rest, wishlists: Array.isArray(wishlist) ? wishlist: []};
+
+        return dto;
+    }
 
     @UseGuards(JwtAuthGuard)
     @Get(':id')

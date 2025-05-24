@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, ForbiddenException, Get, Param, ParseIntPipe, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, ForbiddenException, Get, Param, ParseIntPipe, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { WishlistService } from './wishlist.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateWishlistDto } from './dto/create-wishlist.dto';
@@ -53,6 +53,14 @@ export class WishlistController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @Patch(':targetListId/copy/:wishId')
+    async copyWish(@Param('targetListId', ParseIntPipe) targetListId: number, @Param('wishId', ParseIntPipe) wishId: number, @Req() req) {
+        const userId = req.user.id;
+        await this.wishListService.copyToList(userId, wishId, targetListId);
+        return {message: `Желание ${wishId} скопировано в список ${targetListId}`};
+    }
+
+    @UseGuards(JwtAuthGuard)
     @Delete(':id')
     async remove(@Param('id', ParseIntPipe) wishlistId: number, @Req() req) {
         const userId = req.user.id;
@@ -72,6 +80,24 @@ export class WishlistController {
         }
         const wishes = await this.wishListService.getWishesByListId(userId, id);
         return {wishes};
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('friend/:friendId/search')
+    async searchFriendLists(@Param('friendId', ParseIntPipe) friendId: number, @Query('name') name: string, @Req() req) {
+        if(!name) {
+            throw new BadRequestException('Укажите параметр name')
+        }
+
+        const requesterId = req.user.id as number;
+        const lists = await this.wishListService.searchFriendLists(requesterId, friendId, name);
+
+        return lists.map(list => {const plain = list.get({plain:true}) as any;
+            if (plain.accesslevelId === 3 && plain.shareToken) {
+                plain.shareToken = `${req.protocol}://${req.get('host')}/api/wishlist/${plain.id}?token=${plain.shareToken}`;
+            }
+            return plain;    
+        })
     }
 
 }

@@ -29,6 +29,23 @@ export class UsersService {
         return user;
     }
 
+    private normalizeData(input?: string): string | undefined {
+        if (!input) {
+            return undefined;
+        }
+        if(/^\d{4}-\d{2}-\d{2}$/.test(input)) {
+            return input;
+        }
+
+        const match = input.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+        if (!match) {
+            throw new BadRequestException(`Неподдерживаемый формат даты: ${input}. Ожидается dd.mm.yyyy`)
+        }
+
+        const [, dd, mm, yyyy] = match;
+        return `${yyyy}-${mm}-${dd}`;
+    }
+
     async updateUser(id: number, dto: UpdateUserDto, image?: Express.Multer.File): Promise<User> {
         const user = await this.userRepository.findByPk(id);
         if (!user) throw new Error('Пользователь не найден');
@@ -43,17 +60,16 @@ export class UsersService {
         }
 
         const updateData: any = { ...dto };
+        if ('birhDate' in dto) {
+            updateData.birthDate = this.normalizeData(dto.birhDate as string);
+        }
         if (filename) {
             updateData.image = filename;
         } else {
             delete updateData.image;
         }
 
-        console.log('About to update user:', updateData);
-
         await user.update(updateData);
-
-        console.log({ oldImage, incomingFile: !!image, dtoImageUrl: dto.image, filename });
 
         if (oldImage && filename && oldImage !== filename) {
             await this.fileService.deleteFile(oldImage);

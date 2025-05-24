@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { WishList } from './wishlist.model';
 import { CreateWishlistDto } from './dto/create-wishlist.dto';
@@ -7,7 +7,6 @@ import { AccessLevel } from 'src/accesslevel/accesslevel.model';
 import { User } from 'src/users/users.model';
 import { Op } from 'sequelize';
 import { Friend } from 'src/friend/friend.model';
-import { FriendUsers } from 'src/friend/friend-users.model';
 import { FriendStatus } from 'src/friendstatus/friendstatus.model';
 import { v4 as uuidv4 } from 'uuid';
 import { WishStatus } from 'src/wishstatus/wishstatus.model';
@@ -18,10 +17,38 @@ export class WishlistService {
     constructor(@InjectModel(WishList) private wishListRepository: typeof WishList, 
         @InjectModel(Friend) private friendRepository: typeof Friend, 
         @InjectModel(Wish) private wishRepository: typeof Wish,
-        @InjectModel(WishListWish) private wishListWishRepository: typeof WishListWish) {}
+        @InjectModel(WishListWish) private wishListWishRepository: typeof WishListWish,
+        @InjectModel(FriendStatus) private statusRepository: typeof FriendStatus) {}
+
+    private async getStatusId(name: string): Promise<number> {
+        const st = await this.statusRepository.findOne({where: {name}});
+        if(!st) {
+            throw new NotFoundException(`Статус дружбы ${name} не найден`);
+        }
+        return st.id
+    }
+
+    private normalizeData(input?: string): string | undefined {
+        if (!input) {
+            return undefined;
+        }
+        if(/^\d{4}-\d{2}-\d{2}$/.test(input)) {
+            return input;
+        }
+
+        const match = input.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+        if (!match) {
+            throw new BadRequestException(`Неподдерживаемый формат даты: ${input}. Ожидается dd.mm.yyyy`)
+        }
+
+        const [, dd, mm, yyyy] = match;
+        return `${yyyy}-${mm}-${dd}`;
+    }
 
     async create(dto: CreateWishlistDto, userId: number) {
         let shareToken: string | null = null;
+
+        dto.eventDate = this.normalizeData(dto.eventDate);
 
         if (dto.accesslevelId === 3) {
             shareToken = uuidv4();
@@ -69,7 +96,19 @@ export class WishlistService {
         if (!wl) {
             throw new NotFoundException('Список не найден');
         }
-        await wl.update(dto);
+
+        const updateData: any ={...dto};
+        if ('eventDate' in dto) {
+            updateData.eventDate = this.normalizeData(dto.eventDate as string);
+        }
+
+        if (dto.accesslevelId === 3 && !wl.shareToken) {
+            updateData.shareToken = uuidv4();
+        } else if (dto.accesslevelId !== 3) {
+            updateData.shareToken = null;
+        }
+
+        await wl.update(updateData);
         return wl;
     }
 
@@ -124,14 +163,20 @@ export class WishlistService {
                 }
                 return true;
             case 'friends':
-                const relation = await this.friendRepository.findOne({
-                    include: [
-                    { model: FriendUsers, where: { userId } },
-                    { model: FriendUsers, where: { userId: wishlist.userId } },
-                    { model: FriendStatus, where: { name: { [Op.or]: ['accepted', 'друзья'] } } },
-                    ]
+                if (userId === null) { 
+                    return false;
+                }
+                const acceptedId = await this.getStatusId('accepted');
+                const friendship = await this.friendRepository.findOne({
+                    where : {
+                        friendstatusId: acceptedId,
+                        [Op.or]: [
+                            {userid1: userId, userid2: wishlist.userId},
+                            {userid1: wishlist.userId, userid2: userId}
+                        ]
+                    }
                 });
-                return Boolean(relation);
+                return !!friendship;
             default:
                 return false;
         }
@@ -177,6 +222,44 @@ export class WishlistService {
         await this.wishListWishRepository.create({wishlistId: targetListId, wishId: cloned.id});
 
         return cloned;
+    }
+
+    async copyToList(userId: number, wishId: number, targetListId: number): Promise<void> {
+        const link = await this.wishListWishRepository.findOne({where: {wishId}});
+        if (!link) {
+            throw new NotFoundException('Оригинальное желание не найдено ни в одном списке')
+        }
+
+        const originList = await this.wishListRepository.findByPk(link.wishlistId, {attributes: ['userId']});
+        if (!originList) {
+            throw new NotFoundException('Список не найден')
+        }
+        if (originList.userId !== userId) {
+            throw new ForbiddenException('Копировать можно только свои желания')
+        }
+        if (!(await this.isOwner(userId, targetListId))) {
+            throw new ForbiddenException('Нельзя копировать в чужой список')
+        }
+
+        const already = await this.wishListWishRepository.findOne({where: {wishId, wishlistId: targetListId}});
+        if (already) {
+            throw new ConflictException('Желание уже есть в целевом списке')
+        }
+
+        await this.wishListWishRepository.create({wishlistId: targetListId, wishId});
+    }
+
+    async searchFriendLists(requestId: number, friendId: number, nameSearch: string): Promise<WishList[]> {
+        const acceptedId = await this.getStatusId('accepted');
+        const friendship = await this.friendRepository.findOne({where: {friendstatusId: acceptedId, [Op.or]: [
+            {userid1: requestId, userid2: friendId}, {userid1: friendId, userid2: requestId}
+        ]}});
+        if (!friendship) {
+            throw new ForbiddenException('Вы не являетесь друзьями')
+        }
+
+        const lists = await this.wishListRepository.findAll({where: {userId: friendId, name: {[Op.iLike]: `%${nameSearch}%`}}, include: [{model: AccessLevel, as: 'accesslevel'}]});
+        return lists;
     }
 
 }

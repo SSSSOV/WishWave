@@ -1,4 +1,4 @@
-import {Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import {BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
 import { WishList } from "./wishlist.model";
 import { Wish } from "src/wish/wish.model";
 
@@ -19,4 +19,10 @@ export class WishListWish extends Model<WishListWish, WishListWishCreationAttrs>
     @ForeignKey(()=>Wish)
     @Column({type: DataType.INTEGER, field: "wish_id"})
     declare wishId: number;
+
+    @BelongsTo(() => WishList, {foreignKey: 'wishlistId', as: 'wishList'})
+    wishList: WishList;
+
+    @BelongsTo(() => Wish, {foreignKey: 'wishId', as: 'wish'})
+    wish: Wish;
 }

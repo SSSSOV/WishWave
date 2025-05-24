@@ -6,6 +6,7 @@ import { FriendStatus } from "src/friendstatus/friendstatus.model";
 interface FriendCreationAttrs {
     userid1: number;
     userid2: number;
+    friendstatusId: number;
 }
 
 @Table({tableName: 'friend'})
@@ -14,14 +15,14 @@ export class Friend extends Model<Friend, FriendCreationAttrs> {
     declare id: number;
 
     @Column({type: DataType.INTEGER, allowNull: false})
-    userid1: number;
+    declare userid1: number;
 
     @Column({type: DataType.INTEGER, allowNull: false})
-    userid2: number;
+    declare userid2: number;
 
     @ForeignKey(() => FriendStatus)
     @Column({type: DataType.INTEGER})
-    friendstatusId: number;
+    declare friendstatusId: number;
 
     @BelongsToMany(() => User, () => FriendUsers)
     users: User[];
