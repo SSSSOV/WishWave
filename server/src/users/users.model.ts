@@ -5,7 +5,6 @@ import { Friend } from "src/friend/friend.model";
 import { Role } from "src/roles/roles.model";
 import { Wish } from "src/wish/wish.model";
 import { WishList } from "src/wishlist/wishlist.model";
-import { WishStatus } from "src/wishstatus/wishstatus.model";
 
 interface UserCreationAttrs {
     login: string;
@@ -13,6 +12,7 @@ interface UserCreationAttrs {
     email: string;
     roleId: number;
     banId?: number;
+    fullName?: string;
 }
 
 @Table({ tableName: "users" })
@@ -21,7 +21,7 @@ export class User extends Model<User, UserCreationAttrs> {
   declare id: number;
 
   @Column({ type: DataType.STRING, allowNull: true })
-  declare fullname: string;
+  declare fullName: string;
 
   @Column({ type: DataType.STRING, unique: true, allowNull: false })
   declare login: string;

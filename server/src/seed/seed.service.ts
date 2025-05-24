@@ -77,7 +77,7 @@ export class SeedService implements OnModuleInit {
       email,
       password: passwordHash,
       roleId: adminRole.id,
-      fullname: "Администратор",
+      fullName: "Администратор",
     });
 
     console.log("root created!");
