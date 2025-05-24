@@ -23,6 +23,7 @@
   text-wrap: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: center;
 }
 .selected_item_icon {
   background-color: var(--secondary-container);

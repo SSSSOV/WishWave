@@ -26,7 +26,7 @@ export class SeedService implements OnModuleInit {
   }
 
   async seedAccessLevels() {
-    const defaultLevels = ['public', 'private', 'linkOnly', 'friends'];
+    const defaultLevels = ["public", "private", "linkOnly", "friends"];
     for (const name of defaultLevels) {
       const [level, created] = await this.accessLevelModel.findOrCreate({ where: { name } });
     }
@@ -44,7 +44,7 @@ export class SeedService implements OnModuleInit {
   }
 
   async seedWishStatuses() {
-    const statuses = ['active', 'reserved', 'completed'];
+    const statuses = ["active", "reserved", "completed"];
     for (const name of statuses) {
       await this.wishStatusModel.findOrCreate({ where: { name } });
     }
@@ -59,21 +59,27 @@ export class SeedService implements OnModuleInit {
 
 
   async seedAdminUser() {
-    const adminRole = await this.roleModel.findOne({where: {value: 'admin'}});
+    const adminRole = await this.roleModel.findOne({ where: { value: "admin" } });
     if (!adminRole) {
-      return
+      return;
     }
 
-    const login = 'root'
-    const email = 'root@mail.ru'
-    const existing = await this.userModel.findOne({where: {login}});
+    const login = "root";
+    const email = "root@mail.ru";
+    const existing = await this.userModel.findOne({ where: { login } });
     if (existing) {
-      return
+      return;
     }
 
-    const passwordHash = await bcrypt.hash('root', 10);
-    await this.userModel.create({login, email, password: passwordHash, roleId: adminRole.id, fullName: 'Администратор'});
-    
-    console.log('root created!')
+    const passwordHash = await bcrypt.hash("root", 10);
+    await this.userModel.create({
+      login,
+      email,
+      password: passwordHash,
+      roleId: adminRole.id,
+      fullname: "Администратор",
+    });
+
+    console.log("root created!");
   }
 }

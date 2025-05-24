@@ -18,15 +18,11 @@ export default function Content({
   return (
     <div
       className={
-        (withoutPad ? "" : style.content) +
+        style.h +
         " " +
-        (topBarSize == "sm"
-          ? style.top_sm
-          : topBarSize == "md"
-          ? style.top_md
-          : topBarSize == "lg"
-          ? style.top_lg
-          : style.top_none) +
+        (withoutPad ? "" : "") +
+        " " +
+        (topBarSize == "sm" ? style.top_sm : topBarSize == "md" ? style.top_md : topBarSize == "lg" ? style.top_lg : style.top_none) +
         " " +
         (isScreen ? style.screen : "") +
         " " +

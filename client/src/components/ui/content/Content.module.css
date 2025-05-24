@@ -1,14 +1,14 @@
 .top_sm {
-  margin-top: 56px;
+  padding-top: 56px;
 }
 .top_md {
-  margin-top: 56px;
+  padding-top: 56px;
 }
 .top_lg {
-  margin-top: 136px;
+  padding-top: 136px;
 }
 .top_none {
-  margin-top: 0px;
+  padding-top: 0px;
 }
 
 .screen {
@@ -20,12 +20,13 @@
 }
 
 .nav_rail {
-  margin-left: 72px;
+  padding-left: 72px;
 }
 .nav_bar {
-  margin-bottom: 72px;
+  padding-bottom: 84px;
 }
-.content {
-  padding-top: var(--lg);
-  padding-bottom: var(--lg);
+
+.h {
+  min-height: 100vh;
+  z-index: 1;
 }

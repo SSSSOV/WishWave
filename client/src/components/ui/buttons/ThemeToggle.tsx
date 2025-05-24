@@ -4,10 +4,7 @@ import { useTheme } from "@/context/ThemeContext";
 import Button from "./Button";
 import style from "./ThemeToggle.module.css";
 
-export function ThemeToggle({
-  isAbsolute,
-  ...props
-}: { isAbsolute?: boolean } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
+export function ThemeToggle({ isAbsolute, ...props }: { isAbsolute?: boolean } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "color">) {
   const { theme, toggleTheme } = useTheme();
 
   return isAbsolute ? (
