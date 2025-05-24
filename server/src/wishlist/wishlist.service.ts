@@ -1,4 +1,4 @@
-import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { WishList } from './wishlist.model';
 import { CreateWishlistDto } from './dto/create-wishlist.dto';
@@ -28,8 +28,27 @@ export class WishlistService {
         return st.id
     }
 
+    private normalizeData(input?: string): string | undefined {
+        if (!input) {
+            return undefined;
+        }
+        if(/^\d{4}-\d{2}-\d{2}$/.test(input)) {
+            return input;
+        }
+
+        const match = input.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+        if (!match) {
+            throw new BadRequestException(`Неподдерживаемый формат даты: ${input}. Ожидается dd.mm.yyyy`)
+        }
+
+        const [, dd, mm, yyyy] = match;
+        return `${yyyy}-${mm}-${dd}`;
+    }
+
     async create(dto: CreateWishlistDto, userId: number) {
         let shareToken: string | null = null;
+
+        dto.eventDate = this.normalizeData(dto.eventDate);
 
         if (dto.accesslevelId === 3) {
             shareToken = uuidv4();
@@ -77,7 +96,19 @@ export class WishlistService {
         if (!wl) {
             throw new NotFoundException('Список не найден');
         }
-        await wl.update(dto);
+
+        const updateData: any ={...dto};
+        if ('eventDate' in dto) {
+            updateData.eventDate = this.normalizeData(dto.eventDate as string);
+        }
+
+        if (dto.accesslevelId === 3 && !wl.shareToken) {
+            updateData.shareToken = uuidv4();
+        } else if (dto.accesslevelId !== 3) {
+            updateData.shareToken = null;
+        }
+
+        await wl.update(updateData);
         return wl;
     }
 
