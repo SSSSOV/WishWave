@@ -71,8 +71,6 @@ export class UsersService {
 
         await user.update(updateData);
 
-        console.log({ oldImage, incomingFile: !!image, dtoImageUrl: dto.image, filename });
-
         if (oldImage && filename && oldImage !== filename) {
             await this.fileService.deleteFile(oldImage);
         }
