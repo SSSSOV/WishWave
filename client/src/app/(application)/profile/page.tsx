@@ -132,7 +132,15 @@ export default function ProfilePage() {
           <ListItem
             condition={2}
             overline="Дата рождения"
-            headline={user.birthday ? user.birthday : "Не указано"}
+            headline={
+              user.birthday
+                ? new Date(user.birthday).toLocaleDateString(undefined, {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })
+                : "Не указано"
+            }
             trailing_type="icon"
             isLoading={isLoading}
             onClick={() => {
