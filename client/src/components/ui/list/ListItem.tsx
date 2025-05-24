@@ -59,7 +59,7 @@ export default function ListItem({
       )}
 
       <div className={style.content}>
-        <span className={style.overline}>{overline}</span>
+        <p className={style.overline}>{overline}</p>
         {isLoading ? <div className={style.load_div}></div> : <span className={style.headline}>{headline}</span>}
       </div>
 

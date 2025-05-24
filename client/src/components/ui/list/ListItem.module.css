@@ -25,16 +25,16 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 4px;
+  /* gap: 4px; */
 }
 .condition1 {
-  height: 56px;
+  height: 40px;
 }
 .condition2 {
-  height: 72px;
+  height: 56px;
 }
 .condition3 {
-  height: 56px;
+  height: 72px;
 }
 .clickable {
   cursor: pointer;

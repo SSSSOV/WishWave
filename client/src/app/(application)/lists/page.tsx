@@ -7,8 +7,9 @@ import ListItem from "@/components/ui/list/ListItem";
 import NavigationBar from "@/components/ui/navigation_bar/NavigationBar";
 import Section from "@/components/ui/section/Section";
 import TopAppBar from "@/components/ui/top_app_bar/TopAppBar";
-import { $wishLists, handleAddWishList, handleFetchWishLists } from "@/context/wish_lists";
+import { $wishLists, handleCreateWishList, handleFetchWishLists, handleSetWishList } from "@/context/wish_lists";
 import { sortWishListsByDate } from "@/lib/utils/lists";
+import { IWishList } from "@/types/wish_lists";
 import { useUnit } from "effector-react";
 import type { Metadata } from "next";
 import { useRouter } from "next/navigation";
@@ -19,58 +20,65 @@ export default function ListsPage() {
   const router = useRouter();
 
   // Стор
-  const [wishLists, fetchWishLists] = useUnit([$wishLists, handleFetchWishLists]);
+  const [wishLists, fetchWishLists, setWishList] = useUnit([$wishLists, handleFetchWishLists, handleSetWishList]);
 
   // Эффекты
   useEffect(() => {
     fetchWishLists();
-    console.log(wishLists);
   }, []);
 
-  useEffect(() => {
-    console.log(wishLists);
-  }, [wishLists]);
+  // Обработчики событий
+  const handleOpen = (id: number) => {
+    setWishList(wishLists.find((list) => list.id == id) as IWishList);
+    router.push(`/lists/${id}`);
+  };
 
   return (
     <>
-      <Section padding_top_size="lg">
+      <Section padding_top_size="lg" padding_bot_size="xs">
         <Input labelText="Название" leadingIcon="search" trailingIcon="cancel"></Input>
-        <Section withoutPad align_items="center">
+        <Section withoutPad align_items="right">
           <Button
-            variant="filled"
+            variant="text"
             icon="add"
             onClick={() => {
               router.push("lists/add/");
             }}>
-            Создать список
+            список
           </Button>
         </Section>
       </Section>
-
-      <Section title="Все ваши списки" padding_top_size="lg">
+      <Section>
+        <hr />
+      </Section>
+      <Section title="Все ваши списки" padding_top_size="xs">
         <List withoutPad>
-          {wishLists.length > 0
-            ? sortWishListsByDate(wishLists, "asc").map((list) => {
-                return (
-                  <ListItem
-                    key={list.id}
-                    condition={2}
-                    headline={list.name}
-                    overline={new Date(list.eventDate).toLocaleDateString(undefined, {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                    leading_type="icon"
-                    leading={
-                      list.accesslevelId == 1 ? "visibility" : list.accesslevelId == 2 ? "visibility_off" : list.accesslevelId == 3 ? "link" : "group"
-                    }
-                    trailing_type="icon"
-                    onClick={() => router.push(`/lists/${list.id}`)}
-                  />
-                );
-              })
-            : "Пусто"}
+          {wishLists.length > 0 ? (
+            sortWishListsByDate(wishLists, "asc").map((list) => {
+              return (
+                <ListItem
+                  key={list.id}
+                  condition={2}
+                  headline={list.name}
+                  overline={new Date(list.eventDate).toLocaleDateString(undefined, {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                  leading_type="icon"
+                  leading={
+                    list.accesslevelId == 1 ? "visibility" : list.accesslevelId == 2 ? "visibility_off" : list.accesslevelId == 3 ? "link" : "group"
+                  }
+                  trailing_type="icon"
+                  onClick={() => handleOpen(list.id)}
+                />
+              );
+            })
+          ) : (
+            <Section align_items="center" withoutPad>
+              пусто
+            </Section>
+          )}
         </List>
       </Section>
     </>
