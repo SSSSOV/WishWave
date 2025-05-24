@@ -1,23 +1,39 @@
 "use client";
 
-import { IWishList } from "@/types/wish_lists";
+import { ICreateWishList, IUpdateWishList, IWishList } from "@/types/wish_lists";
 import { createEffect, createEvent, createStore, sample } from "effector";
 import toast from "react-hot-toast";
 import { setAuth } from "../user";
 import api from "@/api";
 
-// Сторы
+// СТОРЫ
+
+/** Хранилище со списоком желаний */
+export const $wishList = createStore<IWishList>({} as IWishList);
+/** Хранилище со списками желаний */
 export const $wishLists = createStore<IWishList[]>([] as IWishList[]);
 
-// События
-export const setWishLists = createEvent<IWishList[]>();
+// СОБЫТИЯ
+
+/** Обработчик события смены состояния $wishLists */
+export const handleSetWishLists = createEvent<IWishList[]>();
+/** Обработчик события получения списков желаний */
 export const handleFetchWishLists = createEvent();
-export const handleAddWishList = createEvent<IWishList>();
 
-// Подписки
-$wishLists.on(setWishLists, (_, lists) => lists);
+/** Обработчик события смены состояния $wishList */
+export const handleSetWishList = createEvent<IWishList>();
+/** Обработчик события получения списка желаний */
+export const handleFetchWishList = createEvent();
+/** Обработчик события добавления списка желаний */
+export const handleCreateWishList = createEvent<ICreateWishList>();
+/** Обработчик события удаления списка желаний */
+export const handleDeleteWishList = createEvent<number>();
+/** Обработчик события изменения списка желаний */
+export const handleUpdateWishList = createEvent<IUpdateWishList>();
 
-// Эффекты
+// ЭФФЕКТЫ
+
+/** Эффект для получения списков желаний через API */
 export const fetchWishListsFx = createEffect(async () => {
   try {
     const token = localStorage.getItem("auth");
@@ -38,16 +54,42 @@ export const fetchWishListsFx = createEffect(async () => {
       return;
     }
 
-    setWishLists(data);
+    handleSetWishLists(data);
   } catch (error) {
     toast.error("Ошибка получения списка желаний: " + error);
     throw error;
   }
 });
 
-export const addWishListFx = createEffect(async ({ name, accesslevelId, description, eventDate }: IWishList) => {
+/** Эффект для создания списка желаний через API */
+export const createWishListFx = createEffect(async (params: ICreateWishList) => {
   try {
-    console.log("start addWishListFx");
+    const token = localStorage.getItem("auth");
+
+    if (!token) {
+      toast.error("Отсутствует токен авторизации!");
+      setAuth(false);
+      return null;
+    }
+
+    const { data } = await api.post("/api/wishlist", params, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (data.warningMessage) {
+      toast.error(data.warningMessage);
+      return null;
+    }
+
+    return data as IWishList;
+  } catch (error) {
+    toast.error("Ошибка получения списка желаний: " + error);
+    throw error;
+  }
+});
+/** Эффект для удаления списка желаний через API */
+export const deleteWishListFx = createEffect(async (id: number) => {
+  try {
     const token = localStorage.getItem("auth");
 
     if (!token) {
@@ -56,8 +98,33 @@ export const addWishListFx = createEffect(async ({ name, accesslevelId, descript
       return;
     }
 
-    const { data } = await api.post(
-      "/api/wishlist",
+    const { data } = await api.delete("/api/wishlist/" + id, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (data.warningMessage) {
+      toast.error(data.warningMessage);
+      return;
+    }
+  } catch (error) {
+    toast.error("Ошибка получения списка желаний: " + error);
+    setAuth(false);
+    throw error;
+  }
+});
+/** Эффект для изменения списка желаний через API */
+export const updateWishListFx = createEffect(async ({ id, name, accesslevelId, description, eventDate }: IUpdateWishList) => {
+  try {
+    const token = localStorage.getItem("auth");
+
+    if (!token) {
+      toast.error("Отсутствует токен авторизации!");
+      setAuth(false);
+      return null;
+    }
+
+    const { data } = await api.patch(
+      "/api/wishlist/" + id,
       { name, accesslevelId, description, eventDate },
       {
         headers: { Authorization: `Bearer ${token}` },
@@ -66,26 +133,36 @@ export const addWishListFx = createEffect(async ({ name, accesslevelId, descript
 
     if (data.warningMessage) {
       toast.error(data.warningMessage);
-      setAuth(false);
-      return;
+      return null;
     }
 
-    console.log(data);
-    console.log("end addWishListFx");
+    return data as IWishList;
   } catch (error) {
     toast.error("Ошибка получения списка желаний: " + error);
-    setAuth(false);
     throw error;
   }
 });
 
-export const deleteWishListFx = createEffect(async () => {});
-// Тригеры
-sample({
-  clock: handleFetchWishLists,
-  target: fetchWishListsFx,
-});
-sample({
-  clock: handleAddWishList,
-  target: addWishListFx,
-});
+// ПОДПИСКИ
+
+$wishLists
+  .on(handleSetWishLists, (_, lists) => lists) // Установка значения для $wishLists
+  .on(handleDeleteWishList, (state, id) => state.filter((list) => list.id != id)) // Удаление списка из стора
+  .on(createWishListFx.doneData, (state, result) => (result ? [...state, result] : state))
+  .on(updateWishListFx.doneData, (state, result) => (result ? state.map((list) => (list.id == result.id ? result : list)) : state));
+
+$wishList
+  .on(handleSetWishList, (_, list) => list) // Установка значения для $wishList
+  .on(createWishListFx.doneData, (state, result) => (result ? result : state))
+  .on(updateWishListFx.doneData, (state, result) => (result ? result : state));
+
+// ТРИГГЕРЫ
+
+/** Эффект получения списков при событии получения */
+sample({ clock: handleFetchWishLists, target: fetchWishListsFx });
+/** Эффект создания списка через API при событии создания */
+sample({ clock: handleCreateWishList, target: createWishListFx });
+/** Эффект удаления списка через API при событии удаления */
+sample({ clock: handleDeleteWishList, target: deleteWishListFx });
+/** Эффект изменения списка через API при событии изменения */
+sample({ clock: handleUpdateWishList, target: updateWishListFx });

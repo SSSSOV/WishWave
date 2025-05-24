@@ -3,28 +3,37 @@
 import Button from "@/components/ui/buttons/Button";
 import Input from "@/components/ui/inputs/Input";
 import Section from "@/components/ui/section/Section";
-import { handleCreateWishList } from "@/context/wish_lists";
+import { $wishList, handleUpdateWishList, handleSetWishList } from "@/context/wish_lists";
 import { useUnit } from "effector-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function AddListPage() {
-  // Роутер
+export default function EditWishListPage() {
+  //Роутер
   const router = useRouter();
 
-  // Стор
-  const [createWishList] = useUnit([handleCreateWishList]);
+  // Контекст
+  const [wishList, updateWishList, setWishList] = useUnit([$wishList, handleUpdateWishList, handleSetWishList]);
 
   // Переменные
   const [name, setName] = useState("");
   const [date, setDate] = useState("");
-  const [desc, setDisc] = useState("");
+  const [description, setDescription] = useState("");
   const [access, setAccess] = useState(0);
 
+  // Эффекты
+  useEffect(() => {
+    setName(wishList.name);
+    setDate(wishList.eventDate);
+    setDescription(wishList.description);
+    setAccess(wishList.accesslevelId);
+  }, []);
+
+  // Обработчики
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      createWishList({ name: name, eventDate: date, description: desc, accesslevelId: access });
+      updateWishList({ id: wishList.id, name: name, accesslevelId: access, description: description, eventDate: date });
       router.back();
     } catch (error) {
       console.log(error);
@@ -34,29 +43,10 @@ export default function AddListPage() {
   return (
     <>
       <form action="" onSubmit={handleSubmit}>
-        <Section title="Введите информацию о списке:" padding_top_size="lg">
-          <Input
-            labelText="Название"
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-            }}
-          />
-          <Input
-            labelText="Дата события (гггг-мм-дд)"
-            value={date}
-            onChange={(e) => {
-              setDate(e.target.value);
-            }}
-          />
-
-          <Input
-            labelText="Описание"
-            value={desc}
-            onChange={(e) => {
-              setDisc(e.target.value);
-            }}
-          />
+        <Section padding_top_size="lg">
+          <Input labelText="Название" value={name} onChange={(e) => setName(e.target.value)} />
+          <Input labelText="Дата" value={date} onChange={(e) => setDate(e.target.value)} />
+          <Input labelText="Описание" value={description} onChange={(e) => setDescription(e.target.value)} />
           <Section title="Уровеь доступа" withoutPad>
             <Section items_direction="row" withoutPad>
               <input
@@ -67,6 +57,7 @@ export default function AddListPage() {
                 onChange={(e) => {
                   setAccess(Number(e.target.value));
                 }}
+                checked={access === 1}
               />
               <label htmlFor="public">Публичный</label>
             </Section>
@@ -79,6 +70,7 @@ export default function AddListPage() {
                 onChange={(e) => {
                   setAccess(Number(e.target.value));
                 }}
+                checked={access === 2}
               />
               <label htmlFor="private">Приватный</label>
             </Section>
@@ -91,6 +83,7 @@ export default function AddListPage() {
                 onChange={(e) => {
                   setAccess(Number(e.target.value));
                 }}
+                checked={access === 3}
               />
               <label htmlFor="link">По ссылке</label>
             </Section>
@@ -103,13 +96,15 @@ export default function AddListPage() {
                 onChange={(e) => {
                   setAccess(Number(e.target.value));
                 }}
+                checked={access === 4}
               />
               <label htmlFor="friends">Для друзей</label>
             </Section>
           </Section>
         </Section>
-        <Section align_items="right" padding_bot_size="lg">
-          <Section items_direction="row" isFit withoutPad>
+
+        <Section padding_top_size="lg" padding_bot_size="lg">
+          <div className="flex justify-end">
             <Button
               variant="text"
               type="reset"
@@ -119,9 +114,9 @@ export default function AddListPage() {
               Отмена
             </Button>
             <Button variant="filled" type="submit">
-              Создать
+              Сохранить
             </Button>
-          </Section>
+          </div>
         </Section>
       </form>
     </>
