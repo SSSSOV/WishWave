@@ -108,12 +108,11 @@ export const deleteWishListFx = createEffect(async (id: number) => {
     }
   } catch (error) {
     toast.error("Ошибка получения списка желаний: " + error);
-    setAuth(false);
     throw error;
   }
 });
 /** Эффект для изменения списка желаний через API */
-export const updateWishListFx = createEffect(async ({ id, name, accesslevelId, description, eventDate }: IUpdateWishList) => {
+export const updateWishListFx = createEffect(async (params: IUpdateWishList) => {
   try {
     const token = localStorage.getItem("auth");
 
@@ -123,13 +122,9 @@ export const updateWishListFx = createEffect(async ({ id, name, accesslevelId, d
       return null;
     }
 
-    const { data } = await api.patch(
-      "/api/wishlist/" + id,
-      { name, accesslevelId, description, eventDate },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+    const { data } = await api.patch("/api/wishlist/" + params.id, params, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
     if (data.warningMessage) {
       toast.error(data.warningMessage);

@@ -75,15 +75,15 @@ export default function WishListPage() {
       <Section>
         <hr />
       </Section>
-      <Section title="желания" padding_top_size="lg" padding_bot_size="lg" align_items="center">
-        {/* <List withoutPad>
-          {currentList.wishes.length > 0 ? (
-            currentList.wishes.map(wish => (
+      <Section title="желания" padding_top_size="lg" padding_bot_size="lg">
+        <List withoutPad>
+          {wishList.wishes && wishList.wishes.length > 0 ? (
+            wishList.wishes.map((wish) => (
               <ListItem
                 key={wish.id}
                 condition={2}
                 headline={wish.name}
-                overline={`${wish.price ? `${wish.price} ₽` : 'Цена не указана'}`}
+                overline={`${wish.price ? `${wish.price} ₽` : "Цена не указана"}`}
                 leading_type="icon"
                 leading="favorite"
                 trailing_type="icon"
@@ -92,7 +92,7 @@ export default function WishListPage() {
           ) : (
             <p>В этом списке пока нет желаний</p>
           )}
-        </List> */}
+        </List>
       </Section>
     </>
   );
