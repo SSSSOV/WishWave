@@ -12,7 +12,7 @@ import { RolesModule } from 'src/roles/roles.module';
 import { Wish } from 'src/wish/wish.model';
 import { AuthModule } from 'src/auth/auth.module';
 import { FileModule } from 'src/file/file.module';
-import { FileService } from 'src/file/file.service';
+import { FriendModule } from 'src/friend/friend.module';
 
 @Module({
   controllers: [UsersController],
@@ -22,6 +22,7 @@ import { FileService } from 'src/file/file.service';
     RolesModule,
     FileModule,
     forwardRef(() => AuthModule),
+    forwardRef(() => FriendModule),
   ],
   exports: [
     UsersService

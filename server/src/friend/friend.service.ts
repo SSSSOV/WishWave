@@ -4,6 +4,7 @@ import { Friend } from './friend.model';
 import { FriendUsers } from './friend-users.model';
 import { FriendStatus } from 'src/friendstatus/friendstatus.model';
 import { User } from 'src/users/users.model';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class FriendService {
@@ -136,4 +137,11 @@ export class FriendService {
         return {message: 'Вы больше не друзья'};
     }
 
+    async areFriends(userA: number, userB: number): Promise<boolean> {
+        const acceptedId = await this.getStatusId('accepted');
+        const fr = await this.friendRepository.findOne({where: {friendstatusId: acceptedId, [Op.or]: [
+            {userid1: userA, userid2: userB}, {userid1: userB, userid2: userA}
+        ]}});
+        return !!fr;
+    }
 }

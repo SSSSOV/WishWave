@@ -9,6 +9,7 @@ import { WishList } from 'src/wishlist/wishlist.model';
 import { FileService } from 'src/file/file.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcryptjs'
+import { UserResponseDto } from './dto/user-response.dto';
 
 @Injectable()
 export class UsersService {
@@ -140,5 +141,13 @@ export class UsersService {
 
         const hash = await bcrypt.hash(newPassword, 10);
         await user.update({ password: hash });
+    }
+
+    async getProfileDto(id: number): Promise<UserResponseDto> {
+        const user = await this.getUserById(id);
+        const plain = user.get({plain: true}) as any;
+        const {password, wishlist, ...rest} = plain;
+
+        return {...rest, wishlists: Array.isArray(wishlist) ? wishlist.map((l: any) => ({id: l.id, name: l.name, description: l.description, eventDate: l.eventDate, accesslevelId: l.accesslevelId})):[]};
     }
 }

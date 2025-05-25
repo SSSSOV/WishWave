@@ -14,6 +14,7 @@ import { AuthModule } from 'src/auth/auth.module';
   imports: [
     SequelizeModule.forFeature([Friend, User, FriendUsers, FriendStatus]),
     AuthModule
-  ]
+  ],
+  exports: [FriendService]
 })
 export class FriendModule {}
