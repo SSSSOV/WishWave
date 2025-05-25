@@ -6,11 +6,12 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { FileService } from 'src/file/file.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { FriendService } from 'src/friend/friend.service';
 
 @Controller('user')
 export class UsersController {
 
-    constructor(private readonly usersService: UsersService, private fileService: FileService) { }
+    constructor(private readonly usersService: UsersService, private fileService: FileService, private readonly friendService: FriendService) { }
 
     @UseGuards(JwtAuthGuard)
     @Get()
@@ -58,13 +59,16 @@ export class UsersController {
         const userId = req.user.id;
 
         if (userRole !== 'admin' && userId !== id) {
-            throw new ForbiddenException('Можно смотреть только свой профиль');
+            const friends = await this.friendService.areFriends(userId, id);
+            if (!friends) {
+                throw new ForbiddenException('Профиль доступен только друзьям');
+        
+            }
         }
+
         const user = await this.usersService.getUserById(id);
         const plain = user.get({plain: true}) as any;
-
         const {password, wishlist, ...rest} = plain;
-
         const dto: UserResponseDto = {...rest, wishlists: Array.isArray(wishlist) ? wishlist: []};
 
         return dto;

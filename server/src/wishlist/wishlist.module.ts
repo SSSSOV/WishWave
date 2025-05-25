@@ -11,6 +11,7 @@ import { AuthModule } from 'src/auth/auth.module';
 import { Friend } from 'src/friend/friend.model';
 import { FriendUsers } from 'src/friend/friend-users.model';
 import { FriendStatus } from 'src/friendstatus/friendstatus.model';
+import { ProfanityModule } from 'src/profanity/profanity.module';
 
 @Module({
   providers: [WishlistService],
@@ -18,6 +19,7 @@ import { FriendStatus } from 'src/friendstatus/friendstatus.model';
   imports: [
     SequelizeModule.forFeature([WishList, Wish, WishListWish, AccessLevel, User, Friend, FriendUsers, FriendStatus]),
     AuthModule,
+    ProfanityModule
   ],
   exports: [WishlistService]
 })

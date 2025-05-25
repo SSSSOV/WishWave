@@ -25,11 +25,13 @@ import { AuthModule } from "./auth/auth.module";
 import { FileModule } from "./file/file.module";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { SeedService } from './seed/seed.service';
+import { ProfanityService } from './profanity/profanity.service';
+import { ProfanityModule } from './profanity/profanity.module';
 import * as path from 'path';
 
 @Module({
     controllers: [],
-    providers: [SeedService],
+    providers: [SeedService, ProfanityService],
     imports: [
         ConfigModule.forRoot({
             envFilePath: `.${process.env.NODE_ENV}.env`
@@ -64,6 +66,7 @@ import * as path from 'path';
         WishstatusModule,
         AuthModule,
         FileModule,
+        ProfanityModule,
       ]
 })
 export class AppModule {}

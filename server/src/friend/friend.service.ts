@@ -4,6 +4,7 @@ import { Friend } from './friend.model';
 import { FriendUsers } from './friend-users.model';
 import { FriendStatus } from 'src/friendstatus/friendstatus.model';
 import { User } from 'src/users/users.model';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class FriendService {
@@ -29,6 +30,19 @@ export class FriendService {
         if (!target) {
             throw new NotFoundException('Целевой пользователь не найден')
         }
+        
+        const incoming = await this.friendRepository.findOne({where: {userid1: targetUserId, userid2: userId}});
+        if (incoming) {
+            const pendingId = await this.getStatusId('pending');
+            const acceptedId = await this.getStatusId('accepted');
+
+            if (incoming.friendstatusId === pendingId) {
+                throw new BadRequestException('Пользователь уже отправил вам заявку в друзья')
+            }
+            if (incoming.friendstatusId === acceptedId) {
+                throw new BadRequestException('Вы уже друзья с этим пользователем')
+            }
+        }
 
         const existing = await this.friendRepository.findOne({where: {userid1: userId, userid2: targetUserId}});
         if (existing) {
@@ -37,6 +51,7 @@ export class FriendService {
         if (!you) {
             throw new NotFoundException('Отправитель не найден')
         }
+
 
         const pendingId = await this.getStatusId('pending');
         const fr = await this.friendRepository.create({userid1: userId, userid2: targetUserId, friendstatusId: pendingId});
@@ -136,4 +151,11 @@ export class FriendService {
         return {message: 'Вы больше не друзья'};
     }
 
+    async areFriends(userA: number, userB: number): Promise<boolean> {
+        const acceptedId = await this.getStatusId('accepted');
+        const fr = await this.friendRepository.findOne({where: {friendstatusId: acceptedId, [Op.or]: [
+            {userid1: userA, userid2: userB}, {userid1: userB, userid2: userA}
+        ]}});
+        return !!fr;
+    }
 }

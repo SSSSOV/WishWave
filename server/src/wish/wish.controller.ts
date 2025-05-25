@@ -7,7 +7,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { WishlistService } from 'src/wishlist/wishlist.service';
 import { InjectModel } from '@nestjs/sequelize';
 import { WishListWish } from 'src/wishlist/wishlist-wish.model';
-import { BookedWishDto } from './dto/booked-wish.do';
+import { BookedWishDto } from './dto/booked-wish.dto';
 
 @Controller('wish')
 export class WishController {

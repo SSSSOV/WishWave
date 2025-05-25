@@ -12,7 +12,8 @@ import { RolesModule } from 'src/roles/roles.module';
 import { Wish } from 'src/wish/wish.model';
 import { AuthModule } from 'src/auth/auth.module';
 import { FileModule } from 'src/file/file.module';
-import { FileService } from 'src/file/file.service';
+import { FriendModule } from 'src/friend/friend.module';
+import { ProfanityModule } from 'src/profanity/profanity.module';
 
 @Module({
   controllers: [UsersController],
@@ -21,7 +22,9 @@ import { FileService } from 'src/file/file.service';
     SequelizeModule.forFeature([User, Friend, FriendUsers, Ban, Role, WishList, Wish]),
     RolesModule,
     FileModule,
+    ProfanityModule,
     forwardRef(() => AuthModule),
+    forwardRef(() => FriendModule),
   ],
   exports: [
     UsersService

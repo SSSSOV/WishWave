@@ -75,11 +75,14 @@ export class WishlistController {
     async getOne(@Param('id') id: number, @Req() req) {
         const userId = req.user.id as number;
         const shareToken = req.query.token as string | undefined;
-        if (!(await this.wishListService.canAccessWishList(userId, id, shareToken))) {
-            throw new ForbiddenException('Доступ к списку запрещен')
+
+        const wishlist = await this.wishListService.getFullById(userId, id, shareToken);
+        const plain = wishlist.get({plain: true});
+        if (plain.accesslevelId ===3 && plain.shareToken) {
+            plain.shareToken = `${req.protocol}://${req.get('host')}/api/wishlist/${plain.id}?token=${plain.shareToken}`;
         }
-        const wishes = await this.wishListService.getWishesByListId(userId, id);
-        return {wishes};
+
+        return plain;
     }
 
     @UseGuards(JwtAuthGuard)
