@@ -13,7 +13,7 @@ import { IWishList } from "@/types/wish_lists";
 import { useUnit } from "effector-react";
 import type { Metadata } from "next";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function ListsPage() {
   // Роутер
@@ -21,6 +21,8 @@ export default function ListsPage() {
 
   // Стор
   const [wishLists, fetchWishLists, setWishList] = useUnit([$wishLists, handleFetchWishLists, handleSetWishList]);
+  const [search, setSearch] = useState("");
+  const [shownLists, setShownLists] = useState([] as IWishList[]);
 
   // Эффекты
   useEffect(() => {
@@ -33,10 +35,26 @@ export default function ListsPage() {
     router.push(`/lists/${id}`);
   };
 
+  useEffect(() => {
+    if (search === "") {
+      setShownLists(wishLists);
+    } else {
+      const searchTerm = search.toLowerCase();
+      console.log(searchTerm);
+      setShownLists(wishLists.filter((list) => list.name.toLowerCase().includes(searchTerm)));
+    }
+  }, [search, wishLists]);
+
   return (
     <>
       <Section padding_top_size="lg" padding_bot_size="xs">
-        <Input labelText="Название" leadingIcon="search" trailingIcon="cancel"></Input>
+        <Input
+          labelText="Название"
+          leadingIcon="search"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+          }}></Input>
         <Section withoutPad align_items="right">
           <Button
             variant="text"
@@ -44,7 +62,7 @@ export default function ListsPage() {
             onClick={() => {
               router.push("lists/add/");
             }}>
-            список
+            Список
           </Button>
         </Section>
       </Section>
@@ -53,8 +71,8 @@ export default function ListsPage() {
       </Section>
       <Section title="Все ваши списки" padding_top_size="xs">
         <List withoutPad>
-          {wishLists.length > 0 ? (
-            sortWishListsByDate(wishLists, "asc").map((list) => {
+          {shownLists.length > 0 ? (
+            sortWishListsByDate(shownLists, "asc").map((list) => {
               return (
                 <ListItem
                   key={list.id}

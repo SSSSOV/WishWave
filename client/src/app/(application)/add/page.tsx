@@ -8,43 +8,57 @@ import TopAppBar from "@/components/ui/top_app_bar/TopAppBar";
 import { $wish, handleCreateWish } from "@/context/wish";
 import { $wishLists, handleFetchWishLists } from "@/context/wish_lists";
 import { useUnit } from "effector-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function AddPage() {
+  // роутер
   const router = useRouter();
+
+  const params = useSearchParams(); // Получаем ID из URL
+  const listId = params.get("listId"); // Получаем listId из URL
 
   const [image, setImage] = useState("");
   const [list, setList] = useState<number>(0);
   const [name, setName] = useState("");
-  const [price, setPrice] = useState<number>({} as number);
+  const [price, setPrice] = useState<number>(0);
   const [link, setLink] = useState("");
 
   const [wish, wishLists, createWish, fetchWishLists] = useUnit([$wish, $wishLists, handleCreateWish, handleFetchWishLists]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      if (!list) {
+        toast("Пожалуйста, выберите список", {
+          icon: "⚠️",
+        });
+        return;
+      }
 
-    if (!list) {
-      toast("Пожалуйста, выберите список", {
-        icon: "⚠️",
-      });
-      return;
+      createWish({ listId: list, name: name, price: price, productLink: link, image: image });
+      router.back();
+    } catch (error) {
+      console.log(error);
     }
-
-    createWish({ listId: list, name: name, price: price, productLink: link, image: image });
   };
 
   useEffect(() => {
-    fetchWishLists;
+    fetchWishLists();
   }, []);
+
+  useEffect(() => {
+    if (listId) {
+      setList(Number(listId));
+    }
+  }, [listId]);
 
   return (
     <>
       <form action="" onSubmit={handleSubmit}>
         <Section title="" padding_top_size="lg" padding_bot_size="xs" items_direction="row" align_items="right">
-          <Monogram letter="ww" size="sm" monogram_type="icon" icon="image" color="primary"></Monogram>
+          <Monogram letter="ww" size="sm" monogram_type={image ? "image" : "icon"} icon="image" color="primary" url={image}></Monogram>
           <Input
             labelText="Ссылка на изображение"
             isFull
@@ -69,6 +83,7 @@ export default function AddPage() {
             onChange={(e) => {
               setPrice(Number(e.target.value));
             }}
+            trailingIcon="currency_ruble"
           />
           <Input
             labelText="Ссылка на маркетплейс"
@@ -80,9 +95,9 @@ export default function AddPage() {
           <div className="mb-4">
             <select className="w-full p-2 border border-gray-300 rounded-md" value={list} onChange={(e) => setList(Number(e.target.value))} required>
               <option value="">Выберите список</option>
-              {wishLists.map((list) => (
-                <option key={list.id} value={list.id}>
-                  {list.name} ({new Date(list.eventDate).toLocaleDateString()})
+              {wishLists.map((wishlist) => (
+                <option key={wishlist.id} value={wishlist.id}>
+                  {wishlist.name} ({new Date(wishlist.eventDate).toLocaleDateString()})
                 </option>
               ))}
             </select>

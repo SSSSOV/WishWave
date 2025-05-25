@@ -211,10 +211,10 @@ export default function ProfilePage() {
       </Section>
       <Section padding_bot_size="lg" align_items="right">
         <Section items_direction="row" isFit withoutPad>
-          <Button variant="text" color="error">
+          <Button variant="text" color="error" icon="delete">
             Удалить аккаунт
           </Button>
-          <Button variant="text" color="error" onClick={logOut}>
+          <Button variant="text" color="error" onClick={logOut} icon="logout">
             Выйти
           </Button>
         </Section>
