@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsEnum, IsOptional } from "class-validator";
 
 export class UpdateUserDto {
-    @ApiProperty({required: false}) fullname?: string;
+    @ApiProperty({required: false}) fullName?: string;
     @ApiProperty({required: false, type: 'string', format: 'binary'}) image?: string;
     @ApiProperty({required: false, format: 'date'}) birthday?: string;
     @ApiProperty({required: false}) phone?: string;

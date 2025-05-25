@@ -56,7 +56,7 @@ export class UsersService {
         const user = await this.userRepository.findByPk(id);
         if (!user) throw new Error('Пользователь не найден');
 
-        if (dto.fullname && this.profanity.containsProfanity(dto.fullname)) {
+        if (dto.fullName && this.profanity.containsProfanity(dto.fullName)) {
             throw new BadRequestException('В тексте найдены запрещенные слова')
         }
         if (dto.phone && this.profanity.containsProfanity(dto.phone)) {
