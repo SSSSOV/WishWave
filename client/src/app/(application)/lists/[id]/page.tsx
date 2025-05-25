@@ -2,12 +2,14 @@
 
 import Button from "@/components/ui/buttons/Button";
 import List from "@/components/ui/list/List";
-import ListItem from "@/components/ui/list/ListItem";
+import ListItem, { list_item_icon_color } from "@/components/ui/list/ListItem";
 import Section from "@/components/ui/section/Section";
 import { $wishList, $wishLists, handleDeleteWishList, handleFetchWishLists, handleSetWishList } from "@/context/wish_lists";
+import { IWishList } from "@/types/wish_lists";
 import { useUnit } from "effector-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 export default function WishListPage() {
   // Роутер
@@ -17,7 +19,13 @@ export default function WishListPage() {
   const { id } = useParams(); // Получаем ID из URL
 
   // Стор
-  const [wishList, deleteWishList] = useUnit([$wishList, handleDeleteWishList]);
+  const [wishList, wishLists, deleteWishList, setWishList, fetchWishLists] = useUnit([
+    $wishList,
+    $wishLists,
+    handleDeleteWishList,
+    handleSetWishList,
+    handleFetchWishLists,
+  ]);
 
   const handleDelete = () => {
     deleteWishList(Number(id));
@@ -28,6 +36,19 @@ export default function WishListPage() {
     router.push(`/lists/${id}/edit`);
   };
 
+  const handleOpen = (wishId: number) => {
+    router.push(`/wish/${wishId}`);
+  };
+
+  useEffect(() => {
+    fetchWishLists();
+  }, []);
+
+  useEffect(() => {
+    if (wishLists && wishLists.length) setWishList(wishLists.find((list) => list.id == Number(id)) as IWishList);
+  }, [wishLists]);
+
+  const colors = ["primary", "secondary", "tertiary"];
   const access_lvls = ["Публичный", "Приватный", "По ссылке", "Для друзей"];
 
   if (!wishList) {
@@ -61,38 +82,42 @@ export default function WishListPage() {
       </Section>
       <Section align_items="right">
         <Section items_direction="row" withoutPad isFit>
-          <Button variant="text" icon="add" onClick={() => router.push(`/lists/${id}/add-wish`)}>
-            желание
+          <Button variant="text" icon="add" onClick={() => router.push(`/add/?listId=${id}`)}>
+            Желание
           </Button>
           <Button variant="text" icon="edit" onClick={handleEdit}>
-            список
+            Список
           </Button>
           <Button variant="text" icon="delete" color="error" onClick={handleDelete}>
-            список
+            Список
           </Button>
         </Section>
       </Section>
       <Section>
         <hr />
       </Section>
-      <Section title="желания" padding_top_size="lg" padding_bot_size="lg" align_items="center">
-        {/* <List withoutPad>
-          {currentList.wishes.length > 0 ? (
-            currentList.wishes.map(wish => (
+      <Section title="желания" padding_top_size="lg" padding_bot_size="lg">
+        <List withoutPad>
+          {wishList.wishes && wishList.wishes.length > 0 ? (
+            wishList.wishes.map((wish) => (
               <ListItem
+                nowrap
                 key={wish.id}
                 condition={2}
                 headline={wish.name}
-                overline={`${wish.price ? `${wish.price} ₽` : 'Цена не указана'}`}
-                leading_type="icon"
-                leading="favorite"
+                overline={`${wish.price ? `${wish.price} ₽` : "Цена не указана"}`}
+                leading_type={wish.image ? "image" : "icon"}
+                leading="featured_seasonal_and_gifts"
                 trailing_type="icon"
+                url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wish.image}
+                color={colors[wish.id % 3] as list_item_icon_color}
+                onClick={() => handleOpen(wish.id)}
               />
             ))
           ) : (
             <p>В этом списке пока нет желаний</p>
           )}
-        </List> */}
+        </List>
       </Section>
     </>
   );

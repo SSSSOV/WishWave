@@ -1,3 +1,5 @@
+import { IWish } from "./wish";
+
 /** Интерфейс списка желаний */
 export interface IWishList {
   id: number;
@@ -5,6 +7,7 @@ export interface IWishList {
   accesslevelId: number;
   description: string;
   eventDate: string;
+  wishes?: IWish[];
 }
 
 /** Интерфейс изменения списка желаний */
