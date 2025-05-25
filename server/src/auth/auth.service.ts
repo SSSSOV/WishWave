@@ -1,15 +1,17 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, HttpException, HttpStatus, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { createUserDto } from "src/users/dto/create-user.dto";
 import { UsersService } from "src/users/users.service";
 import * as bcrypt from "bcryptjs";
 import { LoginUserDto } from "src/users/dto/login-user.dto";
+import { ProfanityService } from "src/profanity/profanity.service";
 
 @Injectable()
 export class AuthService {
   constructor(
     private userSerice: UsersService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private readonly profanity: ProfanityService
   ) {}
 
   async login(userDto: LoginUserDto) {
@@ -18,6 +20,10 @@ export class AuthService {
   }
 
   async registartion(userDto: createUserDto) {
+    if (this.profanity.containsProfanity(userDto.login) || this.profanity.containsProfanity(userDto.email)) {
+      throw new BadRequestException('В тексте найдены запрещенные слова')
+    }
+
     const candidateByEmail = await this.userSerice.getUserByEmail(userDto.email);
     if (candidateByEmail) {
       throw new HttpException("Пользователь с таким email существует", HttpStatus.BAD_REQUEST);

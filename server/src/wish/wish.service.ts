@@ -8,6 +8,7 @@ import { WishStatus } from 'src/wishstatus/wishstatus.model';
 import { WishList } from 'src/wishlist/wishlist.model';
 import { User } from 'src/users/users.model';
 import { WishlistService } from 'src/wishlist/wishlist.service';
+import { ProfanityService } from 'src/profanity/profanity.service';
 
 @Injectable()
 export class WishService {
@@ -16,10 +17,18 @@ export class WishService {
     private fileService: FileService, 
     @InjectModel(WishListWish) private wishListWishRepository: typeof WishListWish,
     @InjectModel(WishStatus) private wishStatusRepository: typeof WishStatus,
-    private readonly wishlistService: WishlistService) {}
+    private readonly wishlistService: WishlistService,
+    private readonly profanity: ProfanityService) {}
 
     async create(dto: CreateWishDto, image: any, listId: number) {
         let fileName: string | null = null;
+        const textToCheck = [dto.name, dto.image ?? '', dto.productLink ?? ''];
+
+        for (const txt of textToCheck) {
+            if (this.profanity.containsProfanity(txt)) {
+                throw new BadRequestException('В тексте найдены запрещенные слова')
+            }
+        }
 
         if(image) {
             fileName = await this.fileService.createFile(image);
@@ -64,6 +73,13 @@ export class WishService {
         const wish = await this.wishRepository.findByPk(id);
         if (!wish) {
             throw new NotFoundException(`Желание с id ${id} не было найдено`);
+        }
+
+        const textToCheck = [dto.name, dto.image, dto.productLink];
+        for (const txt of textToCheck) {
+            if (this.profanity.containsProfanity(txt)) {
+                throw new BadRequestException('В тексте найдены запрещенные слова')
+            }
         }
 
         const oldImage = wish.image;

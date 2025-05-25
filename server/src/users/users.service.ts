@@ -10,13 +10,18 @@ import { FileService } from 'src/file/file.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcryptjs'
 import { UserResponseDto } from './dto/user-response.dto';
+import { ProfanityService } from 'src/profanity/profanity.service';
 
 @Injectable()
 export class UsersService {
 
-    constructor(@InjectModel(User) private userRepository: typeof User, private roleService: RolesService, private fileService: FileService) {}
+    constructor(@InjectModel(User) private userRepository: typeof User, private roleService: RolesService, private fileService: FileService, private readonly profanity: ProfanityService) {}
 
     async createUser(dto: createUserDto) {
+        if (this.profanity.containsProfanity(dto.login) || this.profanity.containsProfanity(dto.email)) {
+            throw new BadRequestException('В тексте найдены запрещенные слова')
+        }
+
         const role = await this.roleService.getRoleByValue("user");
 
         if (!role) {
@@ -50,6 +55,23 @@ export class UsersService {
     async updateUser(id: number, dto: UpdateUserDto, image?: Express.Multer.File): Promise<User> {
         const user = await this.userRepository.findByPk(id);
         if (!user) throw new Error('Пользователь не найден');
+
+        if (dto.fullname && this.profanity.containsProfanity(dto.fullname)) {
+            throw new BadRequestException('В тексте найдены запрещенные слова')
+        }
+        if (dto.phone && this.profanity.containsProfanity(dto.phone)) {
+            throw new BadRequestException('В тексте найдены запрещенные слова')
+        }
+         if (dto.image && this.profanity.containsProfanity(dto.image)) {
+            throw new BadRequestException('В тексте найдены запрещенные слова')
+        }
+        if (dto.socials) {
+            for (const [key, val] of Object.entries(dto.socials)) {
+                if (this.profanity.containsProfanity(val)) {
+                    throw new BadRequestException('В тексте найдены запрещенные слова')
+                }
+            }
+        }
 
         const oldImage = user.image;
         let filename: string | null = null;

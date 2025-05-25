@@ -11,6 +11,7 @@ import { FriendStatus } from 'src/friendstatus/friendstatus.model';
 import { v4 as uuidv4 } from 'uuid';
 import { WishStatus } from 'src/wishstatus/wishstatus.model';
 import { WishListWish } from './wishlist-wish.model';
+import { ProfanityService } from 'src/profanity/profanity.service';
 
 @Injectable()
 export class WishlistService {
@@ -18,7 +19,8 @@ export class WishlistService {
         @InjectModel(Friend) private friendRepository: typeof Friend, 
         @InjectModel(Wish) private wishRepository: typeof Wish,
         @InjectModel(WishListWish) private wishListWishRepository: typeof WishListWish,
-        @InjectModel(FriendStatus) private statusRepository: typeof FriendStatus) {}
+        @InjectModel(FriendStatus) private statusRepository: typeof FriendStatus,
+        private readonly profanity: ProfanityService) {}
 
     private async getStatusId(name: string): Promise<number> {
         const st = await this.statusRepository.findOne({where: {name}});
@@ -47,6 +49,10 @@ export class WishlistService {
 
     async create(dto: CreateWishlistDto, userId: number) {
         let shareToken: string | null = null;
+        
+        if (this.profanity.containsProfanity(dto.name) || (dto.description && this.profanity.containsProfanity(dto.description))) {
+            throw new BadRequestException('В тексте найдены запрещенные слова')
+        }
 
         dto.eventDate = this.normalizeData(dto.eventDate);
 
@@ -95,6 +101,13 @@ export class WishlistService {
         const wl = await this.wishListRepository.findByPk(wishlistId);
         if (!wl) {
             throw new NotFoundException('Список не найден');
+        }
+
+        if (dto.name && this.profanity.containsProfanity(dto.name)) {
+            throw new BadRequestException('В тексте найдены запрещенные слова')
+        }
+        if (dto.description && this.profanity.containsProfanity(dto.description)) {
+            throw new BadRequestException('В тексте найдены запрещенные слова')
         }
 
         const updateData: any ={...dto};
