@@ -6,7 +6,10 @@ import style from "./ListItem.module.css";
 type list_item_leading = "monogram" | "icon" | "image";
 type list_item_trailing = "icon";
 
+export type list_item_icon_color = "primary" | "secondary" | "tertiary";
+
 type ListItemProps = {
+  nowrap?: boolean;
   condition: number;
   leading_type?: list_item_leading;
   leading?: string;
@@ -16,10 +19,12 @@ type ListItemProps = {
   headline: string;
   url?: string;
   isLoading?: boolean;
+  color?: list_item_icon_color;
   onClick?: MouseEventHandler<HTMLDivElement>;
 };
 
 export default function ListItem({
+  nowrap = false,
   condition = 1,
   leading_type,
   leading = "",
@@ -29,6 +34,7 @@ export default function ListItem({
   url,
   headline = " ",
   isLoading = false,
+  color = "primary",
   onClick,
 }: ListItemProps) {
   return (
@@ -44,10 +50,10 @@ export default function ListItem({
       {leading_type ? (
         <div className={style.leading_element}>
           {leading_type == "monogram" ? (
-            <Monogram monogram_type="monogram" letter={leading} isLoading={isLoading} />
+            <Monogram monogram_type="monogram" letter={leading} isLoading={isLoading} color={color} />
           ) : leading_type == "icon" ? (
             // <span className="material-symbols-rounded">{leading}</span>
-            <Monogram monogram_type="icon" isLoading={isLoading} icon={leading} />
+            <Monogram monogram_type="icon" isLoading={isLoading} icon={leading} color={color} />
           ) : leading_type == "image" ? (
             <Monogram monogram_type="image" isLoading={isLoading} url={url} />
           ) : (
@@ -59,8 +65,8 @@ export default function ListItem({
       )}
 
       <div className={style.content}>
-        <span className={style.overline}>{overline}</span>
-        {isLoading ? <div className={style.load_div}></div> : <span className={style.headline}>{headline}</span>}
+        <p className={style.overline + " " + (nowrap ? style.nowrap : "")}>{overline}</p>
+        {isLoading ? <div className={style.load_div}></div> : <p className={style.headline + " " + (nowrap ? style.nowrap : "")}>{headline}</p>}
       </div>
 
       {trailing_type ? (

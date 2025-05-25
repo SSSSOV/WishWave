@@ -107,7 +107,7 @@ export default function ProfilePage() {
         <List withoutPad>
           <ListItem
             condition={2}
-            overline="Фото профиля"
+            overline="фото профиля"
             leading_type={user.image && user.image != "" ? "image" : hasNameContent(user.fullname) ? "monogram" : "icon"}
             leading={hasNameContent(user.fullname) ? getInitials(user.fullname) : "person"}
             url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + user.image}
@@ -121,7 +121,7 @@ export default function ProfilePage() {
 
           <ListItem
             condition={2}
-            overline="Имя"
+            overline="имя"
             headline={user.fullname && hasNameContent(user.fullname) ? user.fullname : "Не указано"}
             trailing_type="icon"
             isLoading={isLoading}
@@ -131,7 +131,7 @@ export default function ProfilePage() {
           />
           <ListItem
             condition={2}
-            overline="Дата рождения"
+            overline="дата рождения"
             headline={
               user.birthday
                 ? new Date(user.birthday).toLocaleDateString(undefined, {
@@ -149,7 +149,7 @@ export default function ProfilePage() {
           />
           <ListItem
             condition={2}
-            overline="Пол"
+            overline="пол"
             headline={user.gender ? user.gender : "Не указано"}
             trailing_type="icon"
             isLoading={isLoading}
@@ -159,7 +159,7 @@ export default function ProfilePage() {
           />
           <ListItem
             condition={2}
-            overline="Логин"
+            overline="логин"
             headline={user.login ? user.login : "Не указано"}
             trailing_type="icon"
             isLoading={isLoading}
@@ -169,7 +169,7 @@ export default function ProfilePage() {
           />
           <ListItem
             condition={2}
-            overline="Пароль"
+            overline="пароль"
             headline={"Нажмите, чтобы изменить"}
             trailing_type="icon"
             isLoading={isLoading}
@@ -186,7 +186,7 @@ export default function ProfilePage() {
         <List withoutPad>
           <ListItem
             condition={2}
-            overline="Почта"
+            overline="почта"
             headline={user.email ? user.email : "Не указано"}
             trailing_type="icon"
             isLoading={isLoading}
@@ -196,7 +196,7 @@ export default function ProfilePage() {
           />
           <ListItem
             condition={2}
-            overline="Телефон"
+            overline="телефон"
             headline={user.phone ? user.phone : "Не указано"}
             trailing_type="icon"
             isLoading={isLoading}
@@ -211,10 +211,10 @@ export default function ProfilePage() {
       </Section>
       <Section padding_bot_size="lg" align_items="right">
         <Section items_direction="row" isFit withoutPad>
-          <Button variant="text" color="error">
+          <Button variant="text" color="error" icon="delete">
             Удалить аккаунт
           </Button>
-          <Button variant="text" color="error" onClick={logOut}>
+          <Button variant="text" color="error" onClick={logOut} icon="logout">
             Выйти
           </Button>
         </Section>

@@ -2,7 +2,7 @@
   padding: 8px 16px;
   display: flex;
   flex-direction: column;
-  gap: var(--md);
+  gap: var(--sm);
   /* align-items: stretch; */
   /* background-color: var(--surface); */
 }
@@ -12,7 +12,7 @@
 }
 
 .without_pad {
-  padding: 8px 0px;
+  padding: 0px !important;
 }
 .row {
   flex-direction: row;

@@ -7,12 +7,12 @@ import { Wish } from "src/wish/wish.model";
 import { WishList } from "src/wishlist/wishlist.model";
 
 interface UserCreationAttrs {
-    login: string;
-    password: string;
-    email: string;
-    roleId: number;
-    banId?: number;
-    fullName?: string;
+  login: string;
+  password: string;
+  email: string;
+  roleId: number;
+  banId?: number;
+  fullname?: string;
 }
 
 @Table({ tableName: "users" })
@@ -41,11 +41,11 @@ export class User extends Model<User, UserCreationAttrs> {
   @Column({ type: DataType.STRING, allowNull: true })
   declare phone: string | null;
 
-  @Column({type: DataType.ENUM('male', 'female'), allowNull: true})
-  declare gender: 'male' | 'female' | null;
+  @Column({ type: DataType.ENUM("male", "female"), allowNull: true })
+  declare gender: "male" | "female" | null;
 
-  @Column({type: DataType.JSONB, allowNull: true})
-  declare socials: {[key: string]: string} | null;
+  @Column({ type: DataType.JSONB, allowNull: true })
+  declare socials: { [key: string]: string } | null;
 
   @ForeignKey(() => Role)
   @Column({ type: DataType.INTEGER, allowNull: false })

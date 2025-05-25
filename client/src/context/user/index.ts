@@ -3,6 +3,7 @@
 import api from "@/api";
 import { ISignInFx, ISignUpFx } from "@/types/auth";
 import { IUpdateInfoFx, IUser } from "@/types/user";
+import { AxiosError } from "axios";
 import { createDomain, createEffect, createEvent, createStore, sample } from "effector";
 import { jwtDecode } from "jwt-decode";
 import toast from "react-hot-toast";
@@ -45,6 +46,7 @@ export const signInFx = createEffect(async ({ loginOrEmail, password }: ISignInF
       loginOrEmail,
       password,
     });
+
     if (data.warningMessage) {
       toast.error(data.warningMessage);
       return;
@@ -63,7 +65,8 @@ export const signInFx = createEffect(async ({ loginOrEmail, password }: ISignInF
 
     toast.success("Вы успешно вошли!");
   } catch (error) {
-    toast.error("Ошибка входа: " + error);
+    if (error instanceof AxiosError) toast.error(error.response?.data.message + " (" + error.status + ")");
+    else toast.error("Произошла непредвиденная ошибка");
     throw error;
   }
 });
