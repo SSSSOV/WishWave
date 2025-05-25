@@ -262,4 +262,22 @@ export class WishlistService {
         return lists;
     }
 
+    async getFullById(userId: number | null, wishlistId: number, shareToken?: string): Promise <WishList> {
+        if (!(await this.canAccessWishList(userId, wishlistId, shareToken))) {
+            throw new ForbiddenException('Доступ к списку запрещен')
+        }
+
+        const wishlist = await this.wishListRepository.findByPk(wishlistId, {include: [
+            {model: AccessLevel, as: 'accesslevel', attributes: ['id', 'name']},
+            {model: User, as: 'user', attributes: ['id', 'login', 'fullName', 'email', 'image']},
+            {model: Wish, as: 'wishes', through: {attributes: []}, include: [{model: WishStatus, attributes: ['id', 'name']}]}
+        ]});
+
+        if (!wishlist) {
+            throw new NotFoundException('Список желаний не найден');
+        }
+
+        return wishlist
+    }
+
 }
