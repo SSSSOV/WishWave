@@ -30,6 +30,19 @@ export class FriendService {
         if (!target) {
             throw new NotFoundException('Целевой пользователь не найден')
         }
+        
+        const incoming = await this.friendRepository.findOne({where: {userid1: targetUserId, userid2: userId}});
+        if (incoming) {
+            const pendingId = await this.getStatusId('pending');
+            const acceptedId = await this.getStatusId('accepted');
+
+            if (incoming.friendstatusId === pendingId) {
+                throw new BadRequestException('Пользователь уже отправил вам заявку в друзья')
+            }
+            if (incoming.friendstatusId === acceptedId) {
+                throw new BadRequestException('Вы уже друзья с этим пользователем')
+            }
+        }
 
         const existing = await this.friendRepository.findOne({where: {userid1: userId, userid2: targetUserId}});
         if (existing) {
@@ -38,6 +51,7 @@ export class FriendService {
         if (!you) {
             throw new NotFoundException('Отправитель не найден')
         }
+
 
         const pendingId = await this.getStatusId('pending');
         const fr = await this.friendRepository.create({userid1: userId, userid2: targetUserId, friendstatusId: pendingId});
