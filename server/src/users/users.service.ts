@@ -1,17 +1,17 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { User } from './users.model';
-import { InjectModel } from '@nestjs/sequelize';
-import { createUserDto } from './dto/create-user.dto';
-import { RolesService } from 'src/roles/roles.service';
-import { Wish } from 'src/wish/wish.model';
-import { WishStatus } from 'src/wishstatus/wishstatus.model';
-import { WishList } from 'src/wishlist/wishlist.model';
-import { FileService } from 'src/file/file.service';
-import { UpdateUserDto } from './dto/update-user.dto';
-import * as bcrypt from 'bcryptjs'
-import { UserResponseDto } from './dto/user-response.dto';
-import { ProfanityService } from 'src/profanity/profanity.service';
-import { AccessLevel } from 'src/accesslevel/accesslevel.model';
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { User } from "./users.model";
+import { InjectModel } from "@nestjs/sequelize";
+import { createUserDto } from "./dto/create-user.dto";
+import { RolesService } from "src/roles/roles.service";
+import { Wish } from "src/wish/wish.model";
+import { WishStatus } from "src/wishstatus/wishstatus.model";
+import { WishList } from "src/wishlist/wishlist.model";
+import { FileService } from "src/file/file.service";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import * as bcrypt from "bcryptjs";
+import { UserResponseDto } from "./dto/user-response.dto";
+import { ProfanityService } from "src/profanity/profanity.service";
+import { AccessLevel } from "src/accesslevel/accesslevel.model";
 
 @Injectable()
 export class UsersService {
@@ -106,30 +106,6 @@ export class UsersService {
     return user;
   }
 
-    async getAllUsers(){
-        const users = await this.userRepository.findAll({include: {all: true}});
-        if (!users) {
-            throw Error('пользователи не найдены')
-        }
-        return users;
-    }
-    
-    async getUserById(id: number): Promise<User> {
-        const user = await this.userRepository.findByPk(id, {attributes: {exclude: ['password']}, include: [{
-            model: WishList, as: 'wishlist', include: [{
-            model: AccessLevel, as: 'accesslevel', attributes: ['id', 'name']},
-                {model: Wish, through: {attributes: []}, include: [{
-                    model: WishStatus, attributes: ['id', 'name']
-                }]
-            }] 
-        }]});
-        if (!user) {
-            throw Error('пользователь не найден (id)')
-        }
-        return user;
-    }
-
-
   async getAllUsers() {
     const users = await this.userRepository.findAll({ include: { all: true } });
     if (!users) {
@@ -146,6 +122,11 @@ export class UsersService {
           model: WishList,
           as: "wishlist",
           include: [
+            {
+              model: AccessLevel,
+              as: "accesslevel",
+              attributes: ["id", "name"],
+            },
             {
               model: Wish,
               through: { attributes: [] },
