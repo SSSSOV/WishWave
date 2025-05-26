@@ -21,7 +21,7 @@ export class User extends Model<User, UserCreationAttrs> {
   declare id: number;
 
   @Column({ type: DataType.STRING, allowNull: true })
-  declare fullName: string;
+  declare fullname: string;
 
   @Column({ type: DataType.STRING, unique: true, allowNull: false })
   declare login: string;

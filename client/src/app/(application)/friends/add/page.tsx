@@ -17,10 +17,19 @@ import {
 } from "@/context/friends";
 import { $user } from "@/context/user";
 import { useUnit } from "effector-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function AddFriendPage() {
+  // Роутер
+  const router = useRouter();
+
+  // Параметры
+  const params = useSearchParams(); // Получаем ID из URL
+  const targetId = params.get("addFriend"); // Получаем listId из URL
+
+  // Стор
   const [
     recivedRequests,
     sentRequests,
@@ -43,6 +52,7 @@ export default function AddFriendPage() {
     handleRejectFriendRequest,
   ]);
 
+  // Состояния
   const [targetUserId, setTargetUserId] = useState("");
 
   useEffect(() => {
@@ -51,8 +61,13 @@ export default function AddFriendPage() {
   }, []);
 
   useEffect(() => {
-    if (sentRequests.length > 0) console.log(sentRequests);
-  }, [sentRequests]);
+    if (targetId) {
+      setTargetUserId(targetId);
+      sendFriendRequest(Number(targetUserId));
+    } else {
+      toast.error("Ошибка в ссылке!");
+    }
+  }, [targetId]);
 
   const handleSend = () => {
     if (Number(targetUserId)) {
@@ -64,6 +79,15 @@ export default function AddFriendPage() {
   const handleCopyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(user.id);
+      toast.success("ID успешно скопирован!");
+    } catch (err) {
+      toast.error("Не удалось скопировать ID: " + err);
+    }
+  };
+
+  const handleCreateFriendLink = async () => {
+    try {
+      await navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_CLIENT_URL}friends/add&addFriend=${user.id}`);
       toast.success("ID успешно скопирован!");
     } catch (err) {
       toast.error("Не удалось скопировать ID: " + err);
@@ -103,7 +127,7 @@ export default function AddFriendPage() {
             <Button variant="text" icon="content_copy" onClick={handleCopyToClipboard}>
               {"Ваш ID: " + user.id}
             </Button>
-            <Button variant="text" icon="share">
+            <Button variant="text" icon="share" onClick={handleCreateFriendLink}>
               Ссылкой
             </Button>
           </Section>
@@ -115,25 +139,29 @@ export default function AddFriendPage() {
       <Section title="Исходящие заявки">
         <List withoutPad>
           {sentRequests && sentRequests.length > 0
-            ? sentRequests.map((req) => (
-                <Section key={req.id} items_direction="row" withoutPad align_items="center">
-                  <ListItem
-                    condition={2}
-                    leading_type="icon"
-                    leading="person"
-                    headline={req.users[1] ? (req.users[1].fullname ? req.users[1].fullname : req.users[1].login) : ""}
-                    overline={req.users[1] ? (req.users[1].fullname ? req.users[1].login : "") : ""}
-                  />
-                  <Button
-                    variant="text"
-                    icon="cancel"
-                    color="error"
-                    onClick={() => {
-                      handleCancel(req.id);
-                    }}
-                  />
-                </Section>
-              ))
+            ? sentRequests.map((req) => {
+                const recId = req.users[0].id == user.id ? 1 : 0;
+                return (
+                  <Section key={req.id} items_direction="row" withoutPad align_items="center">
+                    <ListItem
+                      condition={2}
+                      url={req.users[recId].image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + req.users[recId].image : ""}
+                      leading_type={req.users[recId].image ? "image" : "icon"}
+                      leading="person"
+                      headline={req.users[recId] ? (req.users[recId].fullname ? req.users[recId].fullname : req.users[recId].login) : ""}
+                      overline={req.users[recId] ? (req.users[recId].fullname ? req.users[recId].login : "") : ""}
+                    />
+                    <Button
+                      variant="text"
+                      icon="cancel"
+                      color="error"
+                      onClick={() => {
+                        handleCancel(req.id);
+                      }}
+                    />
+                  </Section>
+                );
+              })
             : "пусто"}
         </List>
       </Section>
@@ -143,33 +171,36 @@ export default function AddFriendPage() {
       <Section title="Входящие заявки">
         <List withoutPad>
           {recivedRequests.length > 0
-            ? recivedRequests.map((req) => (
-                <Section key={req.id} items_direction="row" withoutPad align_items="center">
-                  <ListItem
-                    condition={2}
-                    leading_type="icon"
-                    leading="person"
-                    headline={req.users[1].fullname ? req.users[1].fullname : req.users[1].login}
-                    overline={req.users[1].fullname ? req.users[1].login : ""}
-                  />
-                  <Button
-                    variant="text"
-                    icon="check_circle"
-                    color="access"
-                    onClick={() => {
-                      handleAccept(req.id);
-                    }}
-                  />
-                  <Button
-                    variant="text"
-                    icon="cancel"
-                    color="error"
-                    onClick={() => {
-                      handleReject(req.id);
-                    }}
-                  />
-                </Section>
-              ))
+            ? recivedRequests.map((req) => {
+                const recId = req.users[0].id == user.id ? 1 : 0;
+                return (
+                  <Section key={req.id} items_direction="row" withoutPad align_items="center">
+                    <ListItem
+                      condition={2}
+                      leading_type="icon"
+                      leading="person"
+                      headline={req.users[recId].fullname ? req.users[recId].fullname : req.users[recId].login}
+                      overline={req.users[recId].fullname ? req.users[recId].login : ""}
+                    />
+                    <Button
+                      variant="text"
+                      icon="check_circle"
+                      color="access"
+                      onClick={() => {
+                        handleAccept(req.id);
+                      }}
+                    />
+                    <Button
+                      variant="text"
+                      icon="cancel"
+                      color="error"
+                      onClick={() => {
+                        handleReject(req.id);
+                      }}
+                    />
+                  </Section>
+                );
+              })
             : "пусто"}
         </List>
       </Section>

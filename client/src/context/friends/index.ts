@@ -3,15 +3,18 @@
 import { createEffect, createEvent, createStore, sample } from "effector";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
-import { IFriend, IFriendRequest } from "@/types/friends";
+import { IFriendRequest } from "@/types/friends";
 import { setAuth } from "../user";
 import api from "@/api";
+import { IUser } from "@/types/user";
 
-export const $friends = createStore<IFriend[]>([] as IFriend[]);
+export const $friends = createStore<IUser[]>([] as IUser[]);
+export const $friend = createStore<IUser>({} as IUser);
 export const $recivedRequests = createStore<IFriendRequest[]>([] as IFriendRequest[]);
 export const $sentRequests = createStore<IFriendRequest[]>([] as IFriendRequest[]);
 
 export const handleFetchFriends = createEvent();
+export const handleFetchFriend = createEvent<number>();
 export const handleFetchRecivedRequests = createEvent();
 export const handleFetchSentRequests = createEvent();
 
@@ -39,7 +42,46 @@ export const fetchFriendsFx = createEffect(async () => {
       return null;
     }
 
-    return data as IFriend[];
+    return data as IUser[];
+  } catch (error) {
+    if (error instanceof AxiosError) toast.error(error.response?.data.message);
+    else toast.error("Произошла непредвиденная ошибка: " + error);
+    throw error;
+  }
+});
+export const fetchFriendFx = createEffect(async (id: number) => {
+  try {
+    const token = localStorage.getItem("auth");
+
+    if (!token) {
+      toast.error("Отсутствует токен авторизации!");
+      setAuth(false);
+      return null;
+    }
+
+    const { data } = await api.get(`/api/user/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (data.warningMessage) {
+      toast.error(data.warningMessage);
+      return null;
+    }
+
+    console.log(data);
+
+    const userData: IUser = {
+      id: data.id.toString(),
+      login: data.login,
+      email: data.email,
+      fullname: data.fullname || undefined,
+      image: data.image || undefined,
+      phone: data.phone || undefined,
+      birthday: data.birthDate || undefined, // Преобразуем birthDate в birthday
+      gender: data.gender || undefined, // Серверные данные не содержат gender
+    };
+
+    return userData as IUser;
   } catch (error) {
     if (error instanceof AxiosError) toast.error(error.response?.data.message);
     else toast.error("Произошла непредвиденная ошибка: " + error);
@@ -220,10 +262,12 @@ export const rejectFriendRequestFx = createEffect(async (requestId: number) => {
 });
 
 $friends.on(fetchFriendsFx.doneData, (state, result) => (result ? result : state));
+$friend.on(fetchFriendFx.doneData, (state, result) => (result ? result : state));
 $sentRequests.on(fetchSentRequestsFx.doneData, (state, result) => (result ? result : state));
 $recivedRequests.on(fetchRecivedRequestsFx.doneData, (state, result) => (result ? result : state));
 
 sample({ clock: handleFetchFriends, target: fetchFriendsFx });
+sample({ clock: handleFetchFriend, target: fetchFriendFx });
 sample({ clock: handleFetchRecivedRequests, target: fetchRecivedRequestsFx });
 sample({ clock: handleFetchSentRequests, target: fetchSentRequestsFx });
 

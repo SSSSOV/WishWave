@@ -9,7 +9,8 @@ import NavigationRail from "@/components/ui/navigation_rail/NavigationRail";
 import Section from "@/components/ui/section/Section";
 import Container from "@/components/ui/container/Container";
 import { useUnit } from "effector-react";
-import { $user, handleFetchUser } from "@/context/user";
+import { $isAuth, $user, handleFetchUser } from "@/context/user";
+import { $pageTitle } from "@/context/page";
 
 export type PageConfig = {
   title: string;
@@ -35,7 +36,7 @@ export default function RootLayout({
   const router = useRouter();
 
   // Контекст
-  const [user, fetchUser] = useUnit([$user, handleFetchUser]);
+  const [isAuth, user, fetchUser] = useUnit([$isAuth, $user, handleFetchUser]);
 
   // Переменные
   const [isMobile, setIsMobile] = useState(false);
@@ -50,11 +51,6 @@ export default function RootLayout({
     checkIfMobile(); // Проверяем при загрузке
     window.addEventListener("resize", checkIfMobile); // И при изменении размера
     return () => window.removeEventListener("resize", checkIfMobile);
-  }, []);
-
-  useEffect(() => {
-    console.log("clientsrcapp(application)layout.tsx");
-    fetchUser();
   }, []);
 
   const PAGES: PageConfig[] = [
@@ -172,7 +168,7 @@ export default function RootLayout({
     <>
       {isMobile ? (
         <>
-          <TopAppBar title={PAGES.find((page) => page.path == pathName)?.title} variant="small" />
+          <TopAppBar variant="small" />
           <Content navigationType="bar" topBarSize="sm" withoutPad>
             <Container>{children}</Container>
           </Content>
@@ -181,7 +177,7 @@ export default function RootLayout({
       ) : (
         <>
           <NavigationRail pages={PAGES}></NavigationRail>
-          <TopAppBar withRail title={PAGES.find((page) => page.path == pathName)?.title} variant="large" />
+          <TopAppBar withRail variant="large" />
           <Content navigationType="rail" topBarSize="lg">
             <Container gap="md" withPad>
               {children}

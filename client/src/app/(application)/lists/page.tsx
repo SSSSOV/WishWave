@@ -9,7 +9,7 @@ import Section from "@/components/ui/section/Section";
 import TopAppBar from "@/components/ui/top_app_bar/TopAppBar";
 import { $wishLists, handleCreateWishList, handleFetchWishLists, handleSetWishList } from "@/context/wish_lists";
 import { sortWishListsByDate } from "@/lib/utils/lists";
-import { IWishList } from "@/types/wish_lists";
+import { IWishList } from "@/types/wish_list";
 import { useUnit } from "effector-react";
 import type { Metadata } from "next";
 import { useRouter } from "next/navigation";
@@ -78,11 +78,15 @@ export default function ListsPage() {
                   key={list.id}
                   condition={2}
                   headline={list.name}
-                  overline={new Date(list.eventDate).toLocaleDateString(undefined, {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
+                  overline={
+                    list.eventDate != null
+                      ? new Date(list.eventDate).toLocaleDateString(undefined, {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })
+                      : ""
+                  }
                   leading_type="icon"
                   leading={
                     list.accesslevelId == 1 ? "visibility" : list.accesslevelId == 2 ? "visibility_off" : list.accesslevelId == 3 ? "link" : "group"

@@ -1,24 +1,37 @@
-// Характеристики пользователя
+/**Интерфейс пользователя */
 export interface IUser {
-  id: string; // -
-  login: string; // -
-  email: string; // -
+  /**ID пользователя */
+  id: string;
+  /**Логин пользователя */
+  login: string;
+  /**Почта пользователя */
+  email: string;
+  /**Имя пользователя */
   fullname?: string;
+  /**Фото пользователя */
   image?: string;
-  phone?: string;
+  /**Дата рождения пользователя */
   birthday?: string;
+  /**Телефон пользователя */
+  phone?: string;
+  /**Пол пользователя */
   gender?: string;
 }
-
-// Данные для проверки авторизации
+/**Интерфейс проверки авторизации */
 export interface ILoginCheckFx {
+  /**Токен сессии */
   jwt: string;
-  setShouldShowContent?: (arg0: boolean) => void;
 }
-
+/**Интервейс редактирования пользователя */
 export interface IUpdateInfoFx {
+  /**Имя пользователя */
   fullname?: string;
-  birthday?: string;
-  phone?: string;
+  /**Фото пользователя */
   image?: string;
+  /**Дата рождения пользователя */
+  birthday?: string;
+  /**Телефон пользователя */
+  phone?: string;
+  /**Пол пользователя */
+  gender?: string;
 }

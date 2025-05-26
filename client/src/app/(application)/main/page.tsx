@@ -1,13 +1,11 @@
 "use client";
-import Button from "@/components/ui/buttons/Button";
-import ContentContainer from "@/components/ui/content/Content";
 import Monogram from "@/components/ui/monogram/Monogram";
 import Section from "@/components/ui/section/Section";
-import type { Metadata } from "next";
 import styles from "@/app/home.module.css";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useUnit } from "effector-react";
-import { $count, clrClicked, incClicked } from "@/context/counter";
+import { $pageTitle, handleSetPageTitle } from "@/context/page";
+import Button from "@/components/ui/buttons/Button";
 
 // export const metadata: Metadata = {
 //   title: "Главная - WishWave",
@@ -26,7 +24,14 @@ export default function MainPage() {
     }
   };
 
-  const [count, onIncClicked, onClrClicked] = useUnit([$count, incClicked, clrClicked]);
+  const [setPageTitle] = useUnit([handleSetPageTitle]);
+
+  useEffect(() => {
+    setPageTitle("Главная");
+    return () => {
+      setPageTitle("");
+    };
+  }, []);
 
   return (
     <>

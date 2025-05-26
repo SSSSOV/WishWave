@@ -1,12 +1,17 @@
 "use client";
+import { useUnit } from "effector-react";
 import Button from "../buttons/Button";
 import styles from "./TopAppBar.module.css";
 import { useRouter } from "next/navigation";
+import { $pageTitle } from "@/context/page";
+import { useEffect, useState } from "react";
 
 type top_app_bar_variant = "center" | "small" | "medium" | "large";
 
-export default function TopAppBar({ title, variant, withRail = false }: { title?: string; variant?: top_app_bar_variant; withRail?: boolean }) {
+export default function TopAppBar({ variant, withRail = false }: { variant?: top_app_bar_variant; withRail?: boolean }) {
   const router = useRouter();
+
+  const pageTitle = useUnit($pageTitle);
 
   return !variant || variant == "center" || variant == "small" ? (
     <>
@@ -20,7 +25,7 @@ export default function TopAppBar({ title, variant, withRail = false }: { title?
             }}></Button>
         </div>
         <div className={variant != "small" ? styles.title_center : styles.title_sm}>
-          <span>{title}</span>
+          <span>{pageTitle}</span>
         </div>
         <div className={styles.trailing_icon}>
           {/* <Button variant="text" icon="notifications"></Button> */}
@@ -46,7 +51,7 @@ export default function TopAppBar({ title, variant, withRail = false }: { title?
           </div>
         </div>
         <div className={styles.title_md_lg}>
-          <span>{title}</span>
+          <span>{pageTitle}</span>
         </div>
       </div>
     </>

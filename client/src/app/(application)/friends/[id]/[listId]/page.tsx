@@ -1,52 +1,43 @@
 "use client";
 
-import Button from "@/components/ui/buttons/Button";
 import List from "@/components/ui/list/List";
 import ListItem, { list_item_icon_color } from "@/components/ui/list/ListItem";
+import Monogram from "@/components/ui/monogram/Monogram";
 import Section from "@/components/ui/section/Section";
-import { $wishList, $wishLists, handleDeleteWishList, handleFetchWishLists, handleSetWishList } from "@/context/wish_lists";
-import { IWishList } from "@/types/wish_list";
+import { $friend, handleFetchFriend } from "@/context/friends";
 import { useUnit } from "effector-react";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect } from "react";
-import toast from "react-hot-toast";
+import { useEffect, useState } from "react";
+import { getInitials, hasNameContent } from "../../../profile/page";
+import { IWishList } from "@/types/wish_list";
+import { sortWishListsByDate } from "@/lib/utils/lists";
+import { $wishList, handleFetchWishList } from "@/context/wish_lists";
+import Button from "@/components/ui/buttons/Button";
 
-export default function WishListPage() {
+export default function UserListPage() {
   // Роутер
   const router = useRouter();
 
   // Переменные
-  const { id } = useParams(); // Получаем ID из URL
+  const { listId } = useParams(); // Получаем ID из URL
 
   // Стор
-  const [wishList, wishLists, deleteWishList, setWishList, fetchWishLists] = useUnit([
-    $wishList,
-    $wishLists,
-    handleDeleteWishList,
-    handleSetWishList,
-    handleFetchWishLists,
-  ]);
+  const [wishList, fetchWishList] = useUnit([$wishList, handleFetchWishList]);
 
-  const handleDelete = () => {
-    deleteWishList(Number(id));
-    router.back();
-  };
-
-  const handleEdit = () => {
-    router.push(`/lists/${id}/edit`);
-  };
-
-  const handleOpen = (wishId: number) => {
-    router.push(`/wish/${wishId}`);
-  };
+  const [friend, fetchFriend] = useUnit([$friend, handleFetchFriend]);
 
   useEffect(() => {
-    fetchWishLists();
+    if (listId) fetchWishList(Number(listId));
   }, []);
 
   useEffect(() => {
-    if (wishLists && wishLists.length) setWishList(wishLists.find((list) => list.id == Number(id)) as IWishList);
-  }, [wishLists]);
+    console.log(wishList);
+  }, [wishList]);
+
+  // useEffect(() => {
+  //   if (friend && friend.wishlists && friend.wishlists?.length > 0) setShownLists(friend.wishlists);
+  //   else setShownLists(undefined);
+  // }, [friend]);
 
   const colors = ["primary", "secondary", "tertiary"];
   const access_lvls = ["Публичный", "Приватный", "По ссылке", "Для друзей"];
@@ -62,6 +53,10 @@ export default function WishListPage() {
     );
   }
 
+  const handleOpen = (id: number) => {
+    router.push(`/wish/${id}`);
+  };
+
   return (
     <>
       <Section withoutPad>
@@ -76,26 +71,13 @@ export default function WishListPage() {
                     month: "short",
                     year: "numeric",
                   })
-                : "Не указано "
+                : "Не указано"
             }
             overline="дата события"
           />
           <ListItem condition={2} headline={access_lvls[wishList.accesslevelId - 1]} overline="доступ" />
           <ListItem condition={2} headline={wishList.description} overline="описание" />
         </List>
-      </Section>
-      <Section align_items="right">
-        <Section items_direction="row" withoutPad isFit>
-          <Button variant="text" icon="add" onClick={() => router.push(`/add/?listId=${id}`)}>
-            Желание
-          </Button>
-          <Button variant="text" icon="edit" onClick={handleEdit}>
-            Список
-          </Button>
-          <Button variant="text" icon="delete" color="error" onClick={handleDelete}>
-            Список
-          </Button>
-        </Section>
       </Section>
       <Section>
         <hr />
@@ -109,7 +91,7 @@ export default function WishListPage() {
                 key={wish.id}
                 condition={2}
                 headline={wish.name}
-                overline={`${wish.price ? `${wish.price} ₽` : ""}`}
+                overline={`${wish.price ? `${wish.price} ₽` : "Цена не указана"}`}
                 leading_type={wish.image ? "image" : "icon"}
                 leading="featured_seasonal_and_gifts"
                 trailing_type="icon"

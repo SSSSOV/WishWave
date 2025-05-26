@@ -132,7 +132,7 @@ export const fetchUserFx = createEffect(async () => {
       image: data.image || undefined,
       phone: data.phone || undefined,
       birthday: data.birthDate || undefined, // Преобразуем birthDate в birthday
-      gender: undefined, // Серверные данные не содержат gender
+      gender: data.gender || undefined, // Серверные данные не содержат gender
     };
 
     setUser(userData);
@@ -169,7 +169,8 @@ export const updateInfoFx = createEffect(async ({ fullname, birthday, phone, ima
 
     toast.success("Изменения сохранены!");
   } catch (error) {
-    toast.error("Ошибка сохранения: " + error);
+    if (error instanceof AxiosError) toast.error(error.response?.data.message);
+    else toast.error("Ошибка сохранения: " + error);
     throw error;
   }
 });
