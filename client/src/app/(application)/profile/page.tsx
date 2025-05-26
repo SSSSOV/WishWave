@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import style from "@/app/home.module.css";
 import { useRouter } from "next/navigation";
 import { useUnit } from "effector-react";
-import { $isAuth, $user, handleLogeOut } from "@/context/user";
+import { $isAuth, $user, handleFetchUser, handleLogeOut } from "@/context/user";
 import { hasNameContent } from "@/lib/utils/hasNameContent";
 import { getInitials } from "@/lib/utils/getInitials";
 
@@ -20,7 +20,7 @@ export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(false);
 
   // Контекст
-  const [isAuth, user, logOut] = useUnit([$isAuth, $user, handleLogeOut]);
+  const [isAuth, user, logOut, fetchUser] = useUnit([$isAuth, $user, handleLogeOut, handleFetchUser]);
 
   // Эффекты
 
@@ -28,6 +28,10 @@ export default function ProfilePage() {
     logOut();
     window.location.href = "/login";
   };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   return !isAuth ? (
     <Section align_items="center" title="Вы не авторизованы" title_size="sm" padding_top_size="lg">

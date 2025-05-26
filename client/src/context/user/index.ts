@@ -135,6 +135,8 @@ export const fetchUserFx = createEffect(async () => {
       gender: data.gender || undefined, // Серверные данные не содержат gender
     };
 
+    console.log(userData, data);
+
     setUser(userData);
     setAuth(true);
   } catch (error) {
