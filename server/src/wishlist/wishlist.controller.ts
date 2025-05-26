@@ -14,11 +14,7 @@ export class WishlistController {
         const userId = req.user.id;
         const list = await this.wishListService.create(dto, userId);
 
-        const plain = list.get({plain: true}) as any;
-        if (plain.shareToken) {
-            plain.shareToken = `${req.protocol}://${req.get('host')}/api/wishlist/${plain.id}?token=${plain.shareToken}`;
-        }
-        return plain;
+        return list.get({plain: true});
     }
 
     @UseGuards(JwtAuthGuard)
@@ -27,12 +23,7 @@ export class WishlistController {
         const userId = req.user.id;
         const lists = await this.wishListService.getAllByUser(userId);
 
-        return lists.map(list => {const plain = list.get({plain: true}) as any;
-            if (plain.accesslevelId === 3 && plain.shareToken){
-                plain.shareToken = `${req.protocol}://${req.get('host')}/api/wishlist/${plain.id}?token=${plain.shareToken}`;
-            }
-            return plain;
-        });
+        return lists.map(list => list.get({plain: true}));
     }
 
     @UseGuards(JwtAuthGuard)
@@ -77,12 +68,8 @@ export class WishlistController {
         const shareToken = req.query.token as string | undefined;
 
         const wishlist = await this.wishListService.getFullById(userId, id, shareToken);
-        const plain = wishlist.get({plain: true});
-        if (plain.accesslevelId ===3 && plain.shareToken) {
-            plain.shareToken = `${req.protocol}://${req.get('host')}/api/wishlist/${plain.id}?token=${plain.shareToken}`;
-        }
-
-        return plain;
+    
+        return wishlist.get({plain: true});
     }
 
     @UseGuards(JwtAuthGuard)
@@ -95,12 +82,7 @@ export class WishlistController {
         const requesterId = req.user.id as number;
         const lists = await this.wishListService.searchFriendLists(requesterId, friendId, name);
 
-        return lists.map(list => {const plain = list.get({plain:true}) as any;
-            if (plain.accesslevelId === 3 && plain.shareToken) {
-                plain.shareToken = `${req.protocol}://${req.get('host')}/api/wishlist/${plain.id}?token=${plain.shareToken}`;
-            }
-            return plain;    
-        })
+        return lists.map(list => list.get({plain: true}));
     }
 
 }

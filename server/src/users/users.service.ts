@@ -11,6 +11,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcryptjs'
 import { UserResponseDto } from './dto/user-response.dto';
 import { ProfanityService } from 'src/profanity/profanity.service';
+import { AccessLevel } from 'src/accesslevel/accesslevel.model';
 
 @Injectable()
 export class UsersService {
@@ -112,7 +113,8 @@ export class UsersService {
     async getUserById(id: number): Promise<User> {
         const user = await this.userRepository.findByPk(id, {attributes: {exclude: ['password']}, include: [{
             model: WishList, as: 'wishlist', include: [{
-                model: Wish, through: {attributes: []}, include: [{
+            model: AccessLevel, as: 'accesslevel', attributes: ['id', 'name']},
+                {model: Wish, through: {attributes: []}, include: [{
                     model: WishStatus, attributes: ['id', 'name']
                 }]
             }] 

@@ -62,7 +62,12 @@ export class WishService {
     }
 
     async findById(id: number): Promise<Wish> {
-        const wish = await this.wishRepository.findByPk(id);
+        const wish = await this.wishRepository.findByPk(id, {include: [{
+            model: WishStatus,
+            as: 'wishstuses',
+            attributes: ['id']
+      }]
+    });
         if (!wish) {
             throw new NotFoundException(`Желание с id ${id} не было найдено`);
         }
@@ -138,13 +143,18 @@ export class WishService {
 
     async unbookWish(wishId: number, userId: number): Promise<Wish> {
         const wish = await this.findById(wishId);
-
         if (wish.bookedByUserId == null) {
             throw new BadRequestException(`Желание с id ${wishId} не забронировано или бронь уже снята`);
         }
 
-        if (wish.bookedByUserId !== userId) {
-            throw new BadRequestException(`Вы не можете снять бронь, т.к. не являетесь её владельцем`);
+        const link = await this.wishListWishRepository.findOne({where: {wishId}});
+        if (!link) {
+            throw new NotFoundException('Желание не найдено ни в одном списке')
+        }
+
+        const isListOwner = await this.wishlistService.isOwner(userId, link.wishlistId);
+        if (wish.bookedByUserId !== userId && !isListOwner) {
+            throw new BadRequestException(`Вы не можете снять бронь, т.к. не являетесь её владельцем или владельцем списка`);
         }
 
         wish.wishStatusId = 1;
