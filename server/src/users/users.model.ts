@@ -12,7 +12,7 @@ interface UserCreationAttrs {
   email: string;
   roleId: number;
   banId?: number;
-  fullname?: string;
+  fullName?: string;
 }
 
 @Table({ tableName: "users" })

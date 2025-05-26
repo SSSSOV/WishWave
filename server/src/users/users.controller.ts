@@ -55,23 +55,27 @@ export class UsersController {
     @UseGuards(JwtAuthGuard)
     @Get(':id')
     async getById(@Param('id', ParseIntPipe) id: number, @Req() req): Promise<UserResponseDto> {
-        const userRole = req.user.roles?.value;
-        const userId = req.user.id;
-
-        if (userRole !== 'admin' && userId !== id) {
-            const friends = await this.friendService.areFriends(userId, id);
-            if (!friends) {
-                throw new ForbiddenException('Профиль доступен только друзьям');
-        
+        const viewerId = req.user.id;
+        const viewerRole = req.user.roles?.value;
+        const isOwner = viewerRole === 'admin' || viewerId === id;
+        if (!isOwner) {
+            const isFriend = await this.friendService.areFriends(viewerId, id);
+            if (!isFriend) {
+                throw new ForbiddenException('Профиль доступен только друзьям')
             }
         }
 
         const user = await this.usersService.getUserById(id);
         const plain = user.get({plain: true}) as any;
         const {password, wishlist, ...rest} = plain;
-        const dto: UserResponseDto = {...rest, wishlists: Array.isArray(wishlist) ? wishlist: []};
+        let lists = Array.isArray(wishlist) ? wishlist: [];
+        if (!isOwner) {
+            lists = lists.filter(l => l.accesslevel.name === 'public' || l.accesslevel.name === 'friends');
+        }
 
-        return dto;
+        const wishlists = lists.map(l => ({id: l.id, name: l.name, description: l.description, eventDate: l.eventDate, accesslevelId: l.accesslevelId}));
+
+        return {...rest, wishlists};
     }
     
     @UseGuards(JwtAuthGuard)
