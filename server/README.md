@@ -1252,49 +1252,46 @@ Authorization: Bearer <token>
 
 ## Wish
 
-### Create a Wish in a Wishlist
+Для всех защищенных маршрутов требуется заголовок
 
-`POST /api/wish/:listId`
-Добавить желание в список (только владелец)
-
-**Path Parametrs:**
-
-```json
-  listId (number)
-```
-
-**Headers:**
-
-```json
+```makefile
 Authorization: Bearer <token>
 ```
+
+### Create a Wish in a Wishlist
+
+`POST /api/wish`
+Добавить желание в список (только владелец)
 
 **Request Body:**
 
 ```json
 {
+  "listId": "number",
   "name": "string",
-  "price": number,
-  "productLink": "string",
-  "image": "string"
+  "price?": "number",
+  "productLink?": "string",
+  "image?": "string"
 }
+
 ```
 
 **Responses:**
 
-- 201:
+- 200:
 
 ```json
 {
-  "id": 10,
-  "name": "string",
-  "price": 123.45,
-  "image": "filename.jpg",
-  "productLink": "string",
-  "wishStatusId": 1,
-  "bookedByUserId": null,
-  "createdAt": "...",
-  "updatedAt": "..."
+    "id": 25,
+    "name": "кепка",
+    "image": "da0b8e27-0de1-46ca-8c18-a1be5b780165.jpg",
+    "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+    "wishStatusId": 1,
+    "updatedAt": "2025-05-26T14:50:05.591Z",
+    "createdAt": "2025-05-26T14:50:05.591Z",
+    "price": null,
+    "bookedByUserId": null,
+    "shareToken": null
 }
 ```
 
@@ -1318,77 +1315,93 @@ Authorization: Bearer <token>
 }
 ```
 
+```json
+{
+  "statusCode": 400,
+  "message": "В тексте найдены запрещенные слова",
+  "error": "Bad Request"
+}
+```
+
 ### List All Your Wishes
 
 `GET /api/wish`
 Получить все желания из всех ваших списков
 
-**Headers:**
-
-```json
-Authorization: Bearer <token>
-```
-
 **Responses:**
 
-- 201:
+- 200:
 
 ```json
 [
-  {
-    "id": 10,
-    "name": "string",
-    "price": 123.45,
-    "image": "filename.jpg",
-    "productLink": "string",
-    "wishStatusId": 1,
-    "bookedByUserId": null,
-    "createdAt": "...",
-    "updatedAt": "..."
-  },
-  …
+    {
+        "id": 8,
+        "name": "самсунг",
+        "image": null,
+        "price": 44000,
+        "productLink": null,
+        "wishStatusId": 1,
+        "bookedByUserId": null,
+        "createdAt": "2025-05-26T07:43:58.200Z",
+        "updatedAt": "2025-05-26T07:43:58.200Z"
+    },
+    {
+        "id": 9,
+        "name": "Wc",
+        "image": null,
+        "price": 44000,
+        "productLink": null,
+        "wishStatusId": 1,
+        "bookedByUserId": null,
+        "createdAt": "2025-05-26T07:46:11.248Z",
+        "updatedAt": "2025-05-26T07:46:11.248Z"
+    }
 ]
 ```
 
 ### List Booked Wishes
 
-`GET /api/wush/booked`
+`GET /api/wish/booked`
 Получить все желания, которые вы забронировали
-
-**Headers:**
-
-```json
-Authorization: Bearer <token>
-```
 
 **Responses:**
 
-- 201:
+- 200:
 
 ```json
 [
-  {
-    "id": 5,
-    "name": "string",
-    "price": 99.99,
-    "image": "filename.jpg",
-    "productLink": "string",
-    "bookedByUserId": 42,
-    "wishlists": [
-      {
-        "id": 3,
-        "name": "string",
-        "owner": {
-          "id": 7,
-          "login": "user7",
-          "fullName": "User Seven",
-          "email": "seven@mail.com",
-          "image": null
-        }
-      }
-    ]
-  },
-  …
+    {
+        "id": 15,
+        "name": "кепка",
+        "price": 101,
+        "image": "93e30bb1-f43f-4dbc-9ea7-078a3ff6ab00.jpg",
+        "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+        "bookedByUserId": 4,
+        "wishlists": [
+            {
+                "id": 25,
+                "name": "Друг",
+                "userId": 5,
+                "shareToken": null
+            }
+        ]
+    },
+    {
+        "id": 25,
+        "name": "кепка",
+        "price": null,
+        "image": "da0b8e27-0de1-46ca-8c18-a1be5b780165.jpg",
+        "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+        "bookedByUserId": 4,
+        "wishlists": [
+            {
+                "id": 33,
+                "name": "Друг",
+                "userId": 5,
+                "shareToken": null
+            }
+        ]
+    }
 ]
 ```
 
@@ -1399,37 +1412,33 @@ Authorization: Bearer <token>
 
 **Path Parametrs:**
 
-```json
-  Id (number)
+```makefile
+  id (number)
 ```
 
 **Query:**
 
-```json
+```makefile
   token? (string)
-```
-
-**Headers:**
-
-```json
-Authorization: Bearer <token>
 ```
 
 **Responses:**
 
-- 201:
+- 200:
 
 ```json
 {
-  "id": 5,
-  "name": "string",
-  "price": 99.99,
-  "image": "filename.jpg",
-  "productLink": "string",
-  "wishStatusId": 1,
-  "bookedByUserId": null,
-  "createdAt": "...",
-  "updatedAt": "..."
+    "id": 15,
+    "name": "кепка",
+    "price": 101,
+    "image": "93e30bb1-f43f-4dbc-9ea7-078a3ff6ab00.jpg",
+    "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+    "wishStatusId": 2,
+    "bookedByUserId": 4,
+    "createdAt": "2025-05-26T13:16:24.482Z",
+    "updatedAt": "2025-05-26T14:53:01.113Z",
+    "userId": 5,
+    "shareToken": null
 }
 ```
 
@@ -1455,42 +1464,36 @@ Authorization: Bearer <token>
 
 ### Update a Wish
 
-`PATCH /api/wish/:id`
+`PATCH /api/wish`
 Обновить желание (только владелец)
-
-**Path Parametrs:**
-
-```json
-  Id (number)
-```
 
 **Request Body:**
 
 ```json
 {
-  "name": "string",
-  "price": number,
-  "productLink": "string",
-  "image": "string"
+  "id": "number",
+  "name?": "string",
+  "price?": "number",
+  "productLink?": "string",
+  "image?": "string"
 }
-```
-
-**Headers:**
-
-```json
-Authorization: Bearer <token>
 ```
 
 **Responses:**
 
-- 201:
+- 200:
 
 ```json
 {
-  "id": 5,
-  "name": "updated",
-  "price": 150.00,
-  …
+    "id": 17,
+    "name": "sony",
+    "image": "d75043e8-ea72-479a-a70e-0438e0673769.jpg",
+    "price": 25000,
+    "productLink": null,
+    "wishStatusId": 1,
+    "bookedByUserId": null,
+    "createdAt": "2025-05-26T13:17:54.286Z",
+    "updatedAt": "2025-05-26T13:26:51.843Z"
 }
 ```
 
@@ -1516,19 +1519,15 @@ Authorization: Bearer <token>
 
 ### Delete a Wish
 
-`DELETE /api/wish/:id`
+`DELETE /api/wish`
 Удалить желание (владелец списка или админ)
 
-**Path Parametrs:**
+**Request Body:**
 
 ```json
-  Id (number)
-```
-
-**Headers:**
-
-```json
-Authorization: Bearer <token>
+{
+  "id": "number"
+}
 ```
 
 **Responses:**
@@ -1536,8 +1535,8 @@ Authorization: Bearer <token>
 - 201:
 
 ```json
-{ 
-  "message": "Желание 5 удалено" 
+{
+    "message": "Желание c Id:20 успешно удалено"
 }
 ```
 
@@ -1563,39 +1562,39 @@ Authorization: Bearer <token>
 
 ### Book a Wish
 
-`PATCH /api/wish/:id/book?=token=<shareToken>`
+`PATCH /api/wish/book?=token=<shareToken>`
 Забронировать желание
 
-**Path Parametrs:**
+**Request Body:**
 
 ```json
-  Id (number)
+{
+  "id": "number"
+}
 ```
 
 **Query:**
 
-```json
+```makefile
   token? (string)
-```
-
-**Headers:**
-
-```json
-Authorization: Bearer <token>
 ```
 
 **Responses:**
 
-- 201:
+- 200:
 
 ```json
 {
-  "id": 5,
-  "name": "string",
-  "price": 99.99,
-  "wishStatusId": 2,
-  "bookedByUserId": 42,
-  …
+    "id": 25,
+    "name": "кепка",
+    "price": null,
+    "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+    "image": "da0b8e27-0de1-46ca-8c18-a1be5b780165.jpg",
+    "wishStatusId": 2,
+    "bookedByUserId": 4,
+    "createdAt": "2025-05-26T14:50:05.591Z",
+    "updatedAt": "2025-05-26T14:54:02.473Z",
+    "shareToken": null
 }
 ```
 
@@ -1624,46 +1623,46 @@ Authorization: Bearer <token>
 ```json
 {
   "statusCode": 400,
-  "message": "Желание с id 5 уже забронировано",
+  "message": "Желание с id 25 уже забронировано",
   "error": "Bad Request"
 }
 ```
 
 ### Unbook a Wish
 
-`PATCH /api/wish/:id/unbook?=token=<shareToken>`
-Снять бронь (тот, кто забронировал)
+`PATCH /api/wish/unbook?=token=<shareToken>`
+Снять бронь (тот, кто забронировал или владелец желания)
 
-**Path Parametrs:**
+**Request Body:**
 
 ```json
-  Id (number)
+{
+  "id": "number"
+}
 ```
 
 **Query:**
 
-```json
+```makefile
   token? (string)
-```
-
-**Headers:**
-
-```json
-Authorization: Bearer <token>
 ```
 
 **Responses:**
 
-- 201:
+- 200:
 
 ```json
 {
-  "id": 5,
-  "name": "string",
-  "price": 99.99,
-  "wishStatusId": 1,
-  "bookedByUserId": null,
-  …
+    "id": 15,
+    "name": "кепка",
+    "price": 101,
+    "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+    "image": "93e30bb1-f43f-4dbc-9ea7-078a3ff6ab00.jpg",
+    "wishStatusId": 1,
+    "bookedByUserId": null,
+    "createdAt": "2025-05-26T13:16:24.482Z",
+    "updatedAt": "2025-05-26T14:26:43.200Z",
+    "shareToken": null
 }
 ```
 
@@ -1672,7 +1671,7 @@ Authorization: Bearer <token>
 ```json
 {
   "statusCode": 403,
-  "message": "Нет доступа к бронироваю этого желания",
+  "message": "Нет доступа к cнятию брони этого желания",
   "error": "Forbidden"
 }
 ```
@@ -1692,33 +1691,22 @@ Authorization: Bearer <token>
 ```json
 {
   "statusCode": 400,
-  "message": "Желание с id 5 не забронировано или бронь уже снята",
-  "error": "Bad Request"
-}
-```
-
-```json
-{
-  "statusCode": 400,
-  "message": "Вы не можете снять бронь, т.к. не являетесь её владельцем",
+  "message": "Вы не можете снять бронь, т.к. не являетесь её владельцем или владельцем списка",
   "error": "Bad Request"
 }
 ```
 
 ### Complete a Wish
 
-`PATCH /api/wish/:id/complete`
+`PATCH /api/wish/complete`
 Завершить желание (только владелец списка)
 
-**Path Parametrs:**
+**Request Body:**
 
 ```json
-  Id (number)
-```
-**Headers:**
-
-```json
-Authorization: Bearer <token>
+{
+  "id": "number"
+}
 ```
 
 **Responses:**
@@ -1727,10 +1715,16 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "id": 5,
-  "wishStatusId": 3,
-  "bookedByUserId": null,
-  …
+    "id": 19,
+    "name": "кепка",
+    "price": null,
+    "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+    "image": "5b9c8c7d-27b0-42c5-b60d-f71388b3886d.jpg",
+    "wishStatusId": 3,
+    "bookedByUserId": null,
+    "createdAt": "2025-05-26T13:39:59.624Z",
+    "updatedAt": "2025-05-26T14:08:26.820Z",
+    "shareToken": null
 }
 ```
 
@@ -1761,6 +1755,281 @@ Authorization: Bearer <token>
   "statusCode": 400,
   "message": "Желание уже завершено",
   "error": "Bad Request"
+}
+```
+
+---
+
+## Public WIshlist
+
+Все эти маршруты не требуют JWT-авторизации, они работают по shareToken
+
+### Create a Public Wishlist
+
+`POST /api/publicwishlist`
+Создать новый публичный список желаний. Он доступен всем для просмотра, но редактируется только по токену.
+
+**Request Body:**
+
+```json
+{
+  "name": "string",
+  "description?": "string",
+  "eventDate?": "YYYY-MM-DD || DD.MM.YYYY",
+  "accesslevelId?": 1    
+}
+
+```
+
+**Responses:**
+
+- 201:
+
+```json
+{
+    "id": 24,
+    "token": "77abf0aa-e65d-4553-917b-6b785d9eda71"
+}
+```
+
+- 400: 
+
+```json
+{
+  "statusCode": 400,
+  "message": "В тексте найдены запрещенные слова",
+  "error": "Bad Request"
+}
+```
+
+## Get a Public Wishlist
+
+`GET /api/publicwishlist/:id?token=<shareToken?>`
+Получить все данные списка со всеми желаниями
+
+**Responses:**
+
+- 200:
+
+```json
+{
+    "id": 22,
+    "name": "23 февраля",
+    "description": null,
+    "eventDate": "2003-06-10",
+    "shareToken": null,
+    "userId": null,
+    "accesslevelId": 1,
+    "createdAt": "2025-05-26T07:19:26.710Z",
+    "updatedAt": "2025-05-26T07:20:04.851Z",
+    "accesslevel": {
+        "id": 1,
+        "name": "public"
+    },
+    "user": null,
+    "wishes": []
+}
+```
+
+- 403: 
+
+```json
+{
+  "statusCode": 403,
+  "message": "Нужен корректный токен для просмотра этого списка",
+  "error": "Forbidden"
+}
+```
+
+- 404: 
+
+```json
+{
+  "statusCode": 404,
+  "message": "Список не найден",
+  "error": "Not Found"
+}
+```
+
+## Update a Public Wishlist
+
+`PATCH /api/publicwishlist/:id?token=<shareToken>`
+Обновить список если у вас есть токен
+
+**Request Body:**
+
+```json
+{
+  "name?": "string",
+  "description?": "string",
+  "eventDate?": "YYYY-MM-DD"
+}
+```
+
+**Responses:**
+
+- 200:
+
+```json
+{
+    "id": 24,
+    "name": "23 февраля",
+    "description": null,
+    "eventDate": "2003-06-10",
+    "shareToken": "77abf0aa-e65d-4553-917b-6b785d9eda71",
+    "userId": null,
+    "accesslevelId": 1,
+    "createdAt": "2025-05-26T07:38:57.498Z",
+    "updatedAt": "2025-05-26T07:39:29.598Z"
+}
+```
+
+- 403: 
+
+```json
+{
+  "statusCode": 403,
+  "message": "Нужен корректный токен для просмотра этого списка",
+  "error": "Forbidden"
+}
+```
+
+- 404: 
+
+```json
+{
+  "statusCode": 404,
+  "message": "Список не найден",
+  "error": "Not Found"
+}
+```
+
+## Add a Wish to a Public Wishlist
+
+`POST /api/publicwishlist/:id/wishes?token=<shareToken>`
+Добавить новое желание в список, если есть токен
+
+**Request Body:**
+
+```json
+{
+  "name": "string",
+  "price?": "number",
+  "productLink?": "string",
+  "image?": "string"
+}
+
+```
+
+**Responses:**
+
+- 201:
+
+```json
+{
+    "id": 7,
+    "name": "айфон",
+    "price": 44000,
+    "wishStatusId": 1,
+    "updatedAt": "2025-05-26T07:39:40.286Z",
+    "createdAt": "2025-05-26T07:39:40.286Z",
+    "image": null,
+    "productLink": null,
+    "bookedByUserId": null
+}
+```
+
+- 403: 
+
+```json
+{
+  "statusCode": 403,
+  "message": "Нужен корректный токен для просмотра этого списка",
+  "error": "Forbidden"
+}
+```
+
+- 404: 
+
+```json
+{
+  "statusCode": 404,
+  "message": "Список не найден",
+  "error": "Not Found"
+}
+```
+
+## Update a Wish in a Public Wishlist
+
+`PATCH /api/publicwishlist/:listId/wishes/:wishId?token=<shareToken>`
+Обновить поля желания если есть токен
+
+**Responses:**
+
+- 201:
+
+```json
+{
+  "name?": "string",
+  "price?": "number",
+  "productLink?": "string",
+  "image?": "string"
+}
+
+```
+
+- 403: 
+
+```json
+{
+  "statusCode": 403,
+  "message": "Нужен корректный токен для просмотра этого списка",
+  "error": "Forbidden"
+}
+```
+
+- 404: 
+
+```json
+{
+  "statusCode": 404,
+  "message": "Список не найден",
+  "error": "Not Found"
+}
+```
+
+## Delete a Wish from a Public Wishlist
+
+`DELETE /api/publicwishlist/:listId/wishes/:wishId?token=<shareToken>`
+Удалить желание из списка, если есть токен
+
+**Responses:**
+
+- 201:
+
+```json
+{ 
+  "message": "Желание удалено" 
+}
+```
+
+- 403: 
+
+```json
+{
+  "statusCode": 403,
+  "message": "Нужен корректный токен для просмотра этого списка",
+  "error": "Forbidden"
+}
+```
+
+- 404: 
+
+```json
+{
+  "statusCode": 404,
+  "message": "Список не найден",
+  "error": "Not Found"
 }
 ```
 

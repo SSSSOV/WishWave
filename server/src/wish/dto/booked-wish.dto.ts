@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 
 export class UserInfoDto {
-    @ApiProperty() if: number;
+    @ApiProperty() id: number;
     @ApiProperty() login: string;
     @ApiProperty() email: string;
     @ApiProperty({required: false}) fullName?: string;
@@ -21,5 +21,5 @@ export class BookedWishDto {
     @ApiProperty({required: false}) image?: string;
     @ApiProperty({required: false}) productLink?: string;
     @ApiProperty() bookedByUserId: number;
-    @ApiProperty({type: () => [OriginalWishlistDto]}) wishlists: OriginalWishlistDto;
+    @ApiProperty({type: () => [OriginalWishlistDto]}) wishlists: OriginalWishlistDto[];
 }

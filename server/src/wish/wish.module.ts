@@ -20,6 +20,7 @@ import { ProfanityModule } from 'src/profanity/profanity.module';
     AuthModule,
     WishlistModule,
     ProfanityModule
-  ]
+  ],
+  exports: [WishService]
 })
 export class WishModule {}

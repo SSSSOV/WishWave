@@ -26,8 +26,8 @@ export class WishList extends Model<WishList, WishListCreationAttrs> {
     declare shareToken: string | null;
 
     @ForeignKey(() => User)
-    @Column({type: DataType.INTEGER, allowNull: false})
-    declare userId: number;
+    @Column({type: DataType.INTEGER, allowNull: true})
+    declare userId: number | null;
 
     @ForeignKey(() => AccessLevel)
     @Column({type: DataType.INTEGER, allowNull: false})
