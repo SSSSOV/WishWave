@@ -24,7 +24,7 @@ export class Wish extends Model<Wish, WishCreationAttrs> {
     @Column({type: DataType.STRING, allowNull: true})
     declare image: string;
 
-    @Column({type: DataType.FLOAT, allowNull: false})
+    @Column({type: DataType.FLOAT, allowNull: true})
     declare price: number;
 
     @Column({type: DataType.STRING, allowNull: true})

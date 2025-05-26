@@ -5,13 +5,10 @@ import { WishStatusDto } from "src/wishstatus/dto/wish-status.dto";
 export class WishResponsDto {
     @ApiProperty() id: number;
     @ApiProperty() name: string;
-    @ApiProperty() price: number;
-    @ApiProperty({required: false}) image?: string; 
+    @ApiProperty({required: false}) price?: number;
     @ApiProperty({required: false}) productLink?: string;
-
-    @ApiProperty({type: () => WishStatusDto, description: 'Статус желания'})
-    status: WishStatusDto;
-
-    @ApiProperty({required: false, description: 'ID пользователя, который забронировал желание'})
-    bookedbyUserId?: number;
+    @ApiProperty({required: false}) image?: string; 
+    @ApiProperty() userId: number;
+    @ApiProperty({type: () => WishStatusDto}) status: WishStatusDto;
+    @ApiProperty({required: false}) bookedbyUserId?: number;
 }

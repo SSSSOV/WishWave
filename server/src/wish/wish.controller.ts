@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, ForbiddenException, Get, NotFoundException, Param, ParseIntPipe, Patch, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, ForbiddenException, Get, NotFoundException, Param, ParseIntPipe, Patch, Post, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { WishService } from './wish.service';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -8,6 +8,8 @@ import { WishlistService } from 'src/wishlist/wishlist.service';
 import { InjectModel } from '@nestjs/sequelize';
 import { WishListWish } from 'src/wishlist/wishlist-wish.model';
 import { BookedWishDto } from './dto/booked-wish.dto';
+import { UpdateWishDto } from './dto/update-wish.dto';
+import { WishIdDto } from './dto/wish-id.dto';
 
 @Controller('wish')
 export class WishController {
@@ -15,15 +17,20 @@ export class WishController {
     constructor(private wishService: WishService, private wishlistService: WishlistService, @InjectModel(WishListWish) private wishListWishRepository: typeof WishListWish) {}
 
     @UseGuards(JwtAuthGuard)
-    @Post(':listId')
+    @Post()
     @UseInterceptors(FileInterceptor('image', {limits: {fileSize: 2 * 1024 * 1024}}))
-    async createWishInList(@Param('listId', ParseIntPipe) listId: number, @Body() dto: CreateWishDto, @UploadedFile() image: Express.Multer.File, @Req() req) {
+    async createWishInList(@Body() dto: CreateWishDto, @UploadedFile() image: Express.Multer.File, @Req() req) {
         const userId = req.user.id;
-        if (!(await this.wishlistService.isOwner(userId, listId))) {
+        if (!(await this.wishlistService.isOwner(userId, dto.listId))) {
             throw new ForbiddenException('Только владелец списка может добавлять в него желания');
         }
 
-        return this.wishService.create(dto, image, listId)
+        const wish = await this.wishService.create(dto, image, dto.listId);
+        const wl = await this.wishlistService.findByIdWithAccess(dto.listId);
+        const {shareToken} = wl?.get({plain: true}) as any;
+
+        const wishPlain = wish.get({plain: true}) as any;
+        return {...wishPlain, shareToken};
     }
 
     @UseGuards(JwtAuthGuard)
@@ -39,44 +46,43 @@ export class WishController {
     @Get('booked')
     async getBooked(@Req() req): Promise<BookedWishDto[]> {
         const userId = req.user.id;
-        const wishes = await this.wishService.getBookedWishes(userId);
+        const wishes = await this.wishService.getBookedWishes(userId)
 
-        return wishes.map(w => {const plain = (w as any).get({plain: true});
-            const dto: BookedWishDto = {
-                id: plain.id, name: plain.name, price: plain.price, image: plain.image, productLink: plain.productLink, bookedByUserId: plain.bookedByUserId, wishlists: Array.isArray(plain.wishlists) ? plain.wishlists.map((l: any)=> ({
-                    id: l.id, name: l.name, owner: {id: l.user.id, login: l.user.login, fullName: l.user.fullName, email: l.user.email, image: l.user.image}
-                })): []
-            };
-            return dto;
-        })
+        return wishes.map(w => {const p: any = w.get({plain:true}); const lists = Array.isArray(p.wishlists) ? p.wishlists.map((l: any) => ({id: l.id, name: l.name, userId: l.userId, shareToken: l.shareToken})): [];
+            return {id: p.id, name: p.name, price: p.price, image: p.image, productLink: p.productLink, bookedByUserId: p.bookedByUserId, wishlists: lists} as BookedWishDto;}); 
     }
 
     @UseGuards(JwtAuthGuard)
     @Get(':id')
-    async getWIshById(@Param('id') wishId: number, @Req() req): Promise<any> {
-        const wish = await this.wishService.findById(wishId);
+    async getWIshById(@Param('id') wishId: number, @Query('token') token: string | undefined, @Req() req): Promise<any> {
         const link = await this.wishListWishRepository.findOne({where: {wishId}});
         if (!link) {
             throw new NotFoundException('Желание не найдено ни в одном списке')
         }
-
-        const wishlistId = link.wishlistId;
-        const can = await this.wishlistService.canAccessWishList(req.user.id, link.wishlistId, req.query.token as string | undefined);
+        
+        const can = await this.wishlistService.canAccessWishList(req.user.id, link.wishlistId, );
         if (!can) {
             throw new ForbiddenException('Доступ к желанию запрещен')
         }
+        
+        const wish = await this.wishService.findById(wishId);
+        const wl = await this.wishlistService.findByIdWithAccess(link.wishlistId);
+        if (!wl) {
+            throw new NotFoundException('Список не найден');
+        }
+        const {userId, shareToken} = wl.get({plain: true}) as any;
+        const plainWish = wish.get({plain: true}) as any;
 
-        const wl = await this.wishlistService.findByIdWithAccess(wishlistId);
-        const ownerId = (wl?.get({plain: true}) as any).userId;
-        return {...wish.get({plain: true}), ownerId};
+        return{id: plainWish.id, name: plainWish.name, price: plainWish.price, image: plainWish.image, productLink: plainWish.productLink, wishStatusId: plainWish.wishstuses.id, bookedByUserId: plainWish.bookedByUserId, createdAt: plainWish.createdAt, updatedAt: plainWish.updatedAt,userId, shareToken};
     }
     
 
     @UseGuards(JwtAuthGuard)
-    @Patch(':id')
+    @Patch()
     @UseInterceptors(FileInterceptor('image', {limits: {fileSize: 2 * 1024 * 1024}}))
-    async updateWish(@Param('id') wishId: number, @UploadedFile() image: Express.Multer.File, @Body() dto: Partial<CreateWishDto>, @Req() req): Promise<Wish> {
+    async updateWish(@UploadedFile() image: Express.Multer.File, @Body() dto: UpdateWishDto, @Req() req): Promise<Wish> {
         const userId = req.user.id;
+        const {id: wishId, ...wishData} = dto;
         const record = await this.wishListWishRepository.findOne({where: {wishId}});
         if (!record) {
             throw new NotFoundException('Желание не найдено в списках')
@@ -90,27 +96,30 @@ export class WishController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Delete(':id')
-    async deleteWish(@Param('id', ParseIntPipe) wishId: number, @Req() req) {
+    @Delete()
+    async deleteWish(@Body() dto: WishIdDto, @Req() req) {
         const userId = req.user.id;
         const userRole = req.user.roles?.value;
+        const wishId = dto.id;
         const record = await this.wishListWishRepository.findOne({where: {wishId}});
         if (!record) {
             throw new NotFoundException('Желание не найдено в списках')
         }
+
         const isOwner = await this.wishlistService.isOwner(userId, record.wishlistId);
         if (!isOwner && userRole !== 'admin') {
             throw new ForbiddenException('Только владелец может удалять желание')
         }
 
         await this.wishService.delete(wishId);
-        return {message: `Желание ${wishId} удалено`};
+        return {message: `Желание c id ${wishId} успешно удалено`};
     }
 
     @UseGuards(JwtAuthGuard)
-    @Patch(':id/book')
-    async bookWish(@Param('id', ParseIntPipe) wishId: number,@Req() req) {
+    @Patch('book')
+    async bookWish(@Body() dto: WishIdDto,@Req() req): Promise<any> {
         const userId = req.user['id'];
+        const wishId = dto.id;
         const record = await this.wishListWishRepository.findOne({where: {wishId}});
         if (!record) {
             throw new NotFoundException('Желание не найдено в списках');
@@ -121,32 +130,69 @@ export class WishController {
         if (!can) {
             throw new ForbiddenException('Нет доступа к бронироваю этого желания');
         }
-        return this.wishService.bookWish(wishId, userId);
+
+        const bookedWish = await this.wishService.bookWish(wishId, userId);
+        const wl = await this.wishlistService.findByIdWithAccess(record.wishlistId);
+        if (!wl) {
+            throw new NotFoundException('Список не найден');
+        }
+
+        const {shareToken: realToken} = wl.get({plain: true}) as any;
+        const w = bookedWish.get({plain: true}) as any;
+        return {id: w.id, name: w.name, price: w.price, productLink: w.productLink,image: w.image, wishStatusId: w.wishStatusId, bookedByUserId: w.bookedByUserId, createdAt: w.createdAt, updatedAt: w.updatedAt, shareToken: realToken}
     }
 
     @UseGuards(JwtAuthGuard)
-    @Patch(':id/unbook/')
-    async unbookWish(@Param('id', ParseIntPipe) wishId: number, @Req() req) {
+    @Patch('unbook')
+    async unbookWish(@Body() dto: WishIdDto, @Req() req): Promise<any> {
         const userId = req.user?.id ?? null;
+        const wishId = dto.id;
         const record = await this.wishListWishRepository.findOne({where: {wishId}});
         if(!record) {
             throw new NotFoundException('Желание не найдено в списках');
         }
-        const wishlistId = record.wishlistId;
 
         const shareToken = req.query.token as string | undefined;
-
         const can = await this.wishlistService.canAccessWishList(userId, record.wishlistId, shareToken);
         if (!can) {
             throw new ForbiddenException('Нет доступа к бронироваю этого желания');
         } 
 
-        return this.wishService.unbookWish(wishId, userId);
+        const unbookedWish = await this.wishService.unbookWish(wishId, userId);
+        const wl = await this.wishlistService.findByIdWithAccess(record.wishlistId);
+        if (!wl) {
+            throw new NotFoundException('Список не найден');
+        }
+
+        const {shareToken: realToken} = wl.get({plain: true}) as any;
+        const w = unbookedWish.get({plain: true}) as any;
+        return {id: w.id, name: w.name, price: w.price, productLink: w.productLink,image: w.image, wishStatusId: w.wishStatusId, bookedByUserId: w.bookedByUserId, createdAt: w.createdAt, updatedAt: w.updatedAt, shareToken: realToken}
     }
 
     @UseGuards(JwtAuthGuard)
-    @Patch(':id/complete')
-    complete(@Param('id', ParseIntPipe) wishId: number, @Req() req) {
-        return this.wishService.completeWish(wishId, req.user.id);
+    @Patch('complete')
+    async  complete(@Body() dto: WishIdDto, @Req() req) {
+        const userId = req.user.id;
+        const wishId = dto.id;
+        const record = await this.wishListWishRepository.findOne({where: {wishId}});
+        if (!record) {
+            throw new NotFoundException('Желание не найдено в списках')
+        }
+
+        const isOwner = await this.wishlistService.isOwner(userId, record.wishlistId);
+        if (!isOwner) {
+            throw new ForbiddenException('Только владелец может завершать желания')
+        }
+   
+        const completeWish = await this.wishService.completeWish(wishId, userId);
+        const wl = await this.wishlistService.findByIdWithAccess(record.wishlistId);
+        if (!wl) {
+            throw new NotFoundException('Список не найден');
+        }
+
+        const {shareToken} = wl.get({plain: true}) as any;
+        const plainWish = completeWish.get({plain: true}) as any;
+
+        return {id: plainWish.id, name: plainWish.name, price: plainWish.price, productLink: plainWish.productLink,image: plainWish.image, wishStatusId: plainWish.wishStatusId, bookedByUserId: plainWish.bookedByUserId, createdAt: plainWish.createdAt, updatedAt: plainWish.updatedAt, shareToken}
     }
 }
