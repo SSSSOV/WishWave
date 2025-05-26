@@ -53,18 +53,22 @@ export class WishController {
 
     @UseGuards(JwtAuthGuard)
     @Get(':id')
-    async getWIshById(@Param('id') wishId: number, @Req() req): Promise<Wish> {
+    async getWIshById(@Param('id') wishId: number, @Req() req): Promise<any> {
         const wish = await this.wishService.findById(wishId);
         const link = await this.wishListWishRepository.findOne({where: {wishId}});
         if (!link) {
             throw new NotFoundException('Желание не найдено ни в одном списке')
         }
 
+        const wishlistId = link.wishlistId;
         const can = await this.wishlistService.canAccessWishList(req.user.id, link.wishlistId, req.query.token as string | undefined);
         if (!can) {
             throw new ForbiddenException('Доступ к желанию запрещен')
         }
-        return wish;
+
+        const wl = await this.wishlistService.findByIdWithAccess(wishlistId);
+        const ownerId = (wl?.get({plain: true}) as any).userId;
+        return {...wish.get({plain: true}), ownerId};
     }
     
 
