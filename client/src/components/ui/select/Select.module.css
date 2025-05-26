@@ -1,0 +1,17 @@
+.select {
+  /* w-full p-2 border border-gray-300 rounded-md */
+  width: 100%;
+  background-color: transparent;
+
+  border: 1px solid var(--outline);
+  font-size: 16px;
+  padding: var(--xs);
+  border-radius: var(--xs);
+  background: transparent;
+  transition: all 0.2s;
+  height: 56px;
+}
+
+.default {
+  color: var(--outline);
+}

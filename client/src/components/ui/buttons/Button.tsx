@@ -9,20 +9,22 @@ type color = "primary" | "secondary" | "tertiary" | "access" | "warning" | "erro
 
 export default function Button({
   children,
-  variant,
+  variant = "filled",
   isPadNone = false,
   isFit = true,
   icon,
   href,
   color = "primary",
+  isLoading = false,
   ...props
 }: {
   children?: React.ReactNode;
-  variant: variant;
+  variant?: variant;
   isPadNone?: boolean;
   isFit?: boolean;
   icon?: string;
   color?: color;
+  isLoading?: boolean;
   href?: string;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   let buttonClasses = "";

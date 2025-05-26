@@ -31,9 +31,7 @@ export default function NamePage() {
     try {
       handle({ fullname: firstname + " " + lastname });
       router.back();
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   return (

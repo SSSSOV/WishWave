@@ -5,10 +5,11 @@ import Input from "@/components/ui/inputs/Input";
 import Monogram from "@/components/ui/monogram/Monogram";
 import Section from "@/components/ui/section/Section";
 import { $user, handleUpdateInfo } from "@/context/user";
+import { getInitials } from "@/lib/utils/getInitials";
+import { hasNameContent } from "@/lib/utils/hasNameContent";
 import { useUnit } from "effector-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getInitials, hasNameContent } from "../page";
 
 export default function ImagePage() {
   //Роутер
@@ -37,13 +38,13 @@ export default function ImagePage() {
   return (
     <>
       <form action="" onSubmit={handleSubmit}>
-        <Section padding_top_size="lg" align_items="center" title="Ваше текущее фото" title_size="xs">
+        <Section padding_top_size="lg" align_items="center" title={image ? "Новое фото" : "Ваше текущее фото"} title_size="xs">
           <Monogram
             monogram_type={user.image ? "image" : hasNameContent(user.fullname) ? "monogram" : "icon"}
             letter={hasNameContent(user.fullname) ? getInitials(user.fullname) : "person"}
             icon="person"
             size="lg"
-            url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + user.image}></Monogram>
+            url={image ? image : process.env.NEXT_PUBLIC_SERVER_URL + "static/" + user.image}></Monogram>
         </Section>
         <Section padding_top_size="lg" title="Вставьте ссылку на новое изображение:">
           <Input labelText="Ссылка" value={image} onChange={(e) => setImage(e.target.value)} type="url" />

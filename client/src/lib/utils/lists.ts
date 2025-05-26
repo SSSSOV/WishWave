@@ -1,4 +1,4 @@
-import { IWishList } from "@/types/wish_lists";
+import { IWishList } from "@/types/wish_list";
 
 /**
  * Сортирует списки желаний по дате события (eventDate)

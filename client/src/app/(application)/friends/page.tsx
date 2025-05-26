@@ -29,6 +29,10 @@ export default function FriendsPage() {
     console.log(friends);
   }, [friends]);
 
+  const openUser = (id: number) => {
+    router.push(`/friends/${id}`);
+  };
+
   return (
     <>
       <Section padding_top_size="lg">
@@ -64,6 +68,9 @@ export default function FriendsPage() {
                 headline={friend.fullname ? friend.fullname : friend.login}
                 overline={friend.fullname ? friend.login : ""}
                 trailing_type="icon"
+                onClick={() => {
+                  openUser(friend.id);
+                }}
               />
             ))
           ) : (

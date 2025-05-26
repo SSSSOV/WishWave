@@ -1,6 +1,6 @@
 "use client";
 
-import { ICreateWishList, IUpdateWishList, IWishList } from "@/types/wish_lists";
+import { ICreateWishList, IUpdateWishList, IWishList } from "@/types/wish_list";
 import { createEffect, createEvent, createStore, sample } from "effector";
 import toast from "react-hot-toast";
 import { setAuth } from "../user";
@@ -57,6 +57,7 @@ export const fetchWishListsFx = createEffect(async () => {
       return;
     }
 
+    console.log(data);
     return data as IWishList[];
   } catch (error) {
     toast.error("Ошибка получения списка желаний: " + error);

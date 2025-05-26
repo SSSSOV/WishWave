@@ -2,57 +2,79 @@
 import Button from "@/components/ui/buttons/Button";
 import Input from "@/components/ui/inputs/Input";
 import Monogram from "@/components/ui/monogram/Monogram";
-import NavigationBar from "@/components/ui/navigation_bar/NavigationBar";
 import Section from "@/components/ui/section/Section";
-import TopAppBar from "@/components/ui/top_app_bar/TopAppBar";
 import { $wish, handleCreateWish } from "@/context/wish";
 import { $wishLists, handleFetchWishLists } from "@/context/wish_lists";
+import { customStyles, OptionType } from "@/types/select";
 import { useUnit } from "effector-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import ReactSelect, { SingleValue, StylesConfig } from "react-select";
 
 export default function AddPage() {
-  // роутер
+  // Роутер
   const router = useRouter();
 
+  // Параметры
   const params = useSearchParams(); // Получаем ID из URL
   const listId = params.get("listId"); // Получаем listId из URL
 
+  // Состояния
   const [image, setImage] = useState("");
   const [list, setList] = useState<number>(0);
   const [name, setName] = useState("");
   const [price, setPrice] = useState<number>(0);
   const [link, setLink] = useState("");
+  const [selectedOption, setSelectedOption] = useState<OptionType | null>(null);
+  const [options, setOptions] = useState<OptionType[]>([]);
 
+  // Стор
   const [wish, wishLists, createWish, fetchWishLists] = useUnit([$wish, $wishLists, handleCreateWish, handleFetchWishLists]);
 
+  // Обработчики
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (!list) {
+      if (!selectedOption) {
         toast("Пожалуйста, выберите список", {
           icon: "⚠️",
         });
         return;
       }
 
-      createWish({ listId: list, name: name, price: price, productLink: link, image: image });
+      if (!name) {
+        toast("Пожалуйста, введите название", {
+          icon: "⚠️",
+        });
+        return;
+      }
+
+      createWish({ listId: selectedOption?.value, name: name, price: price, productLink: link, image: image });
       router.back();
     } catch (error) {
       console.log(error);
     }
   };
 
+  // Еффекты
   useEffect(() => {
     fetchWishLists();
   }, []);
 
   useEffect(() => {
-    if (listId) {
-      setList(Number(listId));
+    if (wishLists.length > 0) {
+      setOptions(wishLists.map((list) => ({ value: list.id, label: list.name })));
+    } else {
+      setOptions([{ value: 0, label: "У вас нет списков!" }]); // Массив с одним элементом
     }
-  }, [listId]);
+  }, [wishLists]);
+
+  useEffect(() => {
+    if (listId && options) {
+      setSelectedOption(options.find((option) => option.value == Number(listId)) as OptionType);
+    }
+  }, [listId, options]);
 
   return (
     <>
@@ -92,16 +114,15 @@ export default function AddPage() {
               setLink(e.target.value);
             }}
           />
-          <div className="mb-4">
-            <select className="w-full p-2 border border-gray-300 rounded-md" value={list} onChange={(e) => setList(Number(e.target.value))} required>
-              <option value="">Выберите список</option>
-              {wishLists.map((wishlist) => (
-                <option key={wishlist.id} value={wishlist.id}>
-                  {wishlist.name} ({new Date(wishlist.eventDate).toLocaleDateString()})
-                </option>
-              ))}
-            </select>
-          </div>
+          <ReactSelect
+            styles={customStyles}
+            instanceId="fixed-select"
+            value={selectedOption}
+            onChange={(newValue) => setSelectedOption(newValue)}
+            options={options}
+            isMulti={false}
+            placeholder="Выберите список"
+          />
         </Section>
         <Section align_items="right" padding_bot_size="lg">
           <Section items_direction="row" isFit withoutPad>

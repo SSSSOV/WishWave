@@ -1,17 +1,11 @@
-import { IUser } from "./user";
-
-export interface IFriend {
-  id: number;
-  login: string;
-  email: string;
-  fullname?: string;
-  image?: string;
-}
-
+/**Интерфейс запроса в друзья */
 export interface IFriendRequest {
+  /**ID запроса */
   id: number;
-  userid1: number;
-  userid2: number;
+  /**Отправитель */
+  sender: number;
+  /**Получатель */
+  recipient: number;
+  /**Статус запроса */
   friendstatusId: number;
-  users: IUser[];
 }

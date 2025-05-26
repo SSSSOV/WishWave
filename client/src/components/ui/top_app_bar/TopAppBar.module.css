@@ -62,3 +62,6 @@
 .border {
   border: 1px solid var(--outline);
 }
+.w {
+  width: 100%;
+}
