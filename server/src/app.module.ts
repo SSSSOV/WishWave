@@ -27,6 +27,7 @@ import { ServeStaticModule } from "@nestjs/serve-static";
 import { SeedService } from './seed/seed.service';
 import { ProfanityService } from './profanity/profanity.service';
 import { ProfanityModule } from './profanity/profanity.module';
+import { PublicwishlistModule } from './publicwishlist/publicwishlist.module';
 import * as path from 'path';
 
 @Module({
@@ -67,6 +68,7 @@ import * as path from 'path';
         AuthModule,
         FileModule,
         ProfanityModule,
+        PublicwishlistModule,
       ]
 })
 export class AppModule {}

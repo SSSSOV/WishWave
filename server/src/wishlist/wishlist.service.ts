@@ -5,7 +5,7 @@ import { CreateWishlistDto } from './dto/create-wishlist.dto';
 import { Wish } from 'src/wish/wish.model';
 import { AccessLevel } from 'src/accesslevel/accesslevel.model';
 import { User } from 'src/users/users.model';
-import { Op } from 'sequelize';
+import { WhereOptions, Op as SqOp} from 'sequelize';
 import { Friend } from 'src/friend/friend.model';
 import { FriendStatus } from 'src/friendstatus/friendstatus.model';
 import { v4 as uuidv4 } from 'uuid';
@@ -47,7 +47,7 @@ export class WishlistService {
         return `${yyyy}-${mm}-${dd}`;
     }
 
-    async create(dto: CreateWishlistDto, userId: number) {
+    async create(dto: CreateWishlistDto, userId: number | null, listId?: number) {
         let shareToken: string | null = null;
         
         if (this.profanity.containsProfanity(dto.name) || (dto.description && this.profanity.containsProfanity(dto.description))) {
@@ -55,6 +55,11 @@ export class WishlistService {
         }
 
         dto.eventDate = this.normalizeData(dto.eventDate);
+
+        if (userId === null) {
+            dto.accesslevelId = 1;
+            shareToken = uuidv4();
+        }
 
         if (dto.accesslevelId === 3) {
             shareToken = uuidv4();
@@ -115,11 +120,13 @@ export class WishlistService {
             updateData.eventDate = this.normalizeData(dto.eventDate as string);
         }
 
-        if (dto.accesslevelId === 3 && !wl.shareToken) {
-            updateData.shareToken = uuidv4();
-        } else if (dto.accesslevelId !== 3) {
-            updateData.shareToken = null;
-        }
+        if ('accesslevelId' in dto) {
+            if (dto.accesslevelId === 3 && !wl.shareToken) {
+                updateData.shareToken = uuidv4();
+            } else if (dto.accesslevelId !== 3) {
+                updateData.shareToken = null;
+            }
+        }   
 
         await wl.update(updateData);
         return wl;
@@ -150,15 +157,19 @@ export class WishlistService {
             throw new NotFoundException('Список желаний не найден или уровень доступа не найден');
         }
 
-        if (userId !== null && wishlist.userId === userId) {
-            return true;
-        }
-
         const plain = wishlist.get({plain: true}) as{
             id:number;
             shareToken?: string;
             accesslevel: {name: string};
         };
+
+        if (shareToken && plain.shareToken === shareToken) {
+            return true;
+        }
+        if (userId !== null && wishlist.userId === userId) {
+            return true;
+        }
+
 
         if(!plain.accesslevel) {
             throw new NotFoundException('Не найден уровень доступа для этого списка');
@@ -167,7 +178,7 @@ export class WishlistService {
         const level = plain.accesslevel.name;
         switch (level) {
             case 'public':
-                return userId !== null;
+                return true;
             case 'private':
                 return false;
             case 'linkOnly':
@@ -183,10 +194,10 @@ export class WishlistService {
                 const friendship = await this.friendRepository.findOne({
                     where : {
                         friendstatusId: acceptedId,
-                        [Op.or]: [
+                        [SqOp.or]: [
                             {userid1: userId, userid2: wishlist.userId},
                             {userid1: wishlist.userId, userid2: userId}
-                        ]
+                        ] as WhereOptions<Friend> []
                     }
                 });
                 return !!friendship;
@@ -264,14 +275,14 @@ export class WishlistService {
 
     async searchFriendLists(requestId: number, friendId: number, nameSearch: string): Promise<WishList[]> {
         const acceptedId = await this.getStatusId('accepted');
-        const friendship = await this.friendRepository.findOne({where: {friendstatusId: acceptedId, [Op.or]: [
+        const friendship = await this.friendRepository.findOne({where: {friendstatusId: acceptedId, [SqOp.or]: [
             {userid1: requestId, userid2: friendId}, {userid1: friendId, userid2: requestId}
         ]}});
         if (!friendship) {
             throw new ForbiddenException('Вы не являетесь друзьями')
         }
 
-        const lists = await this.wishListRepository.findAll({where: {userId: friendId, name: {[Op.iLike]: `%${nameSearch}%`}}, include: [{model: AccessLevel, as: 'accesslevel'}]});
+        const lists = await this.wishListRepository.findAll({where: {userId: friendId, name: {[SqOp.iLike]: `%${nameSearch}%`}}, include: [{model: AccessLevel, as: 'accesslevel'}]});
         return lists;
     }
 
@@ -293,4 +304,27 @@ export class WishlistService {
         return wishlist
     }
 
+
+    async canEditWishList(wishlistId: number, userId: number | null, shareToken?: string): Promise<boolean> {
+        const wl = await this.wishListRepository.findByPk(wishlistId, {attributes: ['userId', 'shareToken']});
+        if (!wl) {
+            throw new NotFoundException('Список не найден')
+        }
+
+        const plain = wl.get({ plain: true });
+            console.log('canEditWishList:', {
+            fromDb: plain.shareToken,
+            fromClient: shareToken
+        });
+        const {userId: ownerId, shareToken: realToken} = wl.get({plain: true});
+        if (userId !== null && userId === ownerId) {
+            return true
+        }
+
+        if (shareToken && shareToken === realToken) {
+            return true
+        }
+
+        return false;
+    }
 }
