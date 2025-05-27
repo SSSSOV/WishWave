@@ -293,7 +293,7 @@ export class WishlistService {
 
         const wishlist = await this.wishListRepository.findByPk(wishlistId, {include: [
             {model: AccessLevel, as: 'accesslevel', attributes: ['id', 'name']},
-            {model: User, as: 'user', attributes: ['id', 'login', 'fullName', 'email', 'image']},
+            {model: User, as: 'user', attributes: ['id', 'login', 'fullname', 'email', 'image']},
             {model: Wish, as: 'wishes', through: {attributes: []}, include: [{model: WishStatus, attributes: ['id', 'name']}]}
         ]});
 
@@ -326,5 +326,37 @@ export class WishlistService {
         }
 
         return false;
+    }
+
+    async getAccessibleWishes(viewerId: number, ownerId: number): Promise<WishList[]> {
+        const allLists = await this.wishListRepository.findAll({where: {userId: ownerId}, attributes: ['id', 'shareToken', 'userId'], include: [{model: AccessLevel, as: 'accesslevel', attributes: ['name']}]});
+        const acceptedStatusId = await this.getStatusId('accepted');
+        const accessibleListIds: number[] = [];
+        for (const wl of allLists) {
+            const plain = wl.get({plain:true}) as any;
+            const {id} = plain;
+            const lvl = plain.accesslevel.name;
+
+            if (ownerId === viewerId) {
+                accessibleListIds.push(id);
+            } else if (lvl === 'public') {
+                accessibleListIds.push(id);
+            } else if (lvl === 'friends') {
+                const friendship = await this.friendRepository.findOne({where: {friendstatusId: acceptedStatusId, [SqOp.or]: [
+                    {userid1: viewerId, userid2: ownerId}, {userid1: ownerId, userid2: viewerId}
+                ]}});
+    
+                if(friendship) {
+                    accessibleListIds.push(id);
+                }
+            } 
+        }
+
+
+        if (accessibleListIds.length === 0) {
+            return [];
+        }
+
+        return this.wishListRepository.findAll({where: {id: accessibleListIds}, attributes: ['id', 'name', 'accesslevelId', 'description', 'eventDate', 'userId']});
     }
 }
