@@ -189,6 +189,16 @@ export class UsersService {
     await user.update({ password: hash });
   }
 
+  async forceChangePassword(userId: number, newPassword: string): Promise<void> {
+    const user = await this.userRepository.findByPk(userId);
+    if (!user) {
+      throw new BadRequestException('Пользователь не найден')
+    }
+
+    const hash = await bcrypt.hash(newPassword, 10);
+    await user.update({password: hash});
+  }
+
   async getProfileDto(id: number): Promise<UserResponseDto> {
     const user = await this.getUserById(id);
     const plain = user.get({ plain: true }) as any;
