@@ -5,7 +5,6 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './users.model';
 import { Role } from 'src/roles/roles.model';
 import { Friend } from 'src/friend/friend.model';
-import { FriendUsers } from 'src/friend/friend-users.model';
 import { Ban } from 'src/ban/ban.model';
 import { WishList } from 'src/wishlist/wishlist.model';
 import { RolesModule } from 'src/roles/roles.module';
@@ -19,7 +18,7 @@ import { ProfanityModule } from 'src/profanity/profanity.module';
   controllers: [UsersController],
   providers: [UsersService],
   imports: [
-    SequelizeModule.forFeature([User, Friend, FriendUsers, Ban, Role, WishList, Wish]),
+    SequelizeModule.forFeature([User, Friend, Ban, Role, WishList, Wish]),
     RolesModule,
     FileModule,
     ProfanityModule,

@@ -645,6 +645,12 @@ Authorization: Bearer <token>
 
 ## Friend
 
+Для всех защищенных маршрутов требуется заголовок
+
+```makefile
+Authorization: Bearer <token>
+```
+
 ### Send Friend Request
 
 `POST /api/friend/request`
@@ -654,7 +660,7 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "targetUserId": number
+  "targetUserId": "number"
 }
 ```
 
@@ -664,12 +670,22 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "id": 10,
-  "userid1": 1,
-  "userid2": 2,
-  "friendstatusId": 1,
-  "createdAt": "2025-05-24T12:34:56.000Z",
-  "updatedAt": "2025-05-24T12:34:56.000Z"
+    "id": 9,
+    "friendStatusId": 1,
+    "createdAt": "2025-05-27T16:18:43.442Z",
+    "updatedAt": "2025-05-27T16:18:43.442Z",
+    "sender": {
+        "id": 3,
+        "fullname": null,
+        "login": "shaka",
+        "image": null
+    },
+    "recipient": {
+        "id": 1,
+        "fullname": null,
+        "login": "root",
+        "image": null
+    }
 }
 ```
 
@@ -712,19 +728,26 @@ Authorization: Bearer <token>
 
 ```json
 [
-  {
-    "id": 10,
-    "userid1": 2,
-    "userid2": 1,
-    "friendstatusId": 1,
-    "users": {
-      "id": 2,
-      "login": "friend_login",
-      "email": "friend@example.com",
-      "fullName": "Имя Фамилия"
+    {
+        "id": 8,
+        "friendStatusId": 1,
+        "createdAt": "2025-05-27T15:53:43.060Z",
+        "updatedAt": "2025-05-27T15:53:43.060Z",
+        "sender": {
+            "id": 3,
+            "login": "shaka",
+            "email": "shaka@mail.ru",
+            "fullname": null,
+            "image": null
+        },
+        "recipient": {
+            "id": 2,
+            "login": "dima",
+            "email": "dima@mail.ru",
+            "fullname": null,
+            "image": null
+        }
     }
-  },
-  ...
 ]
 ```
 
@@ -739,19 +762,26 @@ Authorization: Bearer <token>
 
 ```json
 [
-  {
-    "id": 11,
-    "userid1": 1,
-    "userid2": 3,
-    "friendstatusId": 1,
-    "users": {
-      "id": 3,
-      "login": "other_login",
-      "email": "other@example.com",
-      "fullName": "Другое Имя"
+    {
+        "id": 8,
+        "friendStatusId": 1,
+        "createdAt": "2025-05-27T15:53:43.060Z",
+        "updatedAt": "2025-05-27T15:53:43.060Z",
+        "sender": {
+            "id": 3,
+            "login": "shaka",
+            "email": "shaka@mail.ru",
+            "fullname": null,
+            "image": null
+        },
+        "recipient": {
+            "id": 2,
+            "login": "dima",
+            "email": "dima@mail.ru",
+            "fullname": null,
+            "image": null
+        }
     }
-  },
-  ...
 ]
 ```
 
@@ -762,7 +792,7 @@ Authorization: Bearer <token>
 
 **Path Parametrs:**
 
-```json
+```makefile
   requestId (number)
 ```
 
@@ -772,12 +802,24 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "id": 10,
-  "userid1": 2,
-  "userid2": 1,
-  "friendstatusId": 2,
-  "createdAt": "2025-05-24T12:34:56.000Z",
-  "updatedAt": "2025-05-24T12:40:00.000Z"
+    "id": 8,
+    "friendStatusId": 2,
+    "createdAt": "2025-05-27T15:53:43.060Z",
+    "updatedAt": "2025-05-27T16:00:06.700Z",
+    "sender": {
+        "id": 3,
+        "login": "shaka",
+        "email": "shaka@mail.ru",
+        "fullname": null,
+        "image": null
+    },
+    "recipient": {
+        "id": 2,
+        "login": "dima",
+        "email": "dima@mail.ru",
+        "fullname": null,
+        "image": null
+    }
 }
 ```
 
@@ -818,14 +860,8 @@ Authorization: Bearer <token>
 
 **Path Parametrs:**
 
-```json
+```makefile
   requestId (number)
-```
-
-**Headers:**
-
-```json
-Authorization: Bearer <token>
 ```
 
 **Responses:**
@@ -873,14 +909,8 @@ Authorization: Bearer <token>
 
 **Path Parametrs:**
 
-```json
+```makefile
   requestId (number)
-```
-
-**Headers:**
-
-```json
-Authorization: Bearer <token>
 ```
 
 **Responses:**
@@ -928,25 +958,25 @@ Authorization: Bearer <token>
 `GET /api/friend`
 Получить список друзей
 
-**Headers:**
-
-```json
-Authorization: Bearer <token>
-```
-
 **Responses:**
 
 - 200:
 
 ```json
 [
-  {
-    "id": 2,
-    "login": "friend_login",
-    "email": "friend@example.com",
-    "fullName": "Имя Фамилия"
-  },
-  ...
+    {
+        "id": 2,
+        "fullname": null,
+        "login": "dima",
+        "password": "$2b$05$Sn8KhGsCMKubwwHnMUKn.uEBrNlBqB4bTYDpn2d3DUesqFrV3AP3O",
+        "email": "dima@mail.ru",
+        "image": null,
+        "gender": null,
+        "roleId": 1,
+        "banId": null,
+        "createdAt": "2025-05-27T14:45:24.141Z",
+        "updatedAt": "2025-05-27T14:45:24.141Z"
+    }
 ]
 ```
 
@@ -966,14 +996,8 @@ Authorization: Bearer <token>
 
 **Path Parametrs:**
 
-```json
+```makefile
   friendshipId (number)
-```
-
-**Headers:**
-
-```json
-Authorization: Bearer <token>
 ```
 
 **Responses:**
@@ -1126,8 +1150,9 @@ Authorization: Bearer <token>
 
 ```json
 {
-    "id": 12,
-    "name": "Друг",
+    "id": 4,
+    "name": "Для друзей",
+    "accessLevelId": 4,
     "description": "подарки для друга",
     "eventDate": "2003-06-10",
     "userId": 3,
@@ -1210,8 +1235,14 @@ Authorization: Bearer <token>
 
 ### Delete Wishlist
 
-`DELETE /api/wishlist`
+`DELETE /api/wishlist/:id`
 Удалить список (только владелец)
+
+**Path Parametrs:**
+
+```json
+  Id (number)
+```
 
 **Responses:**
 

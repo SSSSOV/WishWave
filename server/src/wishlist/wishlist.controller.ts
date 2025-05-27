@@ -96,14 +96,13 @@ export class WishlistController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Delete()
-    async remove(@Body() dto: DeleteWishlistDto, @Req() req): Promise<{message: string}> {
+    @Delete(':id')
+    async remove(@Param('id', ParseIntPipe) id: number, @Req() req): Promise<{message: string}> {
         const userId = req.user.id;
-        const wishlistId = dto.id;
-        if (!(await this.wishListService.isOwner(userId, wishlistId))) {
+        if (!(await this.wishListService.isOwner(userId, id))) {
             throw new ForbiddenException('Только владелец может удалить список')
         }
-        return this.wishListService.remove(wishlistId);
+        return this.wishListService.remove(id);
     }
 
     @UseGuards(JwtAuthGuard)
@@ -117,7 +116,7 @@ export class WishlistController {
         
         const plainList = wl.get({plain: true}) as any;
 
-        return {id: plainList.id, name: plainList.name, accessLevelId: plainList.accessLevelId, description: plainList.description, eventDate: plainList.eventDate, userId: plainList.userId, wishes: (plainList.wishes || []).map((w: any) => ({
+        return {id: plainList.id, name: plainList.name, accessLevelId: plainList.accesslevelId, description: plainList.description, eventDate: plainList.eventDate, userId: plainList.userId, wishes: (plainList.wishes || []).map((w: any) => ({
             id: w.id, name: w.name, price: w.price, productLink: w.productLink, image: w.image, userId: plainList.userId
         }))};
     }

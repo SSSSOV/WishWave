@@ -6,4 +6,8 @@ export class FriendResponseDto {
     @ApiProperty() email: string;
     @ApiProperty({required: false}) fullName?: string;
     @ApiProperty({required: false}) image?: string; 
+    @ApiProperty({required: false}) birthDate?: string;
+    @ApiProperty({required: false}) phone?: string;
+    @ApiProperty({required: false}) socials?: string;
+    @ApiProperty({required: false}) gender?: string
 }
