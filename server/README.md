@@ -824,16 +824,16 @@ Authorization: Bearer <token>
 
 ## Wishlist
 
+Для всех защищенных маршрутов требуется заголовок
+
+```makefile
+Authorization: Bearer <token>
+```
+
 ### Create Wishlist
 
 `POST /api/wishlist`
 Создать новый список желаний
-
-**Headers:**
-
-```json
-Authorization: Bearer <token>
-```
 
 **Request Body:**
 
@@ -852,15 +852,13 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "id": 1,
-  "name": "string",
-  "description": "string",
-  "eventDate": "yyyy-mm-dd",
-  "accesslevelId": 3,
-  "userId": 42,
-  "shareToken": "https://host/api/wishlist/1?token=uuid",
-  "createdAt": "2025-05-23T...",
-  "updatedAt": "2025-05-23T..."
+    "id": 15,
+    "name": "Друг",
+    "accesslevelId": 3,
+    "description": "подарки для друга",
+    "eventDate": "2003-06-10",
+    "userId": 3,
+    "shareToken": "7f8c2e9e-c691-465a-99b2-b5f679702b7e"
 }
 ```
 
@@ -876,13 +874,13 @@ Authorization: Bearer <token>
 
 ### List All Yor Wishlists
 
-`GET /api/wishlist`
-Получить все свои списки
+`GET /api/wishlist?userId=<number>`
+Получить все списки (если userId нет, то выводятся списки пользователя, который послал запрос)
 
-**Headers:**
+**Query Parametrs:**
 
-```json
-Authorization: Bearer <token>
+```makefile
+  userId (number)
 ```
 
 **Responses:**
@@ -891,18 +889,22 @@ Authorization: Bearer <token>
 
 ```json
 [
-  {
-    "id": 1,
-    "name": "string",
-    "description": "string",
-    "eventDate": "yyyy-mm-dd",
-    "accesslevelId": 2,
-    "userId": 42,
-    "shareToken": null,
-    "createdAt": "...",
-    "updatedAt": "..."
-  },
-  …
+    {
+        "id": 9,
+        "name": "Друг",
+        "accesslevelId": 1,
+        "description": "подарки для друга",
+        "eventDate": "2003-06-10",
+        "userId": 3
+    },
+    {
+        "id": 13,
+        "name": "Друг",
+        "accesslevelId": 4,
+        "description": "подарки для друга",
+        "eventDate": "2003-06-10",
+        "userId": 3
+    }
 ]
 ```
 
@@ -913,15 +915,14 @@ Authorization: Bearer <token>
 
 **Path Parametrs:**
 
-```json
+```makefile
   id (number)
-  token? (string)
 ```
 
-**Headers:**
+**Query Parametrs:**
 
-```json
-Authorization: Bearer <token>
+```makefile
+  token? (string)
 ```
 
 **Responses:**
@@ -930,20 +931,12 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "wishes": [
-    {
-      "id": 7,
-      "name": "string",
-      "price": 123.45,
-      "image": "file.jpg",
-      "productLink": "string",
-      "wishStatusId": 1,
-      "bookedByUserId": null,
-      "wishstuses": { "id": 1, "name": "available" },
-      …
-    },
-    …
-  ]
+    "id": 12,
+    "name": "Друг",
+    "description": "подарки для друга",
+    "eventDate": "2003-06-10",
+    "userId": 3,
+    "wishes": []
 }
 ```
 
@@ -967,98 +960,20 @@ Authorization: Bearer <token>
 }
 ```
 
-### Search Friends Wishlists by Name
-
-`GET /api/wishlist/friend/:friendId/seacrh?name=substring`
-Найти вишлисты друга по названию (только если вы друзья)
-
-**Path Parametrs:**
-
-```json
-  friendId (number)
-```
-
-***Query:**
-
-```json
-  name (string)
-```
-
-**Headers:**
-
-```json
-Authorization: Bearer <token>
-```
-
-**Responses:**
-
-- 200:
-
-```json
-[
-  {
-    "id": 3,
-    "name": "Birthday",
-    "description": null,
-    "eventDate": "2025-06-01",
-    "accesslevelId": 2,
-    "userId": 99,
-    "shareToken": null,
-    "accesslevel": { "id": 2, "name": "friends", … }
-  },
-  …
-]
-```
-
-- 400:
-
-```json
-{
-  "statusCode": 400,
-  "message": "Укажите параметр name",
-  "error": "Bad Request"
-}
-```
-
-- 403:
-
-```json
-{
-  "statusCode": 403,
-  "message": "Вы не являетесь друзьями",
-  "error": "Forbidden"
-}
-```
-
-- 404:
-
-```json
-{
-  "statusCode": 404,
-  "message": "Статус дружбы accepted не найден",
-  "error": "Not Found"
-}
-```
-
 ### Update Wishlist
 
-`PATCH /api/wishlist/:id`
+`PATCH /api/wishlist`
 Обновить поля списка (только владелец)
-
-**Headers:**
-
-```json
-Authorization: Bearer <token>
-```
 
 **Request Body:**
 
 ```json
 {
+  "id": "number",
   "name": "string",
-  "accesslevelId": number,
-  "description": "string",
-  "eventDate": "dd.mm.yyyy"
+  "accesslevelId": "number",
+  "description?": "string",
+  "eventDate?": "dd.mm.yyyy"
 }
 ```
 
@@ -1068,13 +983,13 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "id": 1,
-  "name": "string",
-  "description": "string",
-  "eventDate": "yyyy-mm-dd",
-  "accesslevelId": 1,
-  "shareToken": null,
-  …
+    "id": 8,
+    "name": "8 марта",
+    "accesslevelId": 2,
+    "description": "подарки на 8 марта",
+    "eventDate": "2003-06-30",
+    "userId": 2,
+    "shareToken": null
 }
 ```
 
@@ -1100,14 +1015,8 @@ Authorization: Bearer <token>
 
 ### Delete Wishlist
 
-`DELETE /api/wishlist/:id`
+`DELETE /api/wishlist`
 Удалить список (только владелец)
-
-**Headers:**
-
-```json
-Authorization: Bearer <token>
-```
 
 **Responses:**
 
@@ -1144,18 +1053,12 @@ Authorization: Bearer <token>
 `PATCH /api/wishlist/duplicate`
 Дублировать желание в другой список
 
-**Headers:**
-
-```json
-Authorization: Bearer <token>
-```
-
 **Request Body:**
 
 ```json
 {
-  "wishId": number,
-  "targetListId": number
+  "wishId": "number",
+  "targetListId": "number"
 }
 ```
 
@@ -1165,10 +1068,17 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "id": 8,
-  "name": "string",
-  "price": 123.45,
-  …
+    "id": 10,
+    "name": "sony",
+    "price": 25000,
+    "productLink": null,
+    "image": "",
+    "wishStatusId": 1,
+    "bookedByUserId": null,
+    "createdAt": "2025-05-27T07:18:48.575Z",
+    "updatedAt": "2025-05-27T07:18:48.575Z",
+    "shareToken": null,
+    "userId": 3
 }
 ```
 
@@ -1194,20 +1104,16 @@ Authorization: Bearer <token>
 
 ### Copy an Existing Wish into Another List
 
-`PACTH /api/wishlist/:targetListId/copy/:wishId`
+`PACTH /api/wishlist/copy`
 Добавить то же самое желание (с таким же id) в другой список
 
-**Path Parametrs:**
+**Request Body:**
 
 ```json
-  targetListId (number)
-  wishId (number)
-```
-
-**Headers:**
-
-```json
-Authorization: Bearer <token>
+{
+  "wishId": "number",
+  "targetListId": "number"
+}
 ```
 
 **Responses:**
@@ -1215,7 +1121,19 @@ Authorization: Bearer <token>
 - 200:
 
 ```json
-{ "message": "Желание 5 скопировано в список 2" }
+{
+    "id": 11,
+    "name": "айфон",
+    "price": null,
+    "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+    "image": "",
+    "wishStatusId": 1,
+    "bookedByUserId": null,
+    "createdAt": "2025-05-27T07:22:45.006Z",
+    "updatedAt": "2025-05-27T07:22:45.006Z",
+    "shareToken": null,
+    "userId": 2
+}
 ```
 
 - 403:
@@ -1291,7 +1209,8 @@ Authorization: Bearer <token>
     "createdAt": "2025-05-26T14:50:05.591Z",
     "price": null,
     "bookedByUserId": null,
-    "shareToken": null
+    "shareToken": null,
+    "userId": 1
 }
 ```
 
@@ -1493,7 +1412,9 @@ Authorization: Bearer <token>
     "wishStatusId": 1,
     "bookedByUserId": null,
     "createdAt": "2025-05-26T13:17:54.286Z",
-    "updatedAt": "2025-05-26T13:26:51.843Z"
+    "updatedAt": "2025-05-26T13:26:51.843Z",
+    "userId": 2,
+    "shareToken": null
 }
 ```
 
@@ -1594,7 +1515,8 @@ Authorization: Bearer <token>
     "bookedByUserId": 4,
     "createdAt": "2025-05-26T14:50:05.591Z",
     "updatedAt": "2025-05-26T14:54:02.473Z",
-    "shareToken": null
+    "shareToken": null,
+    "userId": 2
 }
 ```
 
@@ -1662,7 +1584,8 @@ Authorization: Bearer <token>
     "bookedByUserId": null,
     "createdAt": "2025-05-26T13:16:24.482Z",
     "updatedAt": "2025-05-26T14:26:43.200Z",
-    "shareToken": null
+    "shareToken": null,
+    "userId": 2
 }
 ```
 
@@ -1724,7 +1647,8 @@ Authorization: Bearer <token>
     "bookedByUserId": null,
     "createdAt": "2025-05-26T13:39:59.624Z",
     "updatedAt": "2025-05-26T14:08:26.820Z",
-    "shareToken": null
+    "shareToken": null,
+    "userId": 2
 }
 ```
 
@@ -1760,7 +1684,7 @@ Authorization: Bearer <token>
 
 ---
 
-## Public WIshlist
+## Public Wishlist
 
 Все эти маршруты не требуют JWT-авторизации, они работают по shareToken
 
@@ -1851,7 +1775,7 @@ Authorization: Bearer <token>
 }
 ```
 
-## Update a Public Wishlist
+### Update a Public Wishlist
 
 `PATCH /api/publicwishlist/:id?token=<shareToken>`
 Обновить список если у вас есть токен
@@ -1904,7 +1828,7 @@ Authorization: Bearer <token>
 }
 ```
 
-## Add a Wish to a Public Wishlist
+### Add a Wish to a Public Wishlist
 
 `POST /api/publicwishlist/:id/wishes?token=<shareToken>`
 Добавить новое желание в список, если есть токен
@@ -1959,7 +1883,7 @@ Authorization: Bearer <token>
 }
 ```
 
-## Update a Wish in a Public Wishlist
+### Update a Wish in a Public Wishlist
 
 `PATCH /api/publicwishlist/:listId/wishes/:wishId?token=<shareToken>`
 Обновить поля желания если есть токен
@@ -1998,7 +1922,7 @@ Authorization: Bearer <token>
 }
 ```
 
-## Delete a Wish from a Public Wishlist
+### Delete a Wish from a Public Wishlist
 
 `DELETE /api/publicwishlist/:listId/wishes/:wishId?token=<shareToken>`
 Удалить желание из списка, если есть токен

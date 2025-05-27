@@ -20,7 +20,8 @@ export class WishlistController {
         const userId = req.user.id;
         const list = await this.wishListService.create(dto, userId);
         const plain = list.get({plain: true}) as any;
-        const response: WishListResponseDto = {id: plain.id, name: plain.name, accesslevelId: plain.accesslevelId, description: plain.description, eventDate: plain.eventDate, userId: plain.userId};
+        const {shareToken: realToken} = plain;
+        const response: WishListResponseDto = {id: plain.id, name: plain.name, accesslevelId: plain.accesslevelId, description: plain.description, eventDate: plain.eventDate, userId: plain.userId, shareToken: realToken};
 
         return response;
     }
@@ -66,8 +67,9 @@ export class WishlistController {
 
         const updated = await this.wishListService.update(id,data);
         const plain = updated.get({plain:true}) as any;
+        const {shareToken} = plain;
 
-        const response: WishListResponseDto = {id: plain.id, name: plain.name, accesslevelId: plain.accesslevelId, description: plain.description, eventDate: plain.eventDate, userId: plain.userId};
+        const response: WishListResponseDto = {id: plain.id, name: plain.name, accesslevelId: plain.accesslevelId, description: plain.description, eventDate: plain.eventDate, userId: plain.userId, shareToken};
 
         return response;
     }
