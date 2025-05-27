@@ -10,6 +10,7 @@ import { WishListWish } from 'src/wishlist/wishlist-wish.model';
 import { BookedWishDto } from './dto/booked-wish.dto';
 import { UpdateWishDto } from './dto/update-wish.dto';
 import { WishIdDto } from './dto/wish-id.dto';
+import { OmitType } from '@nestjs/swagger';
 
 @Controller('wish')
 export class WishController {
@@ -30,7 +31,7 @@ export class WishController {
         const {shareToken} = wl?.get({plain: true}) as any;
 
         const wishPlain = wish.get({plain: true}) as any;
-        return {...wishPlain, shareToken};
+        return {...wishPlain, shareToken, userId};
     }
 
     @UseGuards(JwtAuthGuard)
@@ -73,14 +74,14 @@ export class WishController {
         const {userId, shareToken} = wl.get({plain: true}) as any;
         const plainWish = wish.get({plain: true}) as any;
 
-        return{id: plainWish.id, name: plainWish.name, price: plainWish.price, image: plainWish.image, productLink: plainWish.productLink, wishStatusId: plainWish.wishstuses.id, bookedByUserId: plainWish.bookedByUserId, createdAt: plainWish.createdAt, updatedAt: plainWish.updatedAt,userId, shareToken};
+        return{id: plainWish.id, name: plainWish.name, price: plainWish.price, image: plainWish.image, productLink: plainWish.productLink, wishStatusId: plainWish.wishstuses.id, bookedByUserId: plainWish.bookedByUserId, createdAt: plainWish.createdAt, updatedAt: plainWish.updatedAt, userId, shareToken};
     }
     
 
     @UseGuards(JwtAuthGuard)
     @Patch()
     @UseInterceptors(FileInterceptor('image', {limits: {fileSize: 2 * 1024 * 1024}}))
-    async updateWish(@UploadedFile() image: Express.Multer.File, @Body() dto: UpdateWishDto, @Req() req): Promise<Wish> {
+    async updateWish(@UploadedFile() image: Express.Multer.File, @Body() dto: UpdateWishDto, @Req() req): Promise<any> {
         const userId = req.user.id;
         const {id: wishId, ...wishData} = dto;
         const record = await this.wishListWishRepository.findOne({where: {wishId}});
@@ -92,7 +93,15 @@ export class WishController {
             throw new ForbiddenException('Только владелец может редактировать желание')
         }
 
-        return this.wishService.update(wishId, dto, image);
+        const updated = await this.wishService.update(wishId, dto, image);
+        const wl = await this.wishlistService.findByIdWithAccess(record.wishlistId);
+        if (!wl) {
+            throw new NotFoundException('Список не найден')
+        }
+        const {userId: ownerId, shareToken} = wl.get({plain:true}) as any;
+        const w = (updated.get({plain: true}) as any); 
+
+        return{id: w.id, name: w.name, price: w.price, image: w.image, productLink: w.productLink, wishStatusId: w.wishStatusId, bookedByUserId: w.bookedByUserId, createdAt: w.createdAt, updatedAt: w.updatedAt, userId: ownerId, shareToken};
     }
 
     @UseGuards(JwtAuthGuard)
@@ -137,9 +146,9 @@ export class WishController {
             throw new NotFoundException('Список не найден');
         }
 
-        const {shareToken: realToken} = wl.get({plain: true}) as any;
+        const {shareToken: realToken, userId: ownerId} = wl.get({plain: true}) as any;
         const w = bookedWish.get({plain: true}) as any;
-        return {id: w.id, name: w.name, price: w.price, productLink: w.productLink,image: w.image, wishStatusId: w.wishStatusId, bookedByUserId: w.bookedByUserId, createdAt: w.createdAt, updatedAt: w.updatedAt, shareToken: realToken}
+        return {id: w.id, name: w.name, price: w.price, productLink: w.productLink,image: w.image, wishStatusId: w.wishStatusId, bookedByUserId: w.bookedByUserId, createdAt: w.createdAt, updatedAt: w.updatedAt, shareToken: realToken, userId: ownerId}
     }
 
     @UseGuards(JwtAuthGuard)
@@ -164,9 +173,9 @@ export class WishController {
             throw new NotFoundException('Список не найден');
         }
 
-        const {shareToken: realToken} = wl.get({plain: true}) as any;
+        const {shareToken: realToken, userId: ownerId} = wl.get({plain: true}) as any;
         const w = unbookedWish.get({plain: true}) as any;
-        return {id: w.id, name: w.name, price: w.price, productLink: w.productLink,image: w.image, wishStatusId: w.wishStatusId, bookedByUserId: w.bookedByUserId, createdAt: w.createdAt, updatedAt: w.updatedAt, shareToken: realToken}
+        return {id: w.id, name: w.name, price: w.price, productLink: w.productLink,image: w.image, wishStatusId: w.wishStatusId, bookedByUserId: w.bookedByUserId, createdAt: w.createdAt, updatedAt: w.updatedAt, shareToken: realToken, userId: ownerId}
     }
 
     @UseGuards(JwtAuthGuard)
@@ -193,6 +202,6 @@ export class WishController {
         const {shareToken} = wl.get({plain: true}) as any;
         const plainWish = completeWish.get({plain: true}) as any;
 
-        return {id: plainWish.id, name: plainWish.name, price: plainWish.price, productLink: plainWish.productLink,image: plainWish.image, wishStatusId: plainWish.wishStatusId, bookedByUserId: plainWish.bookedByUserId, createdAt: plainWish.createdAt, updatedAt: plainWish.updatedAt, shareToken}
+        return {id: plainWish.id, name: plainWish.name, price: plainWish.price, productLink: plainWish.productLink,image: plainWish.image, wishStatusId: plainWish.wishStatusId, bookedByUserId: plainWish.bookedByUserId, createdAt: plainWish.createdAt, updatedAt: plainWish.updatedAt, shareToken, userId}
     }
 }

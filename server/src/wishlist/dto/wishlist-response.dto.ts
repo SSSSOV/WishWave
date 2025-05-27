@@ -10,5 +10,4 @@ export class WishListResponseDto {
     @ApiProperty() accesslevelId: number;
     @ApiProperty() userId: string;
     @ApiProperty() shareToken?: string;
-    @ApiProperty({type: () => [WishResponsDto], description: 'Желания в этом списке'}) wishes: WishResponsDto[];
 }
