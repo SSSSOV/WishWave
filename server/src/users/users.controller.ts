@@ -7,11 +7,12 @@ import { FileService } from 'src/file/file.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { FriendService } from 'src/friend/friend.service';
+import { AuthService } from 'src/auth/auth.service';
 
 @Controller('user')
 export class UsersController {
 
-    constructor(private readonly usersService: UsersService, private fileService: FileService, private readonly friendService: FriendService) { }
+    constructor(private readonly usersService: UsersService, private fileService: FileService, private readonly friendService: FriendService, private readonly authService: AuthService) { }
 
     @UseGuards(JwtAuthGuard)
     @Get()
@@ -26,6 +27,12 @@ export class UsersController {
             return dto;
     })
     } 
+
+    @UseGuards(JwtAuthGuard)
+    @Get('checkAuth')
+    checkAuth(): void {
+        
+    }
 
     @UseGuards(JwtAuthGuard)
     @Get('search')
