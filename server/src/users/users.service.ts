@@ -12,6 +12,7 @@ import * as bcrypt from "bcryptjs";
 import { UserResponseDto } from "./dto/user-response.dto";
 import { ProfanityService } from "src/profanity/profanity.service";
 import { AccessLevel } from "src/accesslevel/accesslevel.model";
+import { AuthService } from "src/auth/auth.service";
 
 @Injectable()
 export class UsersService {
@@ -19,7 +20,7 @@ export class UsersService {
     @InjectModel(User) private userRepository: typeof User,
     private roleService: RolesService,
     private fileService: FileService,
-    private readonly profanity: ProfanityService
+    private readonly profanity: ProfanityService,
   ) {}
 
   async createUser(dto: createUserDto) {
