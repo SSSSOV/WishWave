@@ -96,14 +96,13 @@ export class WishlistController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Delete()
-    async remove(@Body() dto: DeleteWishlistDto, @Req() req): Promise<{message: string}> {
+    @Delete(':id')
+    async remove(@Param('id', ParseIntPipe) id: number, @Req() req): Promise<{message: string}> {
         const userId = req.user.id;
-        const wishlistId = dto.id;
-        if (!(await this.wishListService.isOwner(userId, wishlistId))) {
+        if (!(await this.wishListService.isOwner(userId, id))) {
             throw new ForbiddenException('Только владелец может удалить список')
         }
-        return this.wishListService.remove(wishlistId);
+        return this.wishListService.remove(id);
     }
 
     @UseGuards(JwtAuthGuard)

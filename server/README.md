@@ -1150,8 +1150,9 @@ Authorization: Bearer <token>
 
 ```json
 {
-    "id": 12,
-    "name": "Друг",
+    "id": 4,
+    "name": "Для друзей",
+    "accessLevelId": 4,
     "description": "подарки для друга",
     "eventDate": "2003-06-10",
     "userId": 3,
@@ -1234,8 +1235,14 @@ Authorization: Bearer <token>
 
 ### Delete Wishlist
 
-`DELETE /api/wishlist`
+`DELETE /api/wishlist/:id`
 Удалить список (только владелец)
+
+**Path Parametrs:**
+
+```json
+  Id (number)
+```
 
 **Responses:**
 
