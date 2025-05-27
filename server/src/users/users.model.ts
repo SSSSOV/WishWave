@@ -1,6 +1,5 @@
 import { AllowNull, BelongsTo, BelongsToMany, Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
 import { Ban } from "src/ban/ban.model";
-import { FriendUsers } from "src/friend/friend-users.model";
 import { Friend } from "src/friend/friend.model";
 import { Role } from "src/roles/roles.model";
 import { Wish } from "src/wish/wish.model";
@@ -55,8 +54,11 @@ export class User extends Model<User, UserCreationAttrs> {
   @Column({ type: DataType.INTEGER, allowNull: true })
   declare banId: number | null;
 
-  @BelongsToMany(() => Friend, () => FriendUsers)
-  declare friend: Friend[];
+  @HasMany(() => Friend, 'sender')
+  sendRequest: Friend[];
+
+  @HasMany(() => Friend, 'recipient')
+  receivedRequests: Friend[];
 
   @BelongsTo(() => Ban)
   declare ban: Ban;

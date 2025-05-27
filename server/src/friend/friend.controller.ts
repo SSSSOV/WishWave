@@ -10,24 +10,31 @@ export class FriendController {
     constructor(private readonly friendService: FriendService) {}
 
     @Post('request')
-    send(@Body() dto: CreateFriendRequestDto, @Req() req) {
-        return this.friendService.sendRequest(req.user.id, dto.targetUserId);
+    async send(@Body() dto: CreateFriendRequestDto, @Req() req) {
+        const fr = await this.friendService.sendRequest(req.user.id, dto.targetUserId);
+        const plain = fr.get({plain: true});
+        return {id: plain.id, friendStatusId: plain.friendstatusId, createdAt: plain.createdAt, updatedAt: plain.updatedAt, sender: plain.senderUser, recipient: plain.recipientUser};
     }
 
     @Get('requests/received')
-    received(@Req() req) {
-        return this.friendService.getReceivedRequests(req.user.id);
+    async received(@Req() req) {
+        const rows = await this.friendService.getReceivedRequests(req.user.id);
+        return rows.map(fr => {const plain = fr.get({plain: true});
+            return {id: plain.id, friendStatusId: plain.friendstatusId, createdAt: plain.createdAt, updatedAt: plain.updatedAt, sender: plain.senderUser, recipient: plain.recipientUser}});
     }
 
     @Get('requests/sent')
-    sent(@Req() req) {
-        return this.friendService.getSentRequest(req.user.id);
+    async sent(@Req() req) {
+        const rows = await this.friendService.getSentRequest(req.user.id);
+        return rows.map(fr => {const plain = fr.get({plain: true});
+            return {id: plain.id, friendStatusId: plain.friendstatusId, createdAt: plain.createdAt, updatedAt: plain.updatedAt, sender: plain.senderUser, recipient: plain.recipientUser}});
     }
 
     @Patch('request/:requestId/accept')
-    accept(@Param('requestId') id: string, @Req() req) {
-        console.log('→ accept called. JWT payload:', req.user);
-        return this.friendService.acceptedRequest(req.user.id, +id);
+    async accept(@Param('requestId') id: number, @Req() req) {
+        const fr = await this.friendService.acceptedRequest(req.user.id, id);
+        const plain = fr.get({plain: true});
+        return {id: plain.id, friendStatusId: plain.friendstatusId, createdAt: plain.createdAt, updatedAt: plain.updatedAt, sender: plain.senderUser, recipient: plain.recipientUser};
     }
 
     @Patch('request/:requestId/reject')
@@ -43,12 +50,19 @@ export class FriendController {
     @Get()
     async friends(@Req() req): Promise<FriendResponseDto[]> {
         const userId = req.user.id;
-        const friends = await this.friendService.getFriends(userId);
-        return friends.map(u => {
-            const plain = (u as any).get({plain: true});
-            const {birthDate, phone, socials, ...rest} = plain;
+        const rows = await this.friendService.getFriends(userId);
+
+        return rows.map(fr => {
+            const { sender, recipient, senderUser, recipientUser } = fr.get({ plain: true }) as any;
+
+            const other = sender === userId ? recipientUser : senderUser;
+            if (!other) {
+            throw new Error(`Не удалось найти информацию о другом пользователе в дружбе ${fr.id}`);
+            }
+
+            const { birthDate, phone, socials, ...rest } = other;
             return rest as FriendResponseDto;
-        })
+        });
     }
 
     @Delete(':friendshipId')

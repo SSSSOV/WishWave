@@ -16,7 +16,6 @@ import { WishListWish } from "./wishlist/wishlist-wish.model";
 import { WishList } from "./wishlist/wishlist.model";
 import { AccessLevel } from "./accesslevel/accesslevel.model";
 import { User } from "./users/users.model";
-import { FriendUsers } from "./friend/friend-users.model";
 import { Friend } from "./friend/friend.model";
 import { Ban } from "./ban/ban.model";
 import { Role } from "./roles/roles.model";
@@ -51,7 +50,7 @@ import * as path from 'path';
           username: process.env.POSTGRES_USER,
           password: process.env.POSTGRES_PASSWORD,
           database:  process.env.POSTGRES_DB,
-          models: [WishStatus, Wish, WishListWish, WishList, AccessLevel, User, FriendUsers, Friend, Ban, Role, FriendStatus],
+          models: [WishStatus, Wish, WishListWish, WishList, AccessLevel, User, Friend, Ban, Role, FriendStatus],
           autoLoadModels: true,
           logging: console.log
         }),
