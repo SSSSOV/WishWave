@@ -1,72 +1,61 @@
-"use client";
-import Button from "@/components/ui/buttons/Button";
-import List from "@/components/ui/list/List";
-import ListItem from "@/components/ui/list/ListItem";
-import Monogram from "@/components/ui/monogram/Monogram";
-import Section from "@/components/ui/section/Section";
-import { useEffect, useState } from "react";
-import style from "@/app/home.module.css";
-import { useRouter } from "next/navigation";
-import { useUnit } from "effector-react";
-import { $isAuth, $user, handleFetchUser, handleLogeOut } from "@/context/user";
-import { hasNameContent } from "@/lib/utils/hasNameContent";
-import { getInitials } from "@/lib/utils/getInitials";
+"use client"
+import Button from "@/components/ui/buttons/Button"
+import List from "@/components/ui/list/List"
+import ListItem from "@/components/ui/list/ListItem"
+import Monogram from "@/components/ui/monogram/Monogram"
+import Section from "@/components/ui/section/Section"
+import style from "@/app/home.module.css"
+import { useRouter } from "next/navigation"
+import { useUnit } from "effector-react"
+import { $isAuth, $user, handleFetchUser, handleLogeOut, logOutFx } from "@/context/user"
+import { hasNameContent } from "@/lib/utils/hasNameContent"
+import { getInitials } from "@/lib/utils/getInitials"
+import { $pageTitle, handleClearPageTitle, handleSetPageTitle } from "@/context/page"
+import { usePageTitle } from "@/hooks/usePageTitle"
+import NonAuthPage from "@/components/shared/nonAuthPage/NonAuthPage"
+import { startLoading } from "@/context/loading"
+import { useUser } from "@/hooks/useUser"
+import { useEffect } from "react"
 
 export default function ProfilePage() {
-  //Роутер
-  const router = useRouter();
+  // Хуки
+  const router = useRouter()
+  const user = useUser()
 
   // Переменные
-  const [isLoading, setIsLoading] = useState(false);
 
   // Контекст
-  const [isAuth, user, logOut, fetchUser] = useUnit([$isAuth, $user, handleLogeOut, handleFetchUser]);
+  const [setPageTitle] = useUnit([handleSetPageTitle])
 
   // Эффекты
-
-  const handleExit = () => {
-    logOut();
-    window.location.href = "/login";
-  };
-
   useEffect(() => {
-    fetchUser();
-  }, []);
+    setPageTitle("asas")
+  }, [])
 
-  return !isAuth ? (
-    <Section align_items="center" title="Вы не авторизованы" title_size="sm" padding_top_size="lg">
-      <div className="flex flex-row gap-4">
-        <Button
-          variant="text"
-          onClick={() => {
-            router.push("signup/");
-          }}>
-          Регистрация
-        </Button>
-        <Button
-          variant="filled"
-          onClick={() => {
-            router.push("login/");
-          }}>
-          Вход
-        </Button>
-      </div>
-    </Section>
-  ) : (
+  // Обработчики
+  const handleExit = () => {
+    user.logOut()
+    window.location.href = "/login"
+  }
+
+  // Хуки
+
+  if (!user.data) return <NonAuthPage />
+
+  return (
     <>
       <Section align_items="center" padding_top_size="lg">
         <Monogram
-          monogram_type={user.image ? "image" : hasNameContent(user.fullname) ? "monogram" : "icon"}
-          letter={hasNameContent(user.fullname) ? getInitials(user.fullname) : "person"}
+          monogram_type={user.data.image ? "image" : hasNameContent(user.data.fullname) ? "monogram" : "icon"}
+          letter={hasNameContent(user.data.fullname) ? getInitials(user.data.fullname) : "person"}
           icon="person"
           size="md"
-          url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + user.image}
-          isLoading={isLoading}
+          url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + user.data.image}
         />
       </Section>
       <Section align_items="center">
-        <span className={style.title}>{user.fullname && user.fullname != " " && user.fullname != "" ? user.fullname : ""}</span>
-        <span className={style.body}>{user.login}</span>
+        <span className={style.title}>{user.data.fullname && user.data.fullname != " " && user.data.fullname != "" ? user.data.fullname : ""}</span>
+        <span className={style.body}>{user.data.login}</span>
       </Section>
       <Section title="Информация вашего профиля в сервсие WishWave" title_size="md" padding_top_size="lg" padding_bot_size="lg">
         <span className={style.body}>
@@ -83,33 +72,31 @@ export default function ProfilePage() {
           <ListItem
             condition={2}
             overline="фото профиля"
-            leading_type={user.image && user.image != "" ? "image" : hasNameContent(user.fullname) ? "monogram" : "icon"}
-            leading={hasNameContent(user.fullname) ? getInitials(user.fullname) : "person"}
-            url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + user.image}
+            leading_type={user.data.image && user.data.image != "" ? "image" : hasNameContent(user.data.fullname) ? "monogram" : "icon"}
+            leading={hasNameContent(user.data.fullname) ? getInitials(user.data.fullname) : "person"}
+            url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + user.data.image}
             headline="Персонализирует ваш аккаунт"
             trailing_type="icon"
-            isLoading={isLoading}
             onClick={() => {
-              router.push("/profile/image");
+              router.push("/profile/image")
             }}
           />
 
           <ListItem
             condition={2}
             overline="имя"
-            headline={user.fullname && hasNameContent(user.fullname) ? user.fullname : "Не указано"}
+            headline={user.data.fullname && hasNameContent(user.data.fullname) ? user.data.fullname : "Не указано"}
             trailing_type="icon"
-            isLoading={isLoading}
             onClick={() => {
-              router.push("/profile/name");
+              router.push("/profile/name")
             }}
           />
           <ListItem
             condition={2}
             overline="дата рождения"
             headline={
-              user.birthday
-                ? new Date(user.birthday).toLocaleDateString(undefined, {
+              user.data.birthday
+                ? new Date(user.data.birthday).toLocaleDateString(undefined, {
                     day: "numeric",
                     month: "long",
                     year: "numeric",
@@ -117,29 +104,26 @@ export default function ProfilePage() {
                 : "Не указано"
             }
             trailing_type="icon"
-            isLoading={isLoading}
             onClick={() => {
-              router.push("/profile/birthday");
+              router.push("/profile/birthday")
             }}
           />
           <ListItem
             condition={2}
             overline="пол"
-            headline={user.gender ? user.gender : "Не указано"}
+            headline={user.data.gender ? user.data.gender : "Не указано"}
             trailing_type="icon"
-            isLoading={isLoading}
             onClick={() => {
-              router.push("/profile/gender");
+              router.push("/profile/gender")
             }}
           />
           <ListItem
             condition={2}
             overline="логин"
-            headline={user.login ? user.login : "Не указано"}
+            headline={user.data.login ? user.data.login : "Не указано"}
             trailing_type="icon"
-            isLoading={isLoading}
             onClick={() => {
-              router.push("/profile/login");
+              router.push("/profile/login")
             }}
           />
           <ListItem
@@ -147,9 +131,8 @@ export default function ProfilePage() {
             overline="пароль"
             headline={"Нажмите, чтобы изменить"}
             trailing_type="icon"
-            isLoading={isLoading}
             onClick={() => {
-              router.push("/profile/password");
+              router.push("/profile/password")
             }}
           />
         </List>
@@ -162,21 +145,19 @@ export default function ProfilePage() {
           <ListItem
             condition={2}
             overline="почта"
-            headline={user.email ? user.email : "Не указано"}
+            headline={user.data.email ? user.data.email : "Не указано"}
             trailing_type="icon"
-            isLoading={isLoading}
             onClick={() => {
-              router.push("/profile/email");
+              router.push("/profile/email")
             }}
           />
           <ListItem
             condition={2}
             overline="телефон"
-            headline={user.phone ? user.phone : "Не указано"}
+            headline={user.data.phone ? user.data.phone : "Не указано"}
             trailing_type="icon"
-            isLoading={isLoading}
             onClick={() => {
-              router.push("/profile/phone");
+              router.push("/profile/phone")
             }}
           />
         </List>
@@ -194,33 +175,6 @@ export default function ProfilePage() {
           </Button>
         </Section>
       </Section>
-      {/* <Section>
-        <hr />
-      </Section> */}
-      {/* <Section title="Социальные сети:" title_size="sm" padding_top_size="lg">
-        <List withoutPad>
-          <ListItem
-            condition={2}
-            overline="Telegram"
-            headline="@ssssov"
-            trailing_type="icon"
-            isLoading={isLoading}
-            onClick={() => {
-              alert("asas");
-            }}
-          />
-          <ListItem
-            condition={2}
-            overline="ВКонтакте"
-            headline="Отсутствует"
-            trailing_type="icon"
-            isLoading={isLoading}
-            onClick={() => {
-              alert("asas");
-            }}
-          />
-        </List>
-      </Section> */}{" "}
     </>
-  );
+  )
 }

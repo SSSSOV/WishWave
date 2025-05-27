@@ -1,80 +1,89 @@
-"use client";
-import Button from "@/components/ui/buttons/Button";
-import Input from "@/components/ui/inputs/Input";
-import Monogram from "@/components/ui/monogram/Monogram";
-import Section from "@/components/ui/section/Section";
-import { $wish, handleCreateWish } from "@/context/wish";
-import { $wishLists, handleFetchWishLists } from "@/context/wish_lists";
-import { customStyles, OptionType } from "@/types/select";
-import { useUnit } from "effector-react";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import ReactSelect, { SingleValue, StylesConfig } from "react-select";
+"use client"
+import Button from "@/components/ui/buttons/Button"
+import Input from "@/components/ui/inputs/Input"
+import Monogram from "@/components/ui/monogram/Monogram"
+import Section from "@/components/ui/section/Section"
+import { handleSetPageTitle } from "@/context/page"
+import { $wish, handleCreateWish } from "@/context/wish"
+import { $wishLists, handleFetchWishLists } from "@/context/wish_lists"
+import { customStyles, OptionType } from "@/types/select"
+import { useUnit } from "effector-react"
+import { useRouter, useSearchParams } from "next/navigation"
+import React, { useEffect, useLayoutEffect, useState } from "react"
+import toast from "react-hot-toast"
+import ReactSelect, { SingleValue, StylesConfig } from "react-select"
 
 export default function AddPage() {
   // Роутер
-  const router = useRouter();
+  const router = useRouter()
+
+  // Контекст
+  const [setPageTitle] = useUnit([handleSetPageTitle])
+
+  // Эффекты
+  useLayoutEffect(() => {
+    setPageTitle("Добавить желание")
+  }, [])
 
   // Параметры
-  const params = useSearchParams(); // Получаем ID из URL
-  const listId = params.get("listId"); // Получаем listId из URL
+  const params = useSearchParams() // Получаем ID из URL
+  const listId = params.get("listId") // Получаем listId из URL
 
   // Состояния
-  const [image, setImage] = useState("");
-  const [list, setList] = useState<number>(0);
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState<number>(0);
-  const [link, setLink] = useState("");
-  const [selectedOption, setSelectedOption] = useState<OptionType | null>(null);
-  const [options, setOptions] = useState<OptionType[]>([]);
+  const [image, setImage] = useState("")
+  const [list, setList] = useState<number>(0)
+  const [name, setName] = useState("")
+  const [price, setPrice] = useState<number>(0)
+  const [link, setLink] = useState("")
+  const [selectedOption, setSelectedOption] = useState<OptionType | null>(null)
+  const [options, setOptions] = useState<OptionType[]>([])
 
   // Стор
-  const [wish, wishLists, createWish, fetchWishLists] = useUnit([$wish, $wishLists, handleCreateWish, handleFetchWishLists]);
+  const [wish, wishLists, createWish, fetchWishLists] = useUnit([$wish, $wishLists, handleCreateWish, handleFetchWishLists])
 
   // Обработчики
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
       if (!selectedOption) {
         toast("Пожалуйста, выберите список", {
           icon: "⚠️",
-        });
-        return;
+        })
+        return
       }
 
       if (!name) {
         toast("Пожалуйста, введите название", {
           icon: "⚠️",
-        });
-        return;
+        })
+        return
       }
 
-      createWish({ listId: selectedOption?.value, name: name, price: price, productLink: link, image: image });
-      router.back();
+      createWish({ listId: selectedOption?.value, name: name, price: price, productLink: link, image: image })
+      router.back()
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   // Еффекты
   useEffect(() => {
-    fetchWishLists();
-  }, []);
+    fetchWishLists(null)
+  }, [])
 
   useEffect(() => {
     if (wishLists.length > 0) {
-      setOptions(wishLists.map((list) => ({ value: list.id, label: list.name })));
+      setOptions(wishLists.map((list) => ({ value: list.id, label: list.name })))
     } else {
-      setOptions([{ value: 0, label: "У вас нет списков!" }]); // Массив с одним элементом
+      setOptions([{ value: 0, label: "У вас нет списков!" }]) // Массив с одним элементом
     }
-  }, [wishLists]);
+  }, [wishLists])
 
   useEffect(() => {
     if (listId && options) {
-      setSelectedOption(options.find((option) => option.value == Number(listId)) as OptionType);
+      setSelectedOption(options.find((option) => option.value == Number(listId)) as OptionType)
     }
-  }, [listId, options]);
+  }, [listId, options])
 
   return (
     <>
@@ -86,7 +95,7 @@ export default function AddPage() {
             isFull
             value={image}
             onChange={(e) => {
-              setImage(e.target.value);
+              setImage(e.target.value)
             }}
           />
         </Section>
@@ -95,7 +104,7 @@ export default function AddPage() {
             labelText="Название"
             value={name}
             onChange={(e) => {
-              setName(e.target.value);
+              setName(e.target.value)
             }}
           />
           <Input
@@ -103,7 +112,7 @@ export default function AddPage() {
             value={price}
             type="number"
             onChange={(e) => {
-              setPrice(Number(e.target.value));
+              setPrice(Number(e.target.value))
             }}
             trailingIcon="currency_ruble"
           />
@@ -111,7 +120,7 @@ export default function AddPage() {
             labelText="Ссылка на маркетплейс"
             value={link}
             onChange={(e) => {
-              setLink(e.target.value);
+              setLink(e.target.value)
             }}
           />
           <ReactSelect
@@ -136,5 +145,5 @@ export default function AddPage() {
         </Section>
       </form>
     </>
-  );
+  )
 }

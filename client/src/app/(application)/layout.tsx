@@ -1,57 +1,50 @@
-"use client";
-import Content from "@/components/ui/content/Content";
-import NavigationBar from "@/components/ui/navigation_bar/NavigationBar";
-import TopAppBar from "@/components/ui/top_app_bar/TopAppBar";
-import { usePathname, useRouter } from "next/navigation";
-import styles from "@/app/home.module.css";
-import { createContext, StrictMode, useEffect, useState } from "react";
-import NavigationRail from "@/components/ui/navigation_rail/NavigationRail";
-import Section from "@/components/ui/section/Section";
-import Container from "@/components/ui/container/Container";
-import { useUnit } from "effector-react";
-import { $isAuth, $user, handleFetchUser } from "@/context/user";
-import { $pageTitle } from "@/context/page";
+"use client"
+import Content from "@/components/ui/content/Content"
+import NavigationBar from "@/components/ui/navigation_bar/NavigationBar"
+import TopAppBar from "@/components/ui/top_app_bar/TopAppBar"
+import { usePathname, useRouter } from "next/navigation"
+import styles from "@/app/home.module.css"
+import { StrictMode, useEffect, useState } from "react"
+import NavigationRail from "@/components/ui/navigation_rail/NavigationRail"
+import Section from "@/components/ui/section/Section"
+import Container from "@/components/ui/container/Container"
+import { useUnit } from "effector-react"
+import { $isAuth, $user, handleFetchUser } from "@/context/user"
+import { $pageTitle } from "@/context/page"
 
 export type PageConfig = {
-  title: string;
-  label?: string;
-  path: string;
-  icon?: string;
-  isNav?: boolean;
-};
+  title: string
+  label?: string
+  path: string
+  icon?: string
+  isNav?: boolean
+}
 export type NavItemConfig = {
-  label: string;
-  icon: string;
-  action: () => void;
-};
+  label: string
+  icon: string
+  action: () => void
+}
 
-export const Context = createContext(null);
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   // Роутер
-  const router = useRouter();
+  const router = useRouter()
 
   // Контекст
-  const [isAuth, user, fetchUser] = useUnit([$isAuth, $user, handleFetchUser]);
+  const [isAuth] = useUnit([$isAuth])
 
   // Переменные
-  const [isMobile, setIsMobile] = useState(false);
-  const pathName = usePathname();
+  const [isMobile, setIsMobile] = useState(false)
 
   // Эффекты
   useEffect(() => {
     const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 768); // Брекпоинт, например, 768px
-    };
+      setIsMobile(window.innerWidth < 768) // Брекпоинт, например, 768px
+    }
 
-    checkIfMobile(); // Проверяем при загрузке
-    window.addEventListener("resize", checkIfMobile); // И при изменении размера
-    return () => window.removeEventListener("resize", checkIfMobile);
-  }, []);
+    checkIfMobile() // Проверяем при загрузке
+    window.addEventListener("resize", checkIfMobile) // И при изменении размера
+    return () => window.removeEventListener("resize", checkIfMobile)
+  }, [])
 
   const PAGES: PageConfig[] = [
     {
@@ -124,45 +117,45 @@ export default function RootLayout({
       title: "Почта",
       path: "/profile/email",
     },
-  ];
+  ]
 
   const NAVS: NavItemConfig[] = [
     {
       label: "Главная",
       icon: "home",
       action: () => {
-        router.push("/main");
+        router.push("/main")
       },
     },
     {
       label: "Друзья",
       icon: "group",
       action: () => {
-        router.push("/friends");
+        router.push("/friends")
       },
     },
     {
       label: "Добавить",
       icon: "add",
       action: () => {
-        router.push("/add");
+        router.push("/add")
       },
     },
     {
       label: "Списки",
       icon: "bookmark",
       action: () => {
-        router.push("/lists");
+        router.push("/lists")
       },
     },
     {
       label: "Профиль",
       icon: "account_circle",
       action: () => {
-        router.push("/profile");
+        router.push("/profile")
       },
     },
-  ];
+  ]
 
   return (
     <>
@@ -186,5 +179,5 @@ export default function RootLayout({
         </>
       )}
     </>
-  );
+  )
 }

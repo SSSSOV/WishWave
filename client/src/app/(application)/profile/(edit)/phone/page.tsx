@@ -1,37 +1,40 @@
-"use client";
-import { useUnit } from "effector-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import Button from "@/components/ui/buttons/Button";
-import Input from "@/components/ui/inputs/Input";
-import Section from "@/components/ui/section/Section";
-import { $isAuth, $user, handleUpdateInfo } from "@/context/user";
+"use client"
+import { useUnit } from "effector-react"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import Button from "@/components/ui/buttons/Button"
+import Input from "@/components/ui/inputs/Input"
+import Section from "@/components/ui/section/Section"
+import { $isAuth, $user, handleUpdateInfo } from "@/context/user"
+import NonAuthPage from "@/components/shared/nonAuthPage/NonAuthPage"
 
 export default function PhonePage() {
   //Роутер
-  const router = useRouter();
+  const router = useRouter()
 
   // Контекст
-  const [isAuth, user, handle] = useUnit([$isAuth, $user, handleUpdateInfo]);
+  const [isAuth, user, handle] = useUnit([$isAuth, $user, handleUpdateInfo])
+
+  if (!user) return <NonAuthPage />
 
   // Переменные
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState("")
 
   // Эффекты
   useEffect(() => {
-    setPhone(user.phone ? user.phone : "");
-  }, []);
+    setPhone(user.phone ? user.phone : "")
+  }, [])
 
   // Обработчики
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      handle({ phone });
-      router.back();
+      handle({ phone })
+      router.back()
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   return (
     <>
@@ -51,7 +54,7 @@ export default function PhonePage() {
               variant="text"
               type="reset"
               onClick={() => {
-                router.back();
+                router.back()
               }}>
               Отмена
             </Button>
@@ -62,5 +65,5 @@ export default function PhonePage() {
         </Section>
       </form>
     </>
-  );
+  )
 }

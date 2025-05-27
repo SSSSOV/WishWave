@@ -1,42 +1,42 @@
-"use client";
-import Button from "@/components/ui/buttons/Button";
-import { ThemeToggle } from "@/components/ui/buttons/ThemeToggle";
-import Content from "@/components/ui/content/Content";
-import Input from "@/components/ui/inputs/Input";
-import Monogram from "@/components/ui/monogram/Monogram";
-import Section from "@/components/ui/section/Section";
-import styles from "@/app/home.module.css";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useUnit } from "effector-react";
-import { $isAuth, $user, handleSignIn } from "@/context/user";
-import toast from "react-hot-toast";
-import Container from "@/components/ui/container/Container";
+"use client"
+import Button from "@/components/ui/buttons/Button"
+import { ThemeToggle } from "@/components/ui/buttons/ThemeToggle"
+import Content from "@/components/ui/content/Content"
+import Input from "@/components/ui/inputs/Input"
+import Monogram from "@/components/ui/monogram/Monogram"
+import Section from "@/components/ui/section/Section"
+import styles from "@/app/home.module.css"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { useUnit } from "effector-react"
+import { $isAuth, $user, handleSignIn } from "@/context/user"
+import toast from "react-hot-toast"
+import Container from "@/components/ui/container/Container"
 
 export default function LoginPage() {
   // Маршрутизатор
-  const router = useRouter();
+  const router = useRouter()
 
   // Переменные
-  const [loginOrEmail, setLogin] = useState("");
-  const [password, setPassword] = useState("");
+  const [loginOrEmail, setLogin] = useState("")
+  const [password, setPassword] = useState("")
 
   // Контекст
-  const [handle, isAuth] = useUnit([handleSignIn, $isAuth]);
+  const [handle, isAuth] = useUnit([handleSignIn, $isAuth])
 
   // Обработчик авторизации
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      handle({ loginOrEmail, password });
+      handle({ loginOrEmail, password })
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   useEffect(() => {
-    if (isAuth) router.replace("profile/");
-  }, [isAuth]);
+    if (isAuth) router.replace("main/")
+  }, [isAuth])
 
   return (
     <>
@@ -100,5 +100,5 @@ export default function LoginPage() {
         </Container>
       </Content>
     </>
-  );
+  )
 }

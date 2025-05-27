@@ -1,38 +1,40 @@
-"use client";
-import Button from "@/components/ui/buttons/Button";
-import Input from "@/components/ui/inputs/Input";
-import Section from "@/components/ui/section/Section";
-import { $isAuth, $user, handleUpdateInfo } from "@/context/user";
-import { IUser } from "@/types/user";
-import { useUnit } from "effector-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+"use client"
+import NonAuthPage from "@/components/shared/nonAuthPage/NonAuthPage"
+import Button from "@/components/ui/buttons/Button"
+import Input from "@/components/ui/inputs/Input"
+import Section from "@/components/ui/section/Section"
+import { $isAuth, $user, handleUpdateInfo } from "@/context/user"
+import { IUser } from "@/types/user"
+import { useUnit } from "effector-react"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 
 export default function NamePage() {
   //Роутер
-  const router = useRouter();
+  const router = useRouter()
 
   // Контекст
-  const [isAuth, user, handle] = useUnit([$isAuth, $user, handleUpdateInfo]);
+  const [isAuth, user, handle] = useUnit([$isAuth, $user, handleUpdateInfo])
 
+  if (!user) return <NonAuthPage />
   // Переменные
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
+  const [firstname, setFirstname] = useState("")
+  const [lastname, setLastname] = useState("")
 
   // Эффекты
   useEffect(() => {
-    setFirstname(user.fullname ? user.fullname?.split(" ")[0] : "");
-    setLastname(user.fullname ? user.fullname?.split(" ")[1] : "");
-  }, []);
+    setFirstname(user.fullname ? user.fullname?.split(" ")[0] : "")
+    setLastname(user.fullname ? user.fullname?.split(" ")[1] : "")
+  }, [])
 
   // Обработчики
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      handle({ fullname: firstname + " " + lastname });
-      router.back();
+      handle({ fullname: firstname + " " + lastname })
+      router.back()
     } catch (error) {}
-  };
+  }
 
   return (
     <>
@@ -53,7 +55,7 @@ export default function NamePage() {
               variant="text"
               type="reset"
               onClick={() => {
-                router.back();
+                router.back()
               }}>
               Отмена
             </Button>
@@ -64,5 +66,5 @@ export default function NamePage() {
         </Section>
       </form>
     </>
-  );
+  )
 }

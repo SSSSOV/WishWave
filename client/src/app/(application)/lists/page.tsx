@@ -1,49 +1,57 @@
-"use client";
+"use client"
 
-import Button from "@/components/ui/buttons/Button";
-import Input from "@/components/ui/inputs/Input";
-import List from "@/components/ui/list/List";
-import ListItem from "@/components/ui/list/ListItem";
-import NavigationBar from "@/components/ui/navigation_bar/NavigationBar";
-import Section from "@/components/ui/section/Section";
-import TopAppBar from "@/components/ui/top_app_bar/TopAppBar";
-import { $wishLists, handleCreateWishList, handleFetchWishLists, handleSetWishList } from "@/context/wish_lists";
-import { sortWishListsByDate } from "@/lib/utils/lists";
-import { IWishList } from "@/types/wish_list";
-import { useUnit } from "effector-react";
-import type { Metadata } from "next";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import Button from "@/components/ui/buttons/Button"
+import Input from "@/components/ui/inputs/Input"
+import List from "@/components/ui/list/List"
+import ListItem from "@/components/ui/list/ListItem"
+import NavigationBar from "@/components/ui/navigation_bar/NavigationBar"
+import Section from "@/components/ui/section/Section"
+import TopAppBar from "@/components/ui/top_app_bar/TopAppBar"
+import { handleSetPageTitle } from "@/context/page"
+import { $wishLists, handleCreateWishList, handleFetchWishLists, handleSetWishList } from "@/context/wish_lists"
+import { sortWishListsByDate } from "@/lib/utils/lists"
+import { IWishList } from "@/types/wish_list"
+import { useUnit } from "effector-react"
+import type { Metadata } from "next"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 
 export default function ListsPage() {
   // Роутер
-  const router = useRouter();
+  const router = useRouter()
 
-  // Стор
-  const [wishLists, fetchWishLists, setWishList] = useUnit([$wishLists, handleFetchWishLists, handleSetWishList]);
-  const [search, setSearch] = useState("");
-  const [shownLists, setShownLists] = useState([] as IWishList[]);
+  // Контекст
+  const [setPageTitle] = useUnit([handleSetPageTitle])
 
   // Эффекты
   useEffect(() => {
-    fetchWishLists();
-  }, []);
+    setPageTitle("Ваши списки")
+  }, [])
+
+  // Стор
+  const [wishLists, fetchWishLists, setWishList] = useUnit([$wishLists, handleFetchWishLists, handleSetWishList])
+  const [search, setSearch] = useState("")
+  const [shownLists, setShownLists] = useState([] as IWishList[])
+
+  // Эффекты
+  useEffect(() => {
+    fetchWishLists(null)
+  }, [])
 
   // Обработчики событий
   const handleOpen = (id: number) => {
-    setWishList(wishLists.find((list) => list.id == id) as IWishList);
-    router.push(`/lists/${id}`);
-  };
+    setWishList(wishLists.find((list) => list.id == id) as IWishList)
+    router.push(`/lists/${id}`)
+  }
 
   useEffect(() => {
     if (search === "") {
-      setShownLists(wishLists);
+      setShownLists(wishLists)
     } else {
-      const searchTerm = search.toLowerCase();
-      console.log(searchTerm);
-      setShownLists(wishLists.filter((list) => list.name.toLowerCase().includes(searchTerm)));
+      const searchTerm = search.toLowerCase()
+      setShownLists(wishLists.filter((list) => list.name.toLowerCase().includes(searchTerm)))
     }
-  }, [search, wishLists]);
+  }, [search, wishLists])
 
   return (
     <>
@@ -53,14 +61,14 @@ export default function ListsPage() {
           leadingIcon="search"
           value={search}
           onChange={(e) => {
-            setSearch(e.target.value);
+            setSearch(e.target.value)
           }}></Input>
         <Section withoutPad align_items="right">
           <Button
             variant="text"
             icon="add"
             onClick={() => {
-              router.push("lists/add/");
+              router.push("lists/add/")
             }}>
             Список
           </Button>
@@ -94,7 +102,7 @@ export default function ListsPage() {
                   trailing_type="icon"
                   onClick={() => handleOpen(list.id)}
                 />
-              );
+              )
             })
           ) : (
             <Section align_items="center" withoutPad>
@@ -104,5 +112,5 @@ export default function ListsPage() {
         </List>
       </Section>
     </>
-  );
+  )
 }
