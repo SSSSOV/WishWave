@@ -1,10 +1,18 @@
-import { createEvent, createStore } from "effector";
+import { createEvent, createStore, sample } from "effector"
 
-export const setLoading = createEvent<boolean>();
-export const startLoading = createEvent();
-export const stopLoading = createEvent();
+// События
+export const startLoading = createEvent<string>() // с идентификатором
+export const stopLoading = createEvent<string>()
+export const resetLoading = createEvent()
 
+// Стор
 export const $isLoading = createStore<boolean>(false)
-  .on(setLoading, (_, value) => value)
   .on(startLoading, () => true)
-  .on(stopLoading, () => false);
+  .on(stopLoading, () => false)
+  .reset(resetLoading)
+
+// Для отслеживания нескольких загрузок
+export const $activeLoaders = createStore<string[]>([])
+  .on(startLoading, (loaders, id) => [...loaders, id])
+  .on(stopLoading, (loaders, id) => loaders.filter((loaderId) => loaderId !== id))
+  .reset(resetLoading)

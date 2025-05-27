@@ -1,16 +1,16 @@
 /**Интерфейс регистрации */
 export interface ISignUpFx {
   /**Логин пользователя */
-  login: string;
+  login: string
   /**Почта пользователя */
-  email: string;
+  email: string
   /**Пароль пользователя */
-  password: string;
+  password: string
 }
 /**Интерфейс авторизации */
 export interface ISignInFx {
   /**Логин или почта */
-  loginOrEmail: string;
+  loginOrEmail: string
   /**Пароль пользователя */
-  password: string;
+  password: string
 }

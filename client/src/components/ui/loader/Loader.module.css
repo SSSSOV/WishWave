@@ -1,9 +1,16 @@
 .loader {
-  color: #fff;
+  color: var(--primary);
   font-family: Consolas, Menlo, Monaco, monospace;
   font-weight: bold;
   font-size: 78px;
   opacity: 0.8;
+  text-align: center;
+  /* margin: 40vh 0px; */
+
+  position: absolute;
+  top: 40%;
+  width: 100%;
+  /* height: 100vh; */
 }
 .loader:before {
   content: "w";

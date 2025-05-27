@@ -1,55 +1,55 @@
-"use client";
+"use client"
 
-import Button from "@/components/ui/buttons/Button";
-import List from "@/components/ui/list/List";
-import ListItem, { list_item_icon_color } from "@/components/ui/list/ListItem";
-import Section from "@/components/ui/section/Section";
-import { $wishList, $wishLists, handleDeleteWishList, handleFetchWishLists, handleSetWishList } from "@/context/wish_lists";
-import { IWishList } from "@/types/wish_list";
-import { useUnit } from "effector-react";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect } from "react";
-import toast from "react-hot-toast";
+import Button from "@/components/ui/buttons/Button"
+import List from "@/components/ui/list/List"
+import ListItem, { list_item_icon_color } from "@/components/ui/list/ListItem"
+import Section from "@/components/ui/section/Section"
+import { $wishList, $wishLists, handleDeleteWishList, handleFetchWishList, handleFetchWishLists, handleSetWishList } from "@/context/wish_lists"
+import { IWishList } from "@/types/wish_list"
+import { useUnit } from "effector-react"
+import { useParams, useRouter } from "next/navigation"
+import { useEffect } from "react"
+import toast from "react-hot-toast"
 
 export default function WishListPage() {
   // Роутер
-  const router = useRouter();
+  const router = useRouter()
 
   // Переменные
-  const { id } = useParams(); // Получаем ID из URL
+  const { id } = useParams() // Получаем ID из URL
 
   // Стор
-  const [wishList, wishLists, deleteWishList, setWishList, fetchWishLists] = useUnit([
+  const [wishList, wishLists, deleteWishList, setWishList, fetchWishList] = useUnit([
     $wishList,
     $wishLists,
     handleDeleteWishList,
     handleSetWishList,
-    handleFetchWishLists,
-  ]);
+    handleFetchWishList,
+  ])
 
   const handleDelete = () => {
-    deleteWishList(Number(id));
-    router.back();
-  };
+    deleteWishList(Number(id))
+    router.back()
+  }
 
   const handleEdit = () => {
-    router.push(`/lists/${id}/edit`);
-  };
+    router.push(`/lists/${id}/edit`)
+  }
 
   const handleOpen = (wishId: number) => {
-    router.push(`/wish/${wishId}`);
-  };
+    router.push(`/wish/${wishId}`)
+  }
 
   useEffect(() => {
-    fetchWishLists();
-  }, []);
+    fetchWishList(Number(id))
+  }, [])
 
   useEffect(() => {
-    if (wishLists && wishLists.length) setWishList(wishLists.find((list) => list.id == Number(id)) as IWishList);
-  }, [wishLists]);
+    if (wishLists && wishLists.length) setWishList(wishLists.find((list) => list.id == Number(id)) as IWishList)
+  }, [wishLists])
 
-  const colors = ["primary", "secondary", "tertiary"];
-  const access_lvls = ["Публичный", "Приватный", "По ссылке", "Для друзей"];
+  const colors = ["primary", "secondary", "tertiary"]
+  const access_lvls = ["Публичный", "Приватный", "По ссылке", "Для друзей"]
 
   if (!wishList) {
     return (
@@ -59,7 +59,7 @@ export default function WishListPage() {
           Вернуться к спискам
         </Button>
       </Section>
-    );
+    )
   }
 
   return (
@@ -81,7 +81,7 @@ export default function WishListPage() {
             overline="дата события"
           />
           <ListItem condition={2} headline={access_lvls[wishList.accesslevelId - 1]} overline="доступ" />
-          <ListItem condition={2} headline={wishList.description} overline="описание" />
+          <ListItem condition={2} headline={wishList.description ? wishList.description : "Не указано"} overline="описание" />
         </List>
       </Section>
       <Section align_items="right">
@@ -124,5 +124,5 @@ export default function WishListPage() {
         </List>
       </Section>
     </>
-  );
+  )
 }

@@ -1,10 +1,11 @@
-"use client";
+"use client"
 
-import Button from "@/components/ui/buttons/Button";
-import Input from "@/components/ui/inputs/Input";
-import List from "@/components/ui/list/List";
-import ListItem from "@/components/ui/list/ListItem";
-import Section from "@/components/ui/section/Section";
+import Button from "@/components/ui/buttons/Button"
+import Input from "@/components/ui/inputs/Input"
+import List from "@/components/ui/list/List"
+import ListItem from "@/components/ui/list/ListItem"
+import Loader from "@/components/ui/loader/Loader"
+import Section from "@/components/ui/section/Section"
 import {
   $recivedRequests,
   $sentRequests,
@@ -14,20 +15,22 @@ import {
   handleFetchSentRequests,
   handleRejectFriendRequest,
   handleSendFriendRequest,
-} from "@/context/friends";
-import { $user } from "@/context/user";
-import { useUnit } from "effector-react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+} from "@/context/friends"
+import { $user } from "@/context/user"
+import { IFriendRequest } from "@/types/friends"
+import { IUser } from "@/types/user"
+import { useUnit } from "effector-react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useEffect, useState } from "react"
+import toast from "react-hot-toast"
 
 export default function AddFriendPage() {
   // Роутер
-  const router = useRouter();
+  const router = useRouter()
 
   // Параметры
-  const params = useSearchParams(); // Получаем ID из URL
-  const targetId = params.get("addFriend"); // Получаем listId из URL
+  const params = useSearchParams() // Получаем ID из URL
+  const targetId = params.get("addFriend") // Получаем listId из URL
 
   // Стор
   const [
@@ -50,59 +53,67 @@ export default function AddFriendPage() {
     handleCancelFriendRequest,
     handleAcceptFriendRequest,
     handleRejectFriendRequest,
-  ]);
+  ])
 
   // Состояния
-  const [targetUserId, setTargetUserId] = useState("");
+  const [targetUserId, setTargetUserId] = useState("")
 
   useEffect(() => {
-    fetchRecivedRequests();
-    fetchSentRequests();
-  }, []);
+    fetchRecivedRequests()
+    fetchSentRequests()
+  }, [])
 
   useEffect(() => {
     if (targetId) {
-      setTargetUserId(targetId);
-      sendFriendRequest(Number(targetUserId));
-    } else {
-      toast.error("Ошибка в ссылке!");
+      setTargetUserId(targetId)
+      sendFriendRequest(Number(targetUserId))
     }
-  }, [targetId]);
+  }, [targetId])
 
   const handleSend = () => {
     if (Number(targetUserId)) {
-      sendFriendRequest(Number(targetUserId));
-      setTargetUserId("");
+      sendFriendRequest(Number(targetUserId))
+      setTargetUserId("")
     }
-  };
+  }
 
   const handleCopyToClipboard = async () => {
-    try {
-      await navigator.clipboard.writeText(user.id);
-      toast.success("ID успешно скопирован!");
-    } catch (err) {
-      toast.error("Не удалось скопировать ID: " + err);
+    if (user) {
+      try {
+        await navigator.clipboard.writeText(String(user.id))
+        toast.success("ID успешно скопирован!")
+      } catch (err) {
+        toast.error("Не удалось скопировать ID: " + err)
+      }
     }
-  };
+  }
 
   const handleCreateFriendLink = async () => {
-    try {
-      await navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_CLIENT_URL}friends/add&addFriend=${user.id}`);
-      toast.success("ID успешно скопирован!");
-    } catch (err) {
-      toast.error("Не удалось скопировать ID: " + err);
+    if (user) {
+      try {
+        await navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_CLIENT_URL}friends/add&addFriend=${user.id}`)
+        toast.success("Ссылка успешно скопирована!")
+      } catch (err) {
+        toast.error("Не удалось скопировать ссылку: " + err)
+      }
     }
-  };
+  }
+
+  useEffect(() => {
+    console.log(recivedRequests, sentRequests, user)
+  }, [recivedRequests, sentRequests, user])
 
   const handleCancel = (id: number) => {
-    cancelFriendRequest(id);
-  };
+    cancelFriendRequest(id)
+  }
   const handleAccept = (id: number) => {
-    acceptFriendRequest(id);
-  };
+    acceptFriendRequest(id)
+  }
   const handleReject = (id: number) => {
-    rejectFriendRequest(id);
-  };
+    rejectFriendRequest(id)
+  }
+
+  if (!recivedRequests || !sentRequests || !user) return <Loader />
 
   return (
     <>
@@ -114,7 +125,7 @@ export default function AddFriendPage() {
               isFull
               value={targetUserId}
               onChange={(e) => {
-                setTargetUserId(e.target.value);
+                setTargetUserId(e.target.value)
               }}
             />
           </Section>
@@ -139,28 +150,27 @@ export default function AddFriendPage() {
       <Section title="Исходящие заявки">
         <List withoutPad>
           {sentRequests && sentRequests.length > 0
-            ? sentRequests.map((req) => {
-                const recId = req.users[0].id == user.id ? 1 : 0;
+            ? sentRequests.map(({ id, recipient }) => {
                 return (
-                  <Section key={req.id} items_direction="row" withoutPad align_items="center">
+                  <Section key={id} items_direction="row" withoutPad align_items="center">
                     <ListItem
                       condition={2}
-                      url={req.users[recId].image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + req.users[recId].image : ""}
-                      leading_type={req.users[recId].image ? "image" : "icon"}
+                      url={recipient.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + recipient.image : ""}
+                      leading_type={recipient.image ? "image" : "icon"}
                       leading="person"
-                      headline={req.users[recId] ? (req.users[recId].fullname ? req.users[recId].fullname : req.users[recId].login) : ""}
-                      overline={req.users[recId] ? (req.users[recId].fullname ? req.users[recId].login : "") : ""}
+                      headline={recipient ? (recipient.fullname ? recipient.fullname : recipient.login) : ""}
+                      overline={recipient ? (recipient.fullname ? recipient.login : "") : ""}
                     />
                     <Button
                       variant="text"
                       icon="cancel"
                       color="error"
                       onClick={() => {
-                        handleCancel(req.id);
+                        handleCancel(id)
                       }}
                     />
                   </Section>
-                );
+                )
               })
             : "пусто"}
         </List>
@@ -171,23 +181,22 @@ export default function AddFriendPage() {
       <Section title="Входящие заявки">
         <List withoutPad>
           {recivedRequests.length > 0
-            ? recivedRequests.map((req) => {
-                const recId = req.users[0].id == user.id ? 1 : 0;
+            ? recivedRequests.map(({ id, recipient }) => {
                 return (
-                  <Section key={req.id} items_direction="row" withoutPad align_items="center">
+                  <Section key={id} items_direction="row" withoutPad align_items="center">
                     <ListItem
                       condition={2}
                       leading_type="icon"
                       leading="person"
-                      headline={req.users[recId].fullname ? req.users[recId].fullname : req.users[recId].login}
-                      overline={req.users[recId].fullname ? req.users[recId].login : ""}
+                      headline={recipient.fullname ? recipient.fullname : recipient.login}
+                      overline={recipient.fullname ? recipient.login : ""}
                     />
                     <Button
                       variant="text"
                       icon="check_circle"
                       color="access"
                       onClick={() => {
-                        handleAccept(req.id);
+                        handleAccept(id)
                       }}
                     />
                     <Button
@@ -195,15 +204,15 @@ export default function AddFriendPage() {
                       icon="cancel"
                       color="error"
                       onClick={() => {
-                        handleReject(req.id);
+                        handleReject(id)
                       }}
                     />
                   </Section>
-                );
+                )
               })
             : "пусто"}
         </List>
       </Section>
     </>
-  );
+  )
 }
