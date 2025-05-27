@@ -15,53 +15,35 @@ export class UsersController {
     constructor(private readonly usersService: UsersService, private fileService: FileService, private readonly friendService: FriendService, private readonly authService: AuthService) { }
 
     @UseGuards(JwtAuthGuard)
-    @Get()
-    async getAll(@Req() req): Promise<UserResponseDto[]> {
+    @Get('all')
+    async getAll(@Req() req): Promise<Omit<UserResponseDto, 'wishlist'>[]> {
         if (req.user.roles?.value !== 'admin') {
             throw new ForbiddenException('У вас нет прав, чтобы посмотреть всех пользователей')
         }
         const users = await this.usersService.getAllUsers();
         return users.map(u => {const plain = u.get({plain: true}) as any;
-            const {password, wishlist, ...rest} = plain;
-            const dto: UserResponseDto = {...rest, wishlists: Array.isArray(wishlist) ? wishlist: []}
-            return dto;
-    })
+            const {password, wishlist, ...rest} = u.get({plain: true}) as any;
+            return rest as Omit<UserResponseDto, 'wishlist'>;
+        });
     } 
 
     @UseGuards(JwtAuthGuard)
     @Get('checkAuth')
-    checkAuth(): void {
-        
-    }
+    checkAuth(): void {}
 
     @UseGuards(JwtAuthGuard)
-    @Get('search')
-    async findByEmailOrLogin(@Req() req, @Query('email') email?: string, @Query('login') login?: string): Promise<UserResponseDto> {
-        if (!email && !login) {
-            throw new BadRequestException('Укажите email или login')
-        }
-
-        let user;
-        if (email) {
-            user = await this.usersService.getUserByEmail(email);
-        } else {
-            user = await this.usersService.getUserByLogin(login!);
-        }
-
-        if(!user) {
-            throw new BadRequestException('Пользователь не найден')
-        }
-
-        const plain = user.get({plain: true}) as any;
-        const {password, wishlist, ...rest} = plain;
-        const dto: UserResponseDto = {...rest, wishlists: Array.isArray(wishlist) ? wishlist: []};
-
-        return dto;
+    @Get()
+    async getSelf(@Req() req): Promise<Omit<UserResponseDto, 'wishlist'>> {
+        const me = req.user.id;
+        const user = await this.usersService.getUserById(me);
+        const {password, wishlist, ...rest} = user.get({plain: true}) as any;
+     
+        return rest;
     }
 
     @UseGuards(JwtAuthGuard)
     @Get(':id')
-    async getById(@Param('id', ParseIntPipe) id: number, @Req() req): Promise<UserResponseDto> {
+    async getById(@Param('id', ParseIntPipe) id: number, @Req() req): Promise<Omit<UserResponseDto, 'wishlist'>> {
         const viewerId = req.user.id;
         const viewerRole = req.user.roles?.value;
         const isOwner = viewerRole === 'admin' || viewerId === id;
@@ -73,52 +55,70 @@ export class UsersController {
         }
 
         const user = await this.usersService.getUserById(id);
-        const plain = user.get({plain: true}) as any;
-        const {password, wishlist, ...rest} = plain;
-        let lists = Array.isArray(wishlist) ? wishlist: [];
-        if (!isOwner) {
-            lists = lists.filter(l => l.accesslevel.name === 'public' || l.accesslevel.name === 'friends');
-        }
+        const {password, wishlist, ...rest} = user.get({plain: true}) as any;
 
-        const wishlists = lists.map(l => ({id: l.id, name: l.name, description: l.description, eventDate: l.eventDate, accesslevelId: l.accesslevelId}));
-
-        return {...rest, wishlists};
+        return rest;
     }
     
     @UseGuards(JwtAuthGuard)
+    @Delete()
+    async removeSelf(@Req() req): Promise<{message: string}> {
+        const id = req.user.id;
+        return this.usersService.deleteUserById(id);
+    }
+
+    @UseGuards(JwtAuthGuard)
     @Delete(':id')
     async removeUser(@Param('id', ParseIntPipe) id: number, @Req() req): Promise<{message: string}> {
-        const userRole = req.user.roles?.value;
-        const userId = req.user.id;
-        if (userRole !== 'admin' && userId !== id) {
-            throw new ForbiddenException('Можно удалить только свой аккаунт')
+        if (req.user.roles?.value !== 'admin') {
+            throw new ForbiddenException('У вас нет прав для удаления других пользователей')
         }
         return this.usersService.deleteUserById(id);
     }
 
     @UseGuards(JwtAuthGuard)
-    @Patch(':id')
-    @UseInterceptors(FileInterceptor('image', {limits: {fileSize: 2 * 1024 * 1024}}))
-    async updateUser(@Param('id', ParseIntPipe) id: number, @UploadedFile() image: Express.Multer.File, @Body() dto: UpdateUserDto, @Req() req): Promise<UserResponseDto> {
-        if (req.user.id !== id) {
-            throw new ForbiddenException('Можно редактировать только свой профиль')
+    @Patch('password')
+    async changeOwnPassword( @Body() dto: ChangePasswordDto, @Req() req) {
+        const userId = req.user.id;
+        await this.usersService.updatePassword(userId, dto.oldPassword, dto.newPassword);
+
+        return {message: 'Пароль успешно изменен'};
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Patch('password/:id')
+    async changePassword(@Param('id', ParseIntPipe) id: number, @Body() dto: ChangePasswordDto, @Req() req) {
+        if (req.user.roles?.value !== 'admin') {
+            throw new ForbiddenException('Нет прав для изменения пароля у другого пользователя')
         }
-        const updated = await this.usersService.updateUser(id, dto, image);
+ 
+        await this.usersService.forceChangePassword(id, dto.newPassword);
+        return {message: 'Пароль успешно изменен'};
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Patch()
+    @UseInterceptors(FileInterceptor('image', {limits: {fileSize: 2 * 1024 * 1024}}))
+    async updateSelf(@UploadedFile() image: Express.Multer.File, @Body() dto: UpdateUserDto, @Req() req): Promise<UserResponseDto> {
+        const me = req.user.id;
+        const updated = await this.usersService.updateUser(me, dto, image);
         const plain = updated.get({plain: true}) as any;
         const {password, wishlist, ...rest} = plain;
         return {...rest, wishlists: Array.isArray(wishlist) ? wishlist: []};
     }
 
     @UseGuards(JwtAuthGuard)
-    @Patch(':id/password')
-    async changePassword(@Param('id', ParseIntPipe) id: number, @Body() dto: ChangePasswordDto, @Req() req) {
-        if (req.user.id !== id) {
-            throw new ForbiddenException('Нельзя менять пароль у другого пользователя')
+    @Patch(':id')
+    @UseInterceptors(FileInterceptor('image', {limits: {fileSize: 2 * 1024 * 1024}}))
+    async updateUser(@Param('id', ParseIntPipe) id: number | null, @UploadedFile() image: Express.Multer.File, @Body() dto: UpdateUserDto, @Req() req): Promise<UserResponseDto> {
+        const targetId = id ?? req.user.id;
+        if (req.user.roles?.value !== 'admin') {
+            throw new ForbiddenException('У вас нет прав редактировать этот профиль')
         }
-        if (dto.newPassword !== dto.confirmPassword) {
-            throw new BadRequestException('Новые пароли не совпадают')
-        }
-        await this.usersService.updatePassword(id, dto.oldPassword, dto.newPassword);
-        return {message: 'Пароль успешно изменен'};
+        const updated = await this.usersService.updateUser(targetId, dto, image);
+        const plain = updated.get({plain: true}) as any;
+        const {password, wishlist, ...rest} = plain;
+        return {...rest, wishlists: Array.isArray(wishlist) ? wishlist: []};
     }
+
 }

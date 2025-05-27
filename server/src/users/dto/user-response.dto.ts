@@ -13,5 +13,4 @@ export class UserResponseDto {
     @ApiProperty() roleId: number;
     @ApiProperty({required: false}) banId?: number;
     @ApiPropertyOptional({enum: ['male', 'female']}) gender?: 'male' | 'female';
-    @ApiProperty({type: () => [WishListResponseDto], description: 'Списки желаний пользователя'}) wishlists: WishListResponseDto[];
 }
