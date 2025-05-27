@@ -99,18 +99,18 @@ export class UsersController {
     @UseGuards(JwtAuthGuard)
     @Patch()
     @UseInterceptors(FileInterceptor('image', {limits: {fileSize: 2 * 1024 * 1024}}))
-    async updateSelf(@UploadedFile() image: Express.Multer.File, @Body() dto: UpdateUserDto, @Req() req): Promise<UserResponseDto> {
+    async updateSelf(@UploadedFile() image: Express.Multer.File, @Body() dto: UpdateUserDto, @Req() req): Promise<Omit<UserResponseDto, 'wishlists'>> {
         const me = req.user.id;
         const updated = await this.usersService.updateUser(me, dto, image);
         const plain = updated.get({plain: true}) as any;
         const {password, wishlist, ...rest} = plain;
-        return {...rest, wishlists: Array.isArray(wishlist) ? wishlist: []};
+        return rest;
     }
 
     @UseGuards(JwtAuthGuard)
     @Patch(':id')
     @UseInterceptors(FileInterceptor('image', {limits: {fileSize: 2 * 1024 * 1024}}))
-    async updateUser(@Param('id', ParseIntPipe) id: number | null, @UploadedFile() image: Express.Multer.File, @Body() dto: UpdateUserDto, @Req() req): Promise<UserResponseDto> {
+    async updateUser(@Param('id', ParseIntPipe) id: number | null, @UploadedFile() image: Express.Multer.File, @Body() dto: UpdateUserDto, @Req() req): Promise<Omit<UserResponseDto, 'wishlists'>> {
         const targetId = id ?? req.user.id;
         if (req.user.roles?.value !== 'admin') {
             throw new ForbiddenException('У вас нет прав редактировать этот профиль')
@@ -118,7 +118,7 @@ export class UsersController {
         const updated = await this.usersService.updateUser(targetId, dto, image);
         const plain = updated.get({plain: true}) as any;
         const {password, wishlist, ...rest} = plain;
-        return {...rest, wishlists: Array.isArray(wishlist) ? wishlist: []};
+        return rest;
     }
 
 }

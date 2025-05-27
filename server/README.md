@@ -124,16 +124,16 @@ Development of a web application for a wish list service for a diploma
 
 ## User
 
-### Get All User
+Для всех защищенных маршрутов требуется заголовок
 
-`GET /api/user`
-Получить список всех пользователей (только для администратора)
-
-**Headers:**
-
-```json
+```makefile
 Authorization: Bearer <token>
 ```
+
+### Get All User
+
+`GET /api/user/all`
+Получить список всех пользователей (только для администратора)
 
 **Responses:**
 
@@ -141,19 +141,109 @@ Authorization: Bearer <token>
 
 ```json
 [
-  {
-    "id": 1,
-    "login": "john_doe",
-    "email": "john@example.com",
-    "fullName": "John Doe",
-    "image": "url_or_filename",
-    "birthDate": "yyyy-mm-dd",
-    "phone": "+1234567890",
-    "socials": { "twitter": "@johndoe" },
-    "roleId": 2,
-    "wishlists": [ /* ... */ ]
-  },
-  …
+    {
+        "id": 2,
+        "fullname": "Вадим",
+        "login": "sanya",
+        "email": "sanya@mail.ru",
+        "image": null,
+        "birthDate": "2003-10-06",
+        "phone": null,
+        "gender": "male",
+        "socials": null,
+        "roleId": 1,
+        "banId": null,
+        "createdAt": "2025-05-26T16:24:56.731Z",
+        "updatedAt": "2025-05-27T11:20:24.520Z",
+        "friend": [
+            {
+                "id": 1,
+                "userid1": 2,
+                "userid2": 3,
+                "friendstatusId": 2,
+                "createdAt": "2025-05-27T09:15:30.293Z",
+                "updatedAt": "2025-05-27T09:15:44.255Z",
+                "FriendUsers": {
+                    "id": 1,
+                    "userId": 2,
+                    "friendId": 1
+                }
+            }
+        ],
+        "ban": null,
+        "role": {
+            "id": 1,
+            "value": "user",
+            "description": "Пользователь",
+            "createdAt": "2025-05-26T16:18:39.012Z",
+            "updatedAt": "2025-05-26T16:18:39.012Z"
+        },
+        "wishstatuses": []
+    },
+    {
+        "id": 3,
+        "fullname": null,
+        "login": "dima",
+        "email": "dima@mail.ru",
+        "image": null,
+        "birthDate": null,
+        "phone": null,
+        "gender": null,
+        "socials": null,
+        "roleId": 1,
+        "banId": null,
+        "createdAt": "2025-05-27T06:58:26.671Z",
+        "updatedAt": "2025-05-27T12:01:19.634Z",
+        "friend": [
+            {
+                "id": 1,
+                "userid1": 2,
+                "userid2": 3,
+                "friendstatusId": 2,
+                "createdAt": "2025-05-27T09:15:30.293Z",
+                "updatedAt": "2025-05-27T09:15:44.255Z",
+                "FriendUsers": {
+                    "id": 2,
+                    "userId": 3,
+                    "friendId": 1
+                }
+            }
+        ],
+        "ban": null,
+        "role": {
+            "id": 1,
+            "value": "user",
+            "description": "Пользователь",
+            "createdAt": "2025-05-26T16:18:39.012Z",
+            "updatedAt": "2025-05-26T16:18:39.012Z"
+        },
+        "wishstatuses": []
+    },
+    {
+        "id": 1,
+        "fullname": null,
+        "login": "root",
+        "email": "root@mail.ru",
+        "image": null,
+        "birthDate": null,
+        "phone": null,
+        "gender": null,
+        "socials": null,
+        "roleId": 2,
+        "banId": null,
+        "createdAt": "2025-05-26T16:18:39.123Z",
+        "updatedAt": "2025-05-26T16:18:39.123Z",
+        "friend": [],
+        "ban": null,
+        "role": {
+            "id": 2,
+            "value": "admin",
+            "description": "Администратор",
+            "createdAt": "2025-05-26T16:18:39.015Z",
+            "updatedAt": "2025-05-26T16:18:39.015Z"
+        },
+        "wishstatuses": []
+    }
 ]
 ```
 
@@ -167,76 +257,15 @@ Authorization: Bearer <token>
 }
 ```
 
-### Search User by Email or Login
+### Check Authentication Status
 
-`GET /api/user/search?email={email}&login={login}`
-Найти пользователя по email или login
+`GET /api/user/checkAuth`
+Проверить, валиден ли JWT и получить статус авторизации без дополнительной нагрузки
 
-**Headers:**
+### Get User
 
-```json
-Authorization: Bearer <token>
-```
-
-**Query Parametrs:**
-
-```json
-  email (string)
-  login (string)
-```
-**Responses:**
-
-- 200:
-
-```json
-{
-  "id": 2,
-  "login": "jane_doe",
-  "email": "jane@example.com",
-  "fullName": "Jane Doe",
-  "image": null,
-  "birthDate": "yyyy-mm-dd",
-  "phone": null,
-  "socials": null,
-  "roleId": 2,
-  "wishlists": [ /* ... */ ]
-}
-```
-
-- 400:
-
-```json
-{
-  "statusCode": 400,
-  "message": "Укажите email или login",
-  "error": "Bad Request"
-}
-```
-
-```json
-{
-  "statusCode": 400,
-  "message": "Пользователь не найден",
-  "error": "Bad Request"
-}
-```
-
-### Get User by Id
-
-`GET /api/user/:id`
-Получить данные пользователя по Id
-
-**Headers:**
-
-```json
-Authorization: Bearer <token>
-```
-
-**Path Parametrs:**
-
-```json
-  id (number)
-```
+`GET /api/user`
+Получить данные пользователя (того, кто отправляет запрос)
 
 **Responses:**
 
@@ -244,16 +273,19 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "id": 3,
-  "login": "sanya",
-  "email": "sanya@mail.ru",
-  "fullName": null,
-  "image": null,
-  "birthDate": null,
-  "phone": null,
-  "socials": null,
-  "roleId": 1,
-  "wishlists": [ /* ... */ ]
+    "id": 2,
+    "fullname": "Вадим",
+    "login": "sanya",
+    "email": "sanya@mail.ru",
+    "image": null,
+    "birthDate": "2003-10-06",
+    "phone": null,
+    "gender": "male",
+    "socials": null,
+    "roleId": 1,
+    "banId": null,
+    "createdAt": "2025-05-26T16:24:56.731Z",
+    "updatedAt": "2025-05-27T11:20:24.520Z"
 }
 ```
 
@@ -276,33 +308,73 @@ Authorization: Bearer <token>
 }
 ```
 
-### Update User
+### Get User by Id for Friends and Admin
 
-`PATCH /api/user/:id`
-Обновить профиль пользователя (только сам пользователь)
-
-**Headers:**
-
-```json
-Authorization: Bearer <token>
-```
+`GET /api/user/:id`
+Получить данные пользователя по Id (если пользователь - друг или пользователь - администратор)
 
 **Path Parametrs:**
 
-```json
+```makefile
   id (number)
 ```
+
+**Responses:**
+
+- 200:
+
+```json
+{
+    "id": 3,
+    "fullname": null,
+    "login": "dima",
+    "email": "dima@mail.ru",
+    "image": null,
+    "birthDate": null,
+    "phone": null,
+    "gender": null,
+    "socials": null,
+    "roleId": 1,
+    "banId": null,
+    "createdAt": "2025-05-27T06:58:26.671Z",
+    "updatedAt": "2025-05-27T12:01:19.634Z"
+}
+```
+
+- 403:
+
+```json
+{
+  "statusCode": 403,
+  "message": "Профиль доступен только друзьям",
+  "error": "Forbidden"
+}
+```
+
+- 404:
+```json
+{
+  "statusCode": 404,
+  "message": "пользователь не найден (id)",
+  "error": "Not Found"
+}
+```
+
+### Update User
+
+`PATCH /api/user`
+Обновить профиль пользователя (только сам пользователь)
 
 **Request Body:**
 
 ```json
 {
-  "fullName": "string",
-  "image": "string",
-  "birthDate": "string",
-  "phone": "string",
-  "male": "male" | "female",
-  "socials": { "string": "string" }
+  "fullName?": "string",
+  "image?": "string",
+  "birthDate?": "string",
+  "phone?": "string",
+  "male?": "male | female",
+  "socials?": { "string": "string" }
 }
 ```
 
@@ -312,16 +384,19 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "id": 3,
-  "login": "sanya",
-  "email": "sanya@mail.ru",
-  "fullName": "Sanya",
-  "image": "filename.jpg",
-  "birthDate": "2025-05-22",
-  "phone": "+1234567890",
-  "socials": { "vk": "sanya_vk" },
-  "roleId": 1,
-  "wishlists": [ /* ... */ ]
+    "id": 2,
+    "fullname": "Вадим",
+    "login": "sanya",
+    "email": "sanya@mail.ru",
+    "image": null,
+    "birthDate": "2003-10-06",
+    "phone": null,
+    "gender": "male",
+    "socials": null,
+    "roleId": 1,
+    "banId": null,
+    "createdAt": "2025-05-26T16:24:56.731Z",
+    "updatedAt": "2025-05-27T11:20:24.520Z"
 }
 ```
 
@@ -344,20 +419,14 @@ Authorization: Bearer <token>
 }
 ```
 
-### Change Password
+### Update User for Admin
 
-`PATCH /api/user/:id/password`
-Сменить пароль (только сам пользователь)
-
-**Headers:**
-
-```json
-Authorization: Bearer <token>
-```
+`PATCH /api/user/:id`
+Обновить профиль пользователя (только администратор)
 
 **Path Parametrs:**
 
-```json
+```makefile
   id (number)
 ```
 
@@ -365,9 +434,67 @@ Authorization: Bearer <token>
 
 ```json
 {
+  "fullName?": "string",
+  "image?": "string",
+  "birthDate?": "string",
+  "phone?": "string",
+  "male?": "male | female",
+  "socials?": { "string": "string" }
+}
+```
+
+**Responses:**
+
+- 200:
+
+```json
+{
+    "id": 2,
+    "fullname": "Вадим",
+    "login": "sanya",
+    "email": "sanya@mail.ru",
+    "image": null,
+    "birthDate": "2003-10-06",
+    "phone": null,
+    "gender": "male",
+    "socials": null,
+    "roleId": 1,
+    "banId": null,
+    "createdAt": "2025-05-26T16:24:56.731Z",
+    "updatedAt": "2025-05-27T11:20:24.520Z"
+}
+```
+
+- 403:
+
+```json
+{
+  "statusCode": 403,
+  "message": "У вас нет прав редактировать этот профиль",
+  "error": "Forbidden"
+}
+```
+
+- 400:
+```json
+{
+  "statusCode": 400,
+  "message": "Неподдерживаемый формат даты: 31-12-2025. Ожидается dd.mm.yyyy",
+  "error": "Bad Request"
+}
+```
+
+### Change Password
+
+`PATCH /api/user/password`
+Сменить пароль (только сам пользователь)
+
+**Request Body:**
+
+```json
+{
   "oldPassword": "string",
   "newPassword": "string",
-  "confirmPassword": "string"
 }
 ```
 
@@ -399,20 +526,88 @@ Authorization: Bearer <token>
 }
 ```
 
-### Delete User
+### Change Password for Admin
 
-`DELETE /api/user/:id`
-Удалить аккаунт пользователя (владелец аккаунта или админ)
-
-**Headers:**
-
-```json
-Authorization: Bearer <token>
-```
+`PATCH /api/user/password/:id`
+Сменить пароль (только админ)
 
 **Path Parametrs:**
 
+```makefile
+  id (number)
+```
+
+**Request Body:**
+
 ```json
+{
+  "newPassword": "string",
+}
+```
+
+**Responses:**
+
+- 200:
+
+```json
+{
+  "message": "Пароль успешно изменен"
+}
+```
+
+- 400:
+
+```json
+{
+  "statusCode": 400,
+  "message": "Нет прав для изменения пароля у другого пользователят",
+  "error": "Bad Request"
+}
+```
+
+### Delete User
+
+`DELETE /api/user/`
+Удалить аккаунт пользователя (только владелец)
+
+**Responses:**
+
+- 200:
+
+```json
+{
+  "message": "Пользователь username с ID id удалён"
+}
+```
+
+- 403:
+
+```json
+{
+  "statusCode": 403,
+  "message": "Можно удалить только свой аккаунт",
+  "error": "Forbidden"
+}
+```
+
+- 404:
+
+```json
+{
+  "statusCode": 404,
+  "message": "Пользователь не найден",
+  "error": "Not Found"
+}
+```
+
+### Delete User for Admin
+
+`DELETE /api/user/:id`
+Удалить аккаунт пользователя (только админ)
+
+**Path Parametrs:**
+
+```makefile
   id (number)
 ```
 
