@@ -1,37 +1,37 @@
 /**Интерфейс пользователя */
 export interface IUser {
   /**ID пользователя */
-  id: string;
+  id: number
   /**Логин пользователя */
-  login: string;
+  login: string
   /**Почта пользователя */
-  email: string;
+  email: string
   /**Имя пользователя */
-  fullname?: string;
+  fullname?: string
   /**Фото пользователя */
-  image?: string;
+  image?: string
   /**Дата рождения пользователя */
-  birthday?: string;
+  birthday?: string
   /**Телефон пользователя */
-  phone?: string;
+  phone?: string
   /**Пол пользователя */
-  gender?: string;
+  gender?: string
 }
 /**Интерфейс проверки авторизации */
 export interface ILoginCheckFx {
   /**Токен сессии */
-  jwt: string;
+  jwt: string
 }
 /**Интервейс редактирования пользователя */
 export interface IUpdateInfoFx {
   /**Имя пользователя */
-  fullname?: string;
+  fullname?: string
   /**Фото пользователя */
-  image?: string;
+  image?: string
   /**Дата рождения пользователя */
-  birthday?: string;
+  birthday?: string
   /**Телефон пользователя */
-  phone?: string;
+  phone?: string
   /**Пол пользователя */
-  gender?: string;
+  gender?: string
 }

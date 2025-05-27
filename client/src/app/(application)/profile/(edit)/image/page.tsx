@@ -1,39 +1,50 @@
-"use client";
+"use client"
 
-import Button from "@/components/ui/buttons/Button";
-import Input from "@/components/ui/inputs/Input";
-import Monogram from "@/components/ui/monogram/Monogram";
-import Section from "@/components/ui/section/Section";
-import { $user, handleUpdateInfo } from "@/context/user";
-import { getInitials } from "@/lib/utils/getInitials";
-import { hasNameContent } from "@/lib/utils/hasNameContent";
-import { useUnit } from "effector-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import NonAuthPage from "@/components/shared/nonAuthPage/NonAuthPage"
+import Button from "@/components/ui/buttons/Button"
+import Input from "@/components/ui/inputs/Input"
+import Monogram from "@/components/ui/monogram/Monogram"
+import Section from "@/components/ui/section/Section"
+import { handleSetPageTitle } from "@/context/page"
+import { $isAuth, $user, handleUpdateInfo } from "@/context/user"
+import { getInitials } from "@/lib/utils/getInitials"
+import { hasNameContent } from "@/lib/utils/hasNameContent"
+import { useUnit } from "effector-react"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 
 export default function ImagePage() {
   //Роутер
-  const router = useRouter();
+  const router = useRouter()
+
+  // Заголовок страницы
+  const [setPageTitle] = useUnit([handleSetPageTitle])
+
+  useEffect(() => {
+    setPageTitle("Фото")
+  }, [])
 
   // Контекст
-  const [user, handle] = useUnit([$user, handleUpdateInfo]);
+  const [user, isAuth, handle] = useUnit([$user, $isAuth, handleUpdateInfo])
+
+  if (!user) return <NonAuthPage />
 
   // Переменные
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState("")
 
   // Эффекты
-  useEffect(() => {}, []);
+  useEffect(() => {}, [user])
 
   // Обработчики
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      handle({ image });
-      router.back();
+      handle({ image })
+      router.back()
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   return (
     <>
@@ -61,7 +72,7 @@ export default function ImagePage() {
               variant="text"
               type="reset"
               onClick={() => {
-                router.back();
+                router.back()
               }}>
               Отмена
             </Button>
@@ -72,5 +83,5 @@ export default function ImagePage() {
         </Section>
       </form>
     </>
-  );
+  )
 }
