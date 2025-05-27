@@ -1,17 +1,17 @@
-"use client";
-import { useUnit } from "effector-react";
-import Button from "../buttons/Button";
-import styles from "./TopAppBar.module.css";
-import { useRouter } from "next/navigation";
-import { $pageTitle } from "@/context/page";
-import { useEffect, useState } from "react";
+"use client"
 
-type top_app_bar_variant = "center" | "small" | "medium" | "large";
+import { useUnit } from "effector-react"
+import Button from "../buttons/Button"
+import styles from "./TopAppBar.module.css"
+import { useRouter } from "next/navigation"
+import { $pageTitle } from "@/context/page"
+
+type top_app_bar_variant = "center" | "small" | "medium" | "large"
 
 export default function TopAppBar({ variant, withRail = false }: { variant?: top_app_bar_variant; withRail?: boolean }) {
-  const router = useRouter();
+  const router = useRouter()
 
-  const pageTitle = useUnit($pageTitle);
+  const pageTitle = useUnit($pageTitle)
 
   return !variant || variant == "center" || variant == "small" ? (
     <>
@@ -21,11 +21,11 @@ export default function TopAppBar({ variant, withRail = false }: { variant?: top
             variant="text"
             icon="arrow_back"
             onClick={() => {
-              router.back();
+              router.back()
             }}></Button>
         </div>
         <div className={variant != "small" ? styles.title_center : styles.title_sm}>
-          <span>{pageTitle}</span>
+          <span className={styles.title}>{pageTitle || "WishWave"}</span>
         </div>
         <div className={styles.trailing_icon}>
           {/* <Button variant="text" icon="notifications"></Button> */}
@@ -42,7 +42,7 @@ export default function TopAppBar({ variant, withRail = false }: { variant?: top
               variant="text"
               icon="arrow_back"
               onClick={() => {
-                router.back();
+                router.back()
               }}></Button>
           </div>
           <div className={styles.trailing_icon}>
@@ -51,9 +51,9 @@ export default function TopAppBar({ variant, withRail = false }: { variant?: top
           </div>
         </div>
         <div className={styles.title_md_lg}>
-          <span>{pageTitle}</span>
+          <span className={styles.title}>{pageTitle}</span>
         </div>
       </div>
     </>
-  );
+  )
 }

@@ -3,7 +3,7 @@ import { useLoading } from "@/hooks/useLoading"
 import { useEffect } from "react"
 import { useUnit } from "effector-react"
 import { $isAuth, $user, fetchUserFx, handleFetchUser } from "@/context/user"
-import { startLoading, stopLoading } from "@/context/loading"
+import { $isLoading, startLoading, stopLoading } from "@/context/loading"
 import Loader from "@/components/ui/loader/Loader"
 import NonAuthPage from "@/components/shared/nonAuthPage/NonAuthPage"
 import Section from "@/components/ui/section/Section"
@@ -16,17 +16,17 @@ import { IUser } from "@/types/user"
 
 export default function ProfileLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
-  const [user, isAuth, fetchUser] = useUnit([$user, $isAuth, handleFetchUser])
+  const [isLoading, startLoad, stopLoad, user, isAuth, fetchUser] = useUnit([$isLoading, startLoading, stopLoading, $user, $isAuth, handleFetchUser])
 
   useEffect(() => {
-    const loadUser = () => {
+    if (!user && isAuth) {
       fetchUser(null)
     }
-
-    if (!user && isAuth) {
-      loadUser()
-    }
   }, [user, isAuth, fetchUser])
+
+  if (isLoading) {
+    return <Loader />
+  }
 
   if (!isAuth) {
     return <NonAuthPage text="Для того чтобы просматривать профиль, пожалуйста, авторизуйтесь" />

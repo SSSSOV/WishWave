@@ -23,9 +23,11 @@
   display: flex;
   font-size: var(--xl);
   width: 100%;
+  overflow: hidden;
 }
 .title_center {
   justify-content: center;
+  overflow: hidden;
 }
 
 .top_app_bar_md,
@@ -51,6 +53,7 @@
   font-size: var(--xl);
   width: 100%;
   padding: 0 var(--lg);
+  overflow: hidden;
 }
 .icons {
   display: flex;
@@ -64,4 +67,10 @@
 }
 .w {
   width: 100%;
+}
+
+.title {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-wrap: nowrap;
 }

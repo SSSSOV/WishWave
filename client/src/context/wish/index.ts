@@ -56,7 +56,7 @@ export const createWishFx = createEffect(async (params: ICreateWish) => {
     return null
   }
   try {
-    const { data } = await api.post(`/api/wish/${params.listId}`, params, {
+    const { data } = await api.post(`/api/wish/`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
 
@@ -82,7 +82,7 @@ export const updateWishFx = createEffect(async (params: IUpdateWish) => {
     return null
   }
   try {
-    const { data } = await api.patch(`/api/wish/${params.id}`, params, {
+    const { data } = await api.patch(`/api/wish/`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
 

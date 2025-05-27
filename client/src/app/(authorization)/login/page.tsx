@@ -9,7 +9,7 @@ import styles from "@/app/home.module.css"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useUnit } from "effector-react"
-import { $isAuth, $user, handleSignIn } from "@/context/user"
+import { $isAuth, $user, handleCheckAuth, handleSignIn } from "@/context/user"
 import toast from "react-hot-toast"
 import Container from "@/components/ui/container/Container"
 
@@ -22,19 +22,25 @@ export default function LoginPage() {
   const [password, setPassword] = useState("")
 
   // Контекст
-  const [handle, isAuth] = useUnit([handleSignIn, $isAuth])
+  const [handle, checkAuth, isAuth] = useUnit([handleSignIn, handleCheckAuth, $isAuth])
 
   // Обработчик авторизации
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
       handle({ loginOrEmail, password })
+      // router.replace("main/")
     } catch (error) {
       console.log(error)
     }
   }
 
   useEffect(() => {
+    checkAuth()
+  }, [])
+
+  useEffect(() => {
+    console.log(isAuth)
     if (isAuth) router.replace("main/")
   }, [isAuth])
 

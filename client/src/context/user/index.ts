@@ -175,7 +175,6 @@ export const checkAuthFx = createEffect(async () => {
   const token = localStorage.getItem("auth")
 
   if (!token) {
-    handleSetAuth(false)
     return false
   }
 
@@ -188,6 +187,7 @@ export const checkAuthFx = createEffect(async () => {
       return false
     }
 
+    console.log(data, !!data)
     return !!data
   } catch (error) {
     if (error instanceof AxiosError) toast.error(error.response?.data.message)
@@ -201,7 +201,7 @@ $isAuth
   .on(handleSetAuth, (_, value) => value) // Установка значения
   .on(signInFx.doneData, (_, result) => !!result)
   .on(signUpFx.doneData, (_, result) => !!result)
-  .on(checkAuthFx.done, () => true)
+  .on(checkAuthFx.doneData, (_, result) => !!result)
   .on(checkAuthFx.fail, () => false)
   .reset(handleLogeOut)
 

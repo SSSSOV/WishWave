@@ -2,16 +2,21 @@
 
 import { useEffect } from "react"
 import { useUnit } from "effector-react"
-import { $pageTitle, handleClearPageTitle, handleSetPageTitle } from "@/context/page"
+import { handleSetPageTitle, handleClearPageTitle } from "@/context/page"
 
 export const usePageTitle = (title: string, additionalText = "") => {
-  const [pageTitle, setPageTitle] = useUnit([$pageTitle, handleSetPageTitle])
+  const setPageTitle = useUnit(handleSetPageTitle)
 
   useEffect(() => {
+    // Устанавливаем заголовок страницы и хранилище одним эффектом
+    const fullTitle = `WishWave | ${title}${additionalText ? ` - ${additionalText}` : ""}`
+    document.title = fullTitle
     setPageTitle(title)
-  }, [title, setPageTitle])
 
-  useEffect(() => {
-    document.title = `WishWave | ${title}${additionalText ? ` - ${additionalText}` : ``}`
-  }, [title, additionalText])
+    return () => {
+      // Очищаем при размонтировании (опционально)
+      document.title = "WishWave"
+      handleClearPageTitle()
+    }
+  }, [title, additionalText, setPageTitle])
 }

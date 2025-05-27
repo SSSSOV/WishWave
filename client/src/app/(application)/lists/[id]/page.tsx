@@ -4,9 +4,13 @@ import Button from "@/components/ui/buttons/Button"
 import List from "@/components/ui/list/List"
 import ListItem, { list_item_icon_color } from "@/components/ui/list/ListItem"
 import Section from "@/components/ui/section/Section"
+import { handleSetPageTitle } from "@/context/page"
 import { $wishList, $wishLists, handleDeleteWishList, handleFetchWishList, handleFetchWishLists, handleSetWishList } from "@/context/wish_lists"
+import { usePageTitle } from "@/hooks/usePageTitle"
+import { IUser } from "@/types/user"
 import { IWishList } from "@/types/wish_list"
 import { useUnit } from "effector-react"
+import { jwtDecode } from "jwt-decode"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect } from "react"
 import toast from "react-hot-toast"
@@ -19,13 +23,7 @@ export default function WishListPage() {
   const { id } = useParams() // Получаем ID из URL
 
   // Стор
-  const [wishList, wishLists, deleteWishList, setWishList, fetchWishList] = useUnit([
-    $wishList,
-    $wishLists,
-    handleDeleteWishList,
-    handleSetWishList,
-    handleFetchWishList,
-  ])
+  const [wishList, deleteWishList, fetchWishList, setPageTitle] = useUnit([$wishList, handleDeleteWishList, handleFetchWishList, handleSetPageTitle])
 
   const handleDelete = () => {
     deleteWishList(Number(id))
@@ -45,8 +43,11 @@ export default function WishListPage() {
   }, [])
 
   useEffect(() => {
-    if (wishLists && wishLists.length) setWishList(wishLists.find((list) => list.id == Number(id)) as IWishList)
-  }, [wishLists])
+    if (wishList) {
+      console.log(wishList.name)
+      setPageTitle(wishList.name)
+    }
+  }, [wishList])
 
   const colors = ["primary", "secondary", "tertiary"]
   const access_lvls = ["Публичный", "Приватный", "По ссылке", "Для друзей"]
@@ -84,19 +85,23 @@ export default function WishListPage() {
           <ListItem condition={2} headline={wishList.description ? wishList.description : "Не указано"} overline="описание" />
         </List>
       </Section>
-      <Section align_items="right">
-        <Section items_direction="row" withoutPad isFit>
-          <Button variant="text" icon="add" onClick={() => router.push(`/add/?listId=${id}`)}>
-            Желание
-          </Button>
-          <Button variant="text" icon="edit" onClick={handleEdit}>
-            Список
-          </Button>
-          <Button variant="text" icon="delete" color="error" onClick={handleDelete}>
-            Список
-          </Button>
+      {wishList.userId == jwtDecode<IUser>(localStorage.getItem("auth")!).id ? (
+        <Section align_items="right">
+          <Section items_direction="row" withoutPad isFit>
+            <Button variant="text" icon="add" onClick={() => router.push(`/add/?listId=${id}`)}>
+              Желание
+            </Button>
+            <Button variant="text" icon="edit" onClick={handleEdit}>
+              Список
+            </Button>
+            <Button variant="text" icon="delete" color="error" onClick={handleDelete}>
+              Список
+            </Button>
+          </Section>
         </Section>
-      </Section>
+      ) : (
+        ""
+      )}
       <Section>
         <hr />
       </Section>
