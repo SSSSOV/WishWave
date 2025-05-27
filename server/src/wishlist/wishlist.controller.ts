@@ -117,7 +117,7 @@ export class WishlistController {
         
         const plainList = wl.get({plain: true}) as any;
 
-        return {id: plainList.id, name: plainList.name, accessLevelId: plainList.accessLevelId, description: plainList.description, eventDate: plainList.eventDate, userId: plainList.userId, wishes: (plainList.wishes || []).map((w: any) => ({
+        return {id: plainList.id, name: plainList.name, accessLevelId: plainList.accesslevelId, description: plainList.description, eventDate: plainList.eventDate, userId: plainList.userId, wishes: (plainList.wishes || []).map((w: any) => ({
             id: w.id, name: w.name, price: w.price, productLink: w.productLink, image: w.image, userId: plainList.userId
         }))};
     }
