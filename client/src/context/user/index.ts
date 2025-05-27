@@ -79,7 +79,8 @@ export const signUpFx = createEffect(async ({ login, email, password }: ISignUpF
 
     return data
   } catch (error) {
-    toast.error("Ошибка регистрации: " + error)
+    if (error instanceof AxiosError) toast.error(error.response?.data.message + " (" + error.status + ")")
+    else toast.error("Ошибка регистрации: " + error)
     throw error
   }
 })

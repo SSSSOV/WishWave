@@ -11,6 +11,7 @@ import TopAppBar from "@/components/ui/top_app_bar/TopAppBar"
 import { handleSetPageTitle } from "@/context/page"
 import { $isAuth } from "@/context/user"
 import { $wishLists, handleCreateWishList, handleFetchWishLists, handleSetWishList } from "@/context/wish_lists"
+import { usePageTitle } from "@/hooks/usePageTitle"
 import { sortWishListsByDate } from "@/lib/utils/lists"
 import { IWishList } from "@/types/wish_list"
 import { useUnit } from "effector-react"
@@ -19,18 +20,12 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export default function ListsPage() {
+  usePageTitle("Ваши списки")
+
   // Роутер
   const router = useRouter()
 
-  // Контекст
-  const [setPageTitle] = useUnit([handleSetPageTitle])
-
-  // Эффекты
-  useEffect(() => {
-    setPageTitle("Ваши списки")
-  }, [])
-
-  // Стор
+  // Сторы
   const [isAuth, wishLists, fetchWishLists, setWishList] = useUnit([$isAuth, $wishLists, handleFetchWishLists, handleSetWishList])
   const [search, setSearch] = useState("")
   const [shownLists, setShownLists] = useState<IWishList[] | null>(null)

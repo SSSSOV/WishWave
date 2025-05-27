@@ -69,7 +69,7 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <Button variant="text" isPadNone>
+              <Button variant="text" isPadNone type="button">
                 Забыли пароль?
               </Button>
               <Button variant="filled" isFit={false} type="submit">
