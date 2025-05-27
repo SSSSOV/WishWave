@@ -2,11 +2,12 @@ import Button from "@/components/ui/buttons/Button"
 import Section from "@/components/ui/section/Section"
 import { useRouter } from "next/navigation"
 
-export default function NonAuthPage() {
+export default function NonAuthPage({ text }: { text?: string }) {
   const router = useRouter()
 
   return (
     <Section align_items="center" title="Вы не авторизованы" title_size="sm" padding_top_size="lg" padding_bot_size="lg">
+      <p className="text-center">{text}</p>
       <div className="flex flex-row gap-4">
         <Button
           variant="text"

@@ -9,7 +9,7 @@ import NavigationRail from "@/components/ui/navigation_rail/NavigationRail"
 import Section from "@/components/ui/section/Section"
 import Container from "@/components/ui/container/Container"
 import { useUnit } from "effector-react"
-import { $isAuth, $user, handleFetchUser } from "@/context/user"
+import { $isAuth, $user, handleCheckAuth, handleFetchUser } from "@/context/user"
 import { $pageTitle } from "@/context/page"
 
 export type PageConfig = {
@@ -30,7 +30,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   const router = useRouter()
 
   // Контекст
-  const [isAuth] = useUnit([$isAuth])
+  const [isAuth, checkAuth] = useUnit([$isAuth, handleCheckAuth])
 
   // Переменные
   const [isMobile, setIsMobile] = useState(false)
@@ -43,8 +43,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 
     checkIfMobile() // Проверяем при загрузке
     window.addEventListener("resize", checkIfMobile) // И при изменении размера
+
+    if (!isAuth) checkAuth()
     return () => window.removeEventListener("resize", checkIfMobile)
   }, [])
+
+  useEffect(() => {
+    console.log(isAuth)
+  }, [isAuth])
 
   const PAGES: PageConfig[] = [
     {

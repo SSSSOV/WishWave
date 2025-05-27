@@ -48,8 +48,9 @@ export default function LoginPage() {
             <Monogram monogram_type="icon" icon="person" size="md" color="secondary"></Monogram>
             <Monogram monogram_type="icon" icon="login" size="md" color="tertiary"></Monogram>
           </Section>
+          {/* <Section title="WishWave" title_size="lg" align_items="center" items_direction="col" padding_bot_size="lg" padding_top_size="lg"></Section> */}
           <form action="login" onSubmit={handleSubmit}>
-            <Section title="Уже есть аккаунт? Входите!" title_size="md">
+            <Section title="Уже есть аккаунт? Входите!" title_size="md" padding_top_size="lg">
               <Input
                 labelText="Логин или почта"
                 leadingIcon="person"

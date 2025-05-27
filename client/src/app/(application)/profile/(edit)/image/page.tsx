@@ -5,6 +5,7 @@ import Button from "@/components/ui/buttons/Button"
 import Input from "@/components/ui/inputs/Input"
 import Monogram from "@/components/ui/monogram/Monogram"
 import Section from "@/components/ui/section/Section"
+import { handleSetPageTitle } from "@/context/page"
 import { $isAuth, $user, handleUpdateInfo } from "@/context/user"
 import { getInitials } from "@/lib/utils/getInitials"
 import { hasNameContent } from "@/lib/utils/hasNameContent"
@@ -15,6 +16,13 @@ import { useEffect, useState } from "react"
 export default function ImagePage() {
   //Роутер
   const router = useRouter()
+
+  // Заголовок страницы
+  const [setPageTitle] = useUnit([handleSetPageTitle])
+
+  useEffect(() => {
+    setPageTitle("Фото")
+  }, [])
 
   // Контекст
   const [user, isAuth, handle] = useUnit([$user, $isAuth, handleUpdateInfo])

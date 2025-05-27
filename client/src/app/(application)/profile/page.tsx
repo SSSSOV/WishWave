@@ -24,12 +24,11 @@ export default function ProfilePage() {
 
   // Переменные
 
-  // Контекст
+  // Заголовок страницы
   const [setPageTitle] = useUnit([handleSetPageTitle])
 
-  // Эффекты
   useEffect(() => {
-    setPageTitle("asas")
+    setPageTitle("Ваш профиль")
   }, [])
 
   // Обработчики
@@ -40,27 +39,28 @@ export default function ProfilePage() {
 
   // Хуки
 
-  if (!user.data) return <NonAuthPage />
-
   return (
     <>
       <Section align_items="center" padding_top_size="lg">
         <Monogram
-          monogram_type={user.data.image ? "image" : hasNameContent(user.data.fullname) ? "monogram" : "icon"}
-          letter={hasNameContent(user.data.fullname) ? getInitials(user.data.fullname) : "person"}
+          monogram_type={user.data!.image ? "image" : hasNameContent(user.data!.fullname) ? "monogram" : "icon"}
+          letter={hasNameContent(user.data!.fullname) ? getInitials(user.data!.fullname) : "person"}
           icon="person"
           size="md"
-          url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + user.data.image}
+          url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + user.data!.image}
         />
       </Section>
       <Section align_items="center">
-        <span className={style.title}>{user.data.fullname && user.data.fullname != " " && user.data.fullname != "" ? user.data.fullname : ""}</span>
-        <span className={style.body}>{user.data.login}</span>
+        <span className={style.title}>
+          {user.data!.fullname && user.data!.fullname != " " && user.data!.fullname != "" ? user.data!.fullname : ""}
+        </span>
+        <span className={style.body}>{user.data!.login}</span>
       </Section>
       <Section title="Информация вашего профиля в сервсие WishWave" title_size="md" padding_top_size="lg" padding_bot_size="lg">
         <span className={style.body}>
-          Здесь можно посмотреть или изменить личную информацию. Некоторые данные, например контактные, можно сделать доступными всем, чтобы с вами
-          было проще связаться.
+          Здесь можно посмотреть или изменить личную информацию.
+          {/*Некоторые данные, например контактные, можно сделать доступными всем, чтобы с вами
+          было проще связаться. */}
         </span>
       </Section>
       <Section>
@@ -72,9 +72,9 @@ export default function ProfilePage() {
           <ListItem
             condition={2}
             overline="фото профиля"
-            leading_type={user.data.image && user.data.image != "" ? "image" : hasNameContent(user.data.fullname) ? "monogram" : "icon"}
-            leading={hasNameContent(user.data.fullname) ? getInitials(user.data.fullname) : "person"}
-            url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + user.data.image}
+            leading_type={user.data!.image && user.data!.image != "" ? "image" : hasNameContent(user.data!.fullname) ? "monogram" : "icon"}
+            leading={hasNameContent(user.data!.fullname) ? getInitials(user.data!.fullname) : "person"}
+            url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + user.data!.image}
             headline="Персонализирует ваш аккаунт"
             trailing_type="icon"
             onClick={() => {
@@ -85,7 +85,7 @@ export default function ProfilePage() {
           <ListItem
             condition={2}
             overline="имя"
-            headline={user.data.fullname && hasNameContent(user.data.fullname) ? user.data.fullname : "Не указано"}
+            headline={user.data!.fullname && hasNameContent(user.data!.fullname) ? user.data!.fullname : "Не указано"}
             trailing_type="icon"
             onClick={() => {
               router.push("/profile/name")
@@ -95,8 +95,8 @@ export default function ProfilePage() {
             condition={2}
             overline="дата рождения"
             headline={
-              user.data.birthday
-                ? new Date(user.data.birthday).toLocaleDateString(undefined, {
+              user.data!.birthday
+                ? new Date(user.data!.birthday).toLocaleDateString(undefined, {
                     day: "numeric",
                     month: "long",
                     year: "numeric",
@@ -111,7 +111,7 @@ export default function ProfilePage() {
           <ListItem
             condition={2}
             overline="пол"
-            headline={user.data.gender ? user.data.gender : "Не указано"}
+            headline={user.data!.gender ? user.data!.gender : "Не указано"}
             trailing_type="icon"
             onClick={() => {
               router.push("/profile/gender")
@@ -120,7 +120,7 @@ export default function ProfilePage() {
           <ListItem
             condition={2}
             overline="логин"
-            headline={user.data.login ? user.data.login : "Не указано"}
+            headline={user.data!.login ? user.data!.login : "Не указано"}
             trailing_type="icon"
             onClick={() => {
               router.push("/profile/login")
@@ -145,7 +145,7 @@ export default function ProfilePage() {
           <ListItem
             condition={2}
             overline="почта"
-            headline={user.data.email ? user.data.email : "Не указано"}
+            headline={user.data!.email ? user.data!.email : "Не указано"}
             trailing_type="icon"
             onClick={() => {
               router.push("/profile/email")
@@ -154,7 +154,7 @@ export default function ProfilePage() {
           <ListItem
             condition={2}
             overline="телефон"
-            headline={user.data.phone ? user.data.phone : "Не указано"}
+            headline={user.data!.phone ? user.data!.phone : "Не указано"}
             trailing_type="icon"
             onClick={() => {
               router.push("/profile/phone")

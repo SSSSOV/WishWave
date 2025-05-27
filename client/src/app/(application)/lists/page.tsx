@@ -1,5 +1,6 @@
 "use client"
 
+import NonAuthPage from "@/components/shared/nonAuthPage/NonAuthPage"
 import Button from "@/components/ui/buttons/Button"
 import Input from "@/components/ui/inputs/Input"
 import List from "@/components/ui/list/List"
@@ -8,6 +9,7 @@ import NavigationBar from "@/components/ui/navigation_bar/NavigationBar"
 import Section from "@/components/ui/section/Section"
 import TopAppBar from "@/components/ui/top_app_bar/TopAppBar"
 import { handleSetPageTitle } from "@/context/page"
+import { $isAuth } from "@/context/user"
 import { $wishLists, handleCreateWishList, handleFetchWishLists, handleSetWishList } from "@/context/wish_lists"
 import { sortWishListsByDate } from "@/lib/utils/lists"
 import { IWishList } from "@/types/wish_list"
@@ -29,13 +31,15 @@ export default function ListsPage() {
   }, [])
 
   // Стор
-  const [wishLists, fetchWishLists, setWishList] = useUnit([$wishLists, handleFetchWishLists, handleSetWishList])
+  const [isAuth, wishLists, fetchWishLists, setWishList] = useUnit([$isAuth, $wishLists, handleFetchWishLists, handleSetWishList])
   const [search, setSearch] = useState("")
-  const [shownLists, setShownLists] = useState([] as IWishList[])
+  const [shownLists, setShownLists] = useState<IWishList[] | null>(null)
+
+  if (!isAuth) return <NonAuthPage text="Для того чтобы создавать и просматривать списки, пожалуйста, авторизуйтесь" />
 
   // Эффекты
   useEffect(() => {
-    fetchWishLists(null)
+    if (isAuth) fetchWishLists(null)
   }, [])
 
   // Обработчики событий
@@ -79,7 +83,7 @@ export default function ListsPage() {
       </Section>
       <Section title="Все ваши списки" padding_top_size="xs">
         <List withoutPad>
-          {shownLists.length > 0 ? (
+          {shownLists && shownLists.length > 0 ? (
             sortWishListsByDate(shownLists, "asc").map((list) => {
               return (
                 <ListItem

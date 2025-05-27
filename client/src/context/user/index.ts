@@ -20,6 +20,7 @@ export const handleSignIn = createEvent<ISignInFx>()
 export const handleSignUp = createEvent<ISignUpFx>()
 export const handleFetchUser = createEvent<number | null>()
 export const handleUpdateInfo = createEvent<IUpdateInfoFx>()
+export const handleCheckAuth = createEvent()
 export const handleLogeOut = createEvent()
 
 // Эффекты
@@ -169,11 +170,38 @@ export const updateInfoFx = createEffect(async ({ fullname, birthday, phone, ima
   }
 })
 
+export const checkAuthFx = createEffect(async () => {
+  const token = localStorage.getItem("auth")
+
+  if (!token) {
+    handleSetAuth(false)
+    return false
+  }
+
+  try {
+    const data = await api.get("/api/user/checkAuth/", {
+      headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
+    })
+
+    if (data.status != 200) {
+      return false
+    }
+
+    return !!data
+  } catch (error) {
+    if (error instanceof AxiosError) toast.error(error.response?.data.message)
+    else toast.error("Ошибка сохранения: " + error)
+    throw error
+  }
+})
+
 // Подписки
 $isAuth
   .on(handleSetAuth, (_, value) => value) // Установка значения
   .on(signInFx.doneData, (_, result) => !!result)
   .on(signUpFx.doneData, (_, result) => !!result)
+  .on(checkAuthFx.done, () => true)
+  .on(checkAuthFx.fail, () => false)
   .reset(handleLogeOut)
 
 $user
@@ -215,4 +243,8 @@ sample({
 sample({
   clock: handleLogeOut,
   target: logOutFx,
+})
+sample({
+  clock: handleCheckAuth,
+  target: checkAuthFx,
 })

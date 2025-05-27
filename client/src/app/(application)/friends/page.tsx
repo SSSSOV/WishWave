@@ -1,5 +1,6 @@
 "use client"
 
+import NonAuthPage from "@/components/shared/nonAuthPage/NonAuthPage"
 import Button from "@/components/ui/buttons/Button"
 import Input from "@/components/ui/inputs/Input"
 import List from "@/components/ui/list/List"
@@ -9,6 +10,7 @@ import Section from "@/components/ui/section/Section"
 import TopAppBar from "@/components/ui/top_app_bar/TopAppBar"
 import { $friends, handleFetchFriends } from "@/context/friends"
 import { handleSetPageTitle } from "@/context/page"
+import { $isAuth } from "@/context/user"
 import { useUnit } from "effector-react"
 import type { Metadata } from "next"
 import { useRouter } from "next/navigation"
@@ -27,14 +29,18 @@ export default function FriendsPage() {
 
   const [search, setSearch] = useState("")
 
-  const [friends, fetchFriends] = useUnit([$friends, handleFetchFriends])
+  const [isAuth, friends, fetchFriends] = useUnit([$isAuth, $friends, handleFetchFriends])
 
   useEffect(() => {
-    fetchFriends()
+    if (isAuth) fetchFriends()
   }, [])
 
   const openUser = (id: number) => {
     router.push(`/friends/${id}`)
+  }
+
+  if (!isAuth) {
+    return <NonAuthPage text="Для того чтобы добавлять и просматривать друзей, пожалуйста, авторизуйтесь" />
   }
 
   return (

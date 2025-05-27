@@ -49,7 +49,6 @@ export const fetchFriendsFx = createEffect(async () => {
   }
 })
 export const fetchFriendFx = createEffect(async (id: number) => {
-  // console.log("fetchFriendFx: " + id)
   const token = localStorage.getItem("auth")
 
   if (!token) {

@@ -11,18 +11,12 @@ import Button from "@/components/ui/buttons/Button"
 import { useRouter } from "next/navigation"
 import { sample } from "effector"
 import { handleSetPageTitle } from "@/context/page"
+import { jwtDecode } from "jwt-decode"
+import { IUser } from "@/types/user"
 
 export default function ProfileLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const [user, isAuth, fetchUser] = useUnit([$user, $isAuth, handleFetchUser])
-
-  // Контекст
-  const [setPageTitle] = useUnit([handleSetPageTitle])
-
-  // Эффекты
-  useEffect(() => {
-    setPageTitle("Ваши списки")
-  }, [])
 
   useEffect(() => {
     const loadUser = () => {
@@ -35,8 +29,10 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
   }, [user, isAuth, fetchUser])
 
   if (!isAuth) {
-    return <NonAuthPage />
+    return <NonAuthPage text="Для того чтобы просматривать профиль, пожалуйста, авторизуйтесь" />
   }
+
+  if (!user || user.id != jwtDecode<IUser>(localStorage.getItem("auth")!).id) return <Loader />
 
   return <>{children}</>
 }

@@ -4,6 +4,7 @@ import Input from "@/components/ui/inputs/Input"
 import Monogram from "@/components/ui/monogram/Monogram"
 import Section from "@/components/ui/section/Section"
 import { handleSetPageTitle } from "@/context/page"
+import { $isAuth } from "@/context/user"
 import { $wish, handleCreateWish } from "@/context/wish"
 import { $wishLists, handleFetchWishLists } from "@/context/wish_lists"
 import { customStyles, OptionType } from "@/types/select"
@@ -39,7 +40,7 @@ export default function AddPage() {
   const [options, setOptions] = useState<OptionType[]>([])
 
   // Стор
-  const [wish, wishLists, createWish, fetchWishLists] = useUnit([$wish, $wishLists, handleCreateWish, handleFetchWishLists])
+  const [isAuth, wish, wishLists, createWish, fetchWishLists] = useUnit([$isAuth, $wish, $wishLists, handleCreateWish, handleFetchWishLists])
 
   // Обработчики
   const handleSubmit = (e: React.FormEvent) => {
@@ -68,7 +69,7 @@ export default function AddPage() {
 
   // Еффекты
   useEffect(() => {
-    fetchWishLists(null)
+    if (isAuth) fetchWishLists(null)
   }, [])
 
   useEffect(() => {
@@ -123,15 +124,19 @@ export default function AddPage() {
               setLink(e.target.value)
             }}
           />
-          <ReactSelect
-            styles={customStyles}
-            instanceId="fixed-select"
-            value={selectedOption}
-            onChange={(newValue) => setSelectedOption(newValue)}
-            options={options}
-            isMulti={false}
-            placeholder="Выберите список"
-          />
+          {isAuth ? (
+            <ReactSelect
+              styles={customStyles}
+              instanceId="fixed-select"
+              value={selectedOption}
+              onChange={(newValue) => setSelectedOption(newValue)}
+              options={options}
+              isMulti={false}
+              placeholder="Выберите список"
+            />
+          ) : (
+            ""
+          )}
         </Section>
         <Section align_items="right" padding_bot_size="lg">
           <Section items_direction="row" isFit withoutPad>
