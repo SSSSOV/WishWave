@@ -16,7 +16,7 @@ import {
   handleRejectFriendRequest,
   handleSendFriendRequest,
 } from "@/context/friends"
-import { $user } from "@/context/user"
+import { $user, handleFetchUser } from "@/context/user"
 import { IFriendRequest } from "@/types/friends"
 import { IUser } from "@/types/user"
 import { useUnit } from "effector-react"
@@ -43,6 +43,7 @@ export default function AddFriendPage() {
     cancelFriendRequest,
     acceptFriendRequest,
     rejectFriendRequest,
+    fetchUser,
   ] = useUnit([
     $recivedRequests,
     $sentRequests,
@@ -53,6 +54,7 @@ export default function AddFriendPage() {
     handleCancelFriendRequest,
     handleAcceptFriendRequest,
     handleRejectFriendRequest,
+    handleFetchUser,
   ])
 
   // Состояния
@@ -61,6 +63,7 @@ export default function AddFriendPage() {
   useEffect(() => {
     fetchRecivedRequests()
     fetchSentRequests()
+    fetchUser(null)
   }, [])
 
   useEffect(() => {
@@ -91,7 +94,9 @@ export default function AddFriendPage() {
   const handleCreateFriendLink = async () => {
     if (user) {
       try {
-        await navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_CLIENT_URL}friends/add&addFriend=${user.id}`)
+        await navigator.clipboard.writeText(
+          `Добавляй меня в друзья 🤝 на сервисе обмена списками желаний 🎁 WishWave!\n${process.env.NEXT_PUBLIC_CLIENT_URL}friends/add?addFriend=${user.id}`
+        )
         toast.success("Ссылка успешно скопирована!")
       } catch (err) {
         toast.error("Не удалось скопировать ссылку: " + err)

@@ -19,7 +19,7 @@ export default function AddListPage() {
   const [name, setName] = useState("")
   const [date, setDate] = useState("")
   const [desc, setDisc] = useState("")
-  const [access, setAccess] = useState(0)
+  const [access, setAccess] = useState(1)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -68,6 +68,7 @@ export default function AddListPage() {
                 onChange={(e) => {
                   setAccess(Number(e.target.value))
                 }}
+                checked={access === 1}
               />
               <label htmlFor="public">Публичный</label>
             </Section>
@@ -80,6 +81,7 @@ export default function AddListPage() {
                 onChange={(e) => {
                   setAccess(Number(e.target.value))
                 }}
+                checked={access === 2}
               />
               <label htmlFor="private">Приватный</label>
             </Section>
@@ -92,6 +94,7 @@ export default function AddListPage() {
                 onChange={(e) => {
                   setAccess(Number(e.target.value))
                 }}
+                checked={access === 3}
               />
               <label htmlFor="link">По ссылке</label>
             </Section>
@@ -104,6 +107,7 @@ export default function AddListPage() {
                 onChange={(e) => {
                   setAccess(Number(e.target.value))
                 }}
+                checked={access === 4}
               />
               <label htmlFor="friends">Для друзей</label>
             </Section>
@@ -123,6 +127,19 @@ export default function AddListPage() {
               Создать
             </Button>
           </Section>
+        </Section>
+        <Section title="Приватность">
+          {access == 1 ? (
+            <p>Этот список будет виден всем пользователям в сервсие.</p>
+          ) : access == 2 ? (
+            <p>Никто не сможет увидеть этот список, кроме вас.</p>
+          ) : access == 3 ? (
+            <p>Этот список будет виден пользователям, которые открыли его через ссылку.</p>
+          ) : access == 4 ? (
+            <p>Этот список будет виден пользователям, которые есть у вас в друзьях.</p>
+          ) : (
+            ""
+          )}
         </Section>
       </form>
     </>

@@ -1,18 +1,18 @@
-"use client";
-import Button from "@/components/ui/buttons/Button";
-import { ThemeToggle } from "@/components/ui/buttons/ThemeToggle";
-import ContentContainer from "@/components/ui/content/Content";
-import Input from "@/components/ui/inputs/Input";
-import Monogram from "@/components/ui/monogram/Monogram";
-import Section from "@/components/ui/section/Section";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Bounce, toast } from "react-toastify";
-import { AxiosError } from "axios";
-import styles from "@/app/home.module.css";
-import { $isAuth, handleSignUp } from "@/context/user";
-import { useUnit } from "effector-react";
-import Container from "@/components/ui/container/Container";
+"use client"
+import Button from "@/components/ui/buttons/Button"
+import { ThemeToggle } from "@/components/ui/buttons/ThemeToggle"
+import ContentContainer from "@/components/ui/content/Content"
+import Input from "@/components/ui/inputs/Input"
+import Monogram from "@/components/ui/monogram/Monogram"
+import Section from "@/components/ui/section/Section"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { AxiosError } from "axios"
+import styles from "@/app/home.module.css"
+import { $isAuth, handleSignUp } from "@/context/user"
+import { useUnit } from "effector-react"
+import Container from "@/components/ui/container/Container"
+import toast from "react-hot-toast"
 
 // export const metadata: Metadata = {
 //   title: "Регистрация - WishWave",
@@ -21,29 +21,34 @@ import Container from "@/components/ui/container/Container";
 
 export default function SignupPage() {
   // Маршрутизатор
-  const router = useRouter();
+  const router = useRouter()
 
   // Переменные
-  const [email, setEmail] = useState("");
-  const [login, setLogin] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("")
+  const [login, setLogin] = useState("")
+  const [password, setPassword] = useState("")
+  const [repeatPassword, setRepeatPassword] = useState("")
 
   // Контекст
-  const [handle, isAuth] = useUnit([handleSignUp, $isAuth]);
+  const [handle, isAuth] = useUnit([handleSignUp, $isAuth])
 
   // Обработчик авторизации
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      handle({ login, email, password });
-    } catch (error) {
-      console.log(error);
+    e.preventDefault()
+    if (password != repeatPassword) {
+      toast.error("Пароли не совпадают!")
+      return
     }
-  };
+    try {
+      handle({ login, email, password })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   useEffect(() => {
-    if (isAuth) router.replace("profile/");
-  }, [isAuth]);
+    if (isAuth) router.replace("profile/")
+  }, [isAuth])
 
   return (
     <>
@@ -57,7 +62,7 @@ export default function SignupPage() {
           </Section>
           <form action="signup" onSubmit={handleSubmit}>
             <Section title="Нет аккаунта? Создайте!" title_size="md">
-              <Input labelText="Почта" leadingIcon="mail" type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Input labelText="Почта" leadingIcon="mail" type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
               <Input
                 labelText="Логин"
                 leadingIcon="person"
@@ -67,16 +72,29 @@ export default function SignupPage() {
                 maxLength={10}
                 value={login}
                 onChange={(e) => setLogin(e.target.value)}
+                required
               />
               <Input
                 labelText="Пароль"
-                leadingIcon="password"
+                leadingIcon="password_2"
                 type="password"
                 id="password"
                 minLength={5}
                 maxLength={20}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <Input
+                labelText={repeatPassword ? (repeatPassword == password ? "Пароли совпадают" : "Пароли не совпадают") : "Повторите пароль"}
+                leadingIcon={repeatPassword ? (repeatPassword == password ? "password_2" : "password_2_off") : "password_2"}
+                type="password"
+                id="repeat_password"
+                minLength={5}
+                maxLength={20}
+                value={repeatPassword}
+                onChange={(e) => setRepeatPassword(e.target.value)}
+                required
               />
 
               <Button variant="filled" isFit={false} type="submit">
@@ -108,5 +126,5 @@ export default function SignupPage() {
         </Container>
       </ContentContainer>
     </>
-  );
+  )
 }
