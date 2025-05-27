@@ -195,8 +195,8 @@ export class WishlistService {
                     where : {
                         friendstatusId: acceptedId,
                         [SqOp.or]: [
-                            {userid1: userId, userid2: wishlist.userId},
-                            {userid1: wishlist.userId, userid2: userId}
+                            {sender: userId, recipient: wishlist.userId},
+                            {sender: wishlist.userId, recipient: userId}
                         ] as WhereOptions<Friend> []
                     }
                 });
@@ -276,7 +276,7 @@ export class WishlistService {
     async searchFriendLists(requestId: number, friendId: number, nameSearch: string): Promise<WishList[]> {
         const acceptedId = await this.getStatusId('accepted');
         const friendship = await this.friendRepository.findOne({where: {friendstatusId: acceptedId, [SqOp.or]: [
-            {userid1: requestId, userid2: friendId}, {userid1: friendId, userid2: requestId}
+            {sender: requestId, recipient: friendId}, {sender: friendId, recipient: requestId}
         ]}});
         if (!friendship) {
             throw new ForbiddenException('Вы не являетесь друзьями')
@@ -343,7 +343,7 @@ export class WishlistService {
                 accessibleListIds.push(id);
             } else if (lvl === 'friends') {
                 const friendship = await this.friendRepository.findOne({where: {friendstatusId: acceptedStatusId, [SqOp.or]: [
-                    {userid1: viewerId, userid2: ownerId}, {userid1: ownerId, userid2: viewerId}
+                    {sender: viewerId, recipient: ownerId}, {sender: ownerId, recipient: viewerId}
                 ]}});
     
                 if(friendship) {
