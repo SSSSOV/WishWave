@@ -6,6 +6,7 @@ import toast from "react-hot-toast"
 import { handleSetAuth } from "../user"
 import api from "@/api"
 import { AxiosError } from "axios"
+import { $wishList, fetchWishListFx, handleFetchWishList } from "../wish_lists"
 
 // СТОРЫ
 

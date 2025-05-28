@@ -17,16 +17,16 @@ export default function EditWishListPage() {
 
   // Переменные
   const [name, setName] = useState<string>("")
-  const [date, setDate] = useState<string | undefined>("")
-  const [description, setDescription] = useState<string | undefined>("")
+  const [date, setDate] = useState<string>("")
+  const [description, setDescription] = useState<string>("")
   const [access, setAccess] = useState<number>(0)
 
   // Эффекты
   useEffect(() => {
-    setName(wishList.name)
-    setDate(wishList.eventDate)
-    setDescription(wishList.description)
-    setAccess(wishList.accesslevelId)
+    setName(wishList.name ? wishList.name : "")
+    setDate(wishList.eventDate ? wishList.eventDate : "")
+    setDescription(wishList.description ? wishList.description : "")
+    setAccess(wishList.accessLevelId ? wishList.accessLevelId : 0)
   }, [])
 
   // Обработчики

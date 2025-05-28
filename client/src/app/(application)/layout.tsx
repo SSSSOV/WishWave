@@ -68,8 +68,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       isNav: true,
     },
     {
-      title: "Добавить",
-      label: "Добавить",
+      title: "Создать",
+      label: "Создать",
       path: "/add",
       icon: "add",
       isNav: true,
@@ -141,7 +141,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       },
     },
     {
-      label: "Добавить",
+      label: "Создать",
       icon: "add",
       action: () => {
         router.push("/add")

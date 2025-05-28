@@ -19,6 +19,7 @@ import {
 import { $user, handleFetchUser } from "@/context/user"
 import { IFriendRequest } from "@/types/friends"
 import { IUser } from "@/types/user"
+import { sample } from "effector"
 import { useUnit } from "effector-react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -69,7 +70,6 @@ export default function AddFriendPage() {
   useEffect(() => {
     if (targetId) {
       setTargetUserId(targetId)
-      sendFriendRequest(Number(targetUserId))
     }
   }, [targetId])
 
@@ -186,15 +186,16 @@ export default function AddFriendPage() {
       <Section title="Входящие заявки">
         <List withoutPad>
           {recivedRequests.length > 0
-            ? recivedRequests.map(({ id, recipient }) => {
+            ? recivedRequests.map(({ id, sender }) => {
                 return (
                   <Section key={id} items_direction="row" withoutPad align_items="center">
                     <ListItem
                       condition={2}
-                      leading_type="icon"
+                      url={sender.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + sender.image : ""}
+                      leading_type={sender.image ? "image" : "icon"}
                       leading="person"
-                      headline={recipient.fullname ? recipient.fullname : recipient.login}
-                      overline={recipient.fullname ? recipient.login : ""}
+                      headline={sender.fullname ? sender.fullname : sender.login}
+                      overline={sender.fullname ? sender.login : ""}
                     />
                     <Button
                       variant="text"

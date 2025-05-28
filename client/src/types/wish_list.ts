@@ -7,7 +7,7 @@ export interface IWishList {
   /**Название списка */
   name: string
   /**Уровень доступа списка */
-  accesslevelId: number
+  accessLevelId: number
   /**Описание списка */
   description?: string
   /**Дата события списка */

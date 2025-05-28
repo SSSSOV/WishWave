@@ -18,18 +18,13 @@ import { useUser } from "@/hooks/useUser"
 import { useEffect } from "react"
 
 export default function ProfilePage() {
+  usePageTitle("Ваш профиль")
+
   // Хуки
   const router = useRouter()
   const user = useUser()
 
   // Переменные
-
-  // Заголовок страницы
-  const [setPageTitle] = useUnit([handleSetPageTitle])
-
-  useEffect(() => {
-    setPageTitle("Ваш профиль")
-  }, [])
 
   // Обработчики
   const handleExit = () => {
@@ -46,7 +41,7 @@ export default function ProfilePage() {
           monogram_type={user.data!.image ? "image" : hasNameContent(user.data!.fullname) ? "monogram" : "icon"}
           letter={hasNameContent(user.data!.fullname) ? getInitials(user.data!.fullname) : "person"}
           icon="person"
-          size="md"
+          size="lg"
           url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + user.data!.image}
         />
       </Section>
@@ -111,21 +106,13 @@ export default function ProfilePage() {
           <ListItem
             condition={2}
             overline="пол"
-            headline={user.data!.gender ? user.data!.gender : "Не указано"}
+            headline={user.data!.gender ? (user.data!.gender == "male" ? "Мужской" : "Женский") : "Не указано"}
             trailing_type="icon"
             onClick={() => {
               router.push("/profile/gender")
             }}
           />
-          <ListItem
-            condition={2}
-            overline="логин"
-            headline={user.data!.login ? user.data!.login : "Не указано"}
-            trailing_type="icon"
-            onClick={() => {
-              router.push("/profile/login")
-            }}
-          />
+          <ListItem condition={2} overline="логин" headline={user.data!.login ? user.data!.login : "Не указано"} />
           <ListItem
             condition={2}
             overline="пароль"
@@ -142,15 +129,7 @@ export default function ProfilePage() {
       </Section>
       <Section title="Контактная информация" title_size="sm" padding_top_size="lg">
         <List withoutPad>
-          <ListItem
-            condition={2}
-            overline="почта"
-            headline={user.data!.email ? user.data!.email : "Не указано"}
-            trailing_type="icon"
-            onClick={() => {
-              router.push("/profile/email")
-            }}
-          />
+          <ListItem condition={2} overline="почта" headline={user.data!.email ? user.data!.email : "Не указано"} />
           <ListItem
             condition={2}
             overline="телефон"

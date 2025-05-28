@@ -11,6 +11,7 @@ import TopAppBar from "@/components/ui/top_app_bar/TopAppBar"
 import { $friends, handleFetchFriends } from "@/context/friends"
 import { handleSetPageTitle } from "@/context/page"
 import { $isAuth } from "@/context/user"
+import { usePageTitle } from "@/hooks/usePageTitle"
 import { useUnit } from "effector-react"
 import type { Metadata } from "next"
 import { useRouter } from "next/navigation"
@@ -18,14 +19,12 @@ import { useEffect, useLayoutEffect, useState } from "react"
 
 export default function FriendsPage() {
   const router = useRouter()
-
+  usePageTitle("Ваши друзья")
   // Контекст
   const [setPageTitle] = useUnit([handleSetPageTitle])
 
   // Эффекты
-  useLayoutEffect(() => {
-    setPageTitle("Ваши друзья")
-  }, [])
+  useLayoutEffect(() => {}, [])
 
   const [search, setSearch] = useState("")
 
@@ -33,10 +32,10 @@ export default function FriendsPage() {
 
   useEffect(() => {
     if (isAuth) fetchFriends()
-  }, [])
+  }, [isAuth])
 
   const openUser = (id: number) => {
-    router.push(`/friends/${id}`)
+    router.push(`/users/${id}`)
   }
 
   if (!isAuth) {

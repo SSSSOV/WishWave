@@ -8,17 +8,13 @@ import Section from "@/components/ui/section/Section"
 import { $isAuth, $user, handleUpdateInfo } from "@/context/user"
 import NonAuthPage from "@/components/shared/nonAuthPage/NonAuthPage"
 import { handleSetPageTitle } from "@/context/page"
+import { usePageTitle } from "@/hooks/usePageTitle"
 
 export default function PhonePage() {
+  usePageTitle("Номер телефона")
+
   //Роутер
   const router = useRouter()
-
-  // Заголовок страницы
-  const [setPageTitle] = useUnit([handleSetPageTitle])
-
-  useEffect(() => {
-    setPageTitle("Номер телефона")
-  }, [])
 
   // Контекст
   const [isAuth, user, handle] = useUnit([$isAuth, $user, handleUpdateInfo])

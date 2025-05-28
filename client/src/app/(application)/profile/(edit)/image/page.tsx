@@ -7,6 +7,7 @@ import Monogram from "@/components/ui/monogram/Monogram"
 import Section from "@/components/ui/section/Section"
 import { handleSetPageTitle } from "@/context/page"
 import { $isAuth, $user, handleUpdateInfo } from "@/context/user"
+import { usePageTitle } from "@/hooks/usePageTitle"
 import { getInitials } from "@/lib/utils/getInitials"
 import { hasNameContent } from "@/lib/utils/hasNameContent"
 import { useUnit } from "effector-react"
@@ -14,15 +15,10 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export default function ImagePage() {
+  usePageTitle("Фото")
+
   //Роутер
   const router = useRouter()
-
-  // Заголовок страницы
-  const [setPageTitle] = useUnit([handleSetPageTitle])
-
-  useEffect(() => {
-    setPageTitle("Фото")
-  }, [])
 
   // Контекст
   const [user, isAuth, handle] = useUnit([$user, $isAuth, handleUpdateInfo])
@@ -51,7 +47,7 @@ export default function ImagePage() {
       <form action="" onSubmit={handleSubmit}>
         <Section padding_top_size="lg" align_items="center" title={image ? "Новое фото" : "Ваше текущее фото"} title_size="xs">
           <Monogram
-            monogram_type={user.image ? "image" : hasNameContent(user.fullname) ? "monogram" : "icon"}
+            monogram_type={user.image || image ? "image" : hasNameContent(user.fullname) ? "monogram" : "icon"}
             letter={hasNameContent(user.fullname) ? getInitials(user.fullname) : "person"}
             icon="person"
             size="lg"

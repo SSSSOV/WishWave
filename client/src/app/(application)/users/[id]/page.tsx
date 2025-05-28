@@ -4,20 +4,21 @@ import List from "@/components/ui/list/List"
 import ListItem from "@/components/ui/list/ListItem"
 import Monogram from "@/components/ui/monogram/Monogram"
 import Section from "@/components/ui/section/Section"
-import { $friend, fetchFriendFx, handleFetchFriend } from "@/context/friends"
+import { $friend, handleFetchFriend, handleUnfriend } from "@/context/friends"
 import { useUnit } from "effector-react"
 import { useParams, useRouter } from "next/navigation"
-import { useEffect, useLayoutEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { IWishList } from "@/types/wish_list"
 import { sortWishListsByDate } from "@/lib/utils/lists"
-import { $wishLists, fetchWishListsFx, handleFetchWishLists, handleSetWishList, handleSetWishLists } from "@/context/wish_lists"
+import { $wishLists, handleFetchWishLists, handleSetWishList } from "@/context/wish_lists"
 import toast from "react-hot-toast"
 import { hasNameContent } from "@/lib/utils/hasNameContent"
 import { getInitials } from "@/lib/utils/getInitials"
 import Loader from "@/components/ui/loader/Loader"
-import { handleSetPageTitle } from "@/context/page"
-import { sample } from "effector"
-import { error } from "console"
+import { usePageTitle } from "@/hooks/usePageTitle"
+import { jwtDecode } from "jwt-decode"
+import { IUser } from "@/types/user"
+import Button from "@/components/ui/buttons/Button"
 
 export default function UserPage() {
   // Роутер
@@ -26,31 +27,49 @@ export default function UserPage() {
   // Переменные
   const { id } = useParams() // Получаем ID из URL
 
-  const [friend, wishLists, fetchFriend, fetchWishLists, setWishList] = useUnit([
+  const [friend, wishLists, fetchFriend, fetchWishLists, setWishList, unfriend] = useUnit([
     $friend,
     $wishLists,
     handleFetchFriend,
     handleFetchWishLists,
     handleSetWishList,
+    handleUnfriend,
   ])
-  const [shownLists, setShownLists] = useState<IWishList[] | null>(null)
 
-  // Контекст
-  const [setPageTitle] = useUnit([handleSetPageTitle])
+  const [shownLists, setShownLists] = useState<IWishList[] | null>(null)
+  const [isOwner, setIsOwner] = useState(false)
 
   // Эффекты
   useEffect(() => {
-    console.log(friend, wishLists)
     if (!friend || friend.id != Number(id)) fetchFriend(Number(id))
-    // if(friend && friend.id == Number(id)) fetchWishLists()
-  }, [friend, wishLists])
+    if (typeof window !== "undefined" && friend) {
+      const authToken = localStorage.getItem("auth")
+      if (authToken) {
+        const userId = jwtDecode<IUser>(authToken).id
+        setIsOwner(friend.id === userId)
+      }
+    }
+    if (friend && friend.id == Number(id)) fetchWishLists(Number(id))
+  }, [friend])
+
+  useEffect(() => {
+    if (wishLists) setShownLists(wishLists)
+    console.log(wishLists)
+  }, [wishLists])
 
   const handleOpen = (listId: number) => {
     const list = wishLists?.find((list) => list.id == listId)
     if (list) {
       setWishList(list)
-      router.push(`/friends/${id}/${listId}`)
+      router.push(`/lists/${listId}`)
     } else toast.error("Список не найден!")
+  }
+
+  usePageTitle(friend ? friend.login : "Пользователь")
+
+  const handleRemove = (id: number) => {
+    unfriend(id)
+    router.back()
   }
 
   if (!friend || friend.id != Number(id)) return <Loader />
@@ -86,6 +105,16 @@ export default function UserPage() {
           {friend.gender ? <ListItem condition={2} headline={friend.gender} overline="дата рождения" /> : ""}
         </List>
       </Section>
+      {!isOwner ? (
+        <Section align_items="right">
+          <Section items_direction="row" withoutPad isFit>
+            <Button variant="text" icon="person_remove" onClick={() => handleRemove(friend.id)} color="error">
+              Удалить из друзей
+            </Button>
+          </Section>
+        </Section>
+      ) : null}
+      {/* <Section></Section> */}
       <Section>
         <hr />
       </Section>
@@ -109,7 +138,7 @@ export default function UserPage() {
                   }
                   leading_type="icon"
                   leading={
-                    list.accesslevelId == 1 ? "visibility" : list.accesslevelId == 2 ? "visibility_off" : list.accesslevelId == 3 ? "link" : "group"
+                    list.accessLevelId == 1 ? "visibility" : list.accessLevelId == 2 ? "visibility_off" : list.accessLevelId == 3 ? "link" : "group"
                   }
                   trailing_type="icon"
                   onClick={() => handleOpen(list.id)}

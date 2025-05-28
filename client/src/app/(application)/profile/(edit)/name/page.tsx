@@ -5,21 +5,17 @@ import Input from "@/components/ui/inputs/Input"
 import Section from "@/components/ui/section/Section"
 import { handleSetPageTitle } from "@/context/page"
 import { $isAuth, $user, handleUpdateInfo } from "@/context/user"
+import { usePageTitle } from "@/hooks/usePageTitle"
 import { IUser } from "@/types/user"
 import { useUnit } from "effector-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export default function NamePage() {
+  usePageTitle("Имя")
+
   //Роутер
   const router = useRouter()
-
-  // Заголовок страницы
-  const [setPageTitle] = useUnit([handleSetPageTitle])
-
-  useEffect(() => {
-    setPageTitle("Имя")
-  }, [])
 
   // Контекст
   const [isAuth, user, handle] = useUnit([$isAuth, $user, handleUpdateInfo])

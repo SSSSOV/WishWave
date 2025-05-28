@@ -2,17 +2,28 @@
 
 import Button from "@/components/ui/buttons/Button"
 import List from "@/components/ui/list/List"
-import ListItem, { list_item_icon_color } from "@/components/ui/list/ListItem"
+import ListItem, { icon_color } from "@/components/ui/list/ListItem"
+import Loader from "@/components/ui/loader/Loader"
 import Section from "@/components/ui/section/Section"
+import { $isLoading, startLoading, stopLoading } from "@/context/loading"
 import { handleSetPageTitle } from "@/context/page"
-import { $wishList, $wishLists, handleDeleteWishList, handleFetchWishList, handleFetchWishLists, handleSetWishList } from "@/context/wish_lists"
+import { $wish } from "@/context/wish"
+import {
+  $wishList,
+  $wishLists,
+  fetchWishListFx,
+  handleDeleteWishList,
+  handleFetchWishList,
+  handleFetchWishLists,
+  handleSetWishList,
+} from "@/context/wish_lists"
 import { usePageTitle } from "@/hooks/usePageTitle"
 import { IUser } from "@/types/user"
 import { IWishList } from "@/types/wish_list"
 import { useUnit } from "effector-react"
 import { jwtDecode } from "jwt-decode"
 import { useParams, useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 
 export default function WishListPage() {
@@ -21,9 +32,16 @@ export default function WishListPage() {
 
   // Переменные
   const { id } = useParams() // Получаем ID из URL
+  const [isOwner, setIsOwner] = useState(false)
 
   // Стор
-  const [wishList, deleteWishList, fetchWishList, setPageTitle] = useUnit([$wishList, handleDeleteWishList, handleFetchWishList, handleSetPageTitle])
+  const [wishList, wish, deleteWishList, fetchWishList, setPageTitle] = useUnit([
+    $wishList,
+    $wish,
+    handleDeleteWishList,
+    handleFetchWishList,
+    handleSetPageTitle,
+  ])
 
   const handleDelete = () => {
     deleteWishList(Number(id))
@@ -40,17 +58,25 @@ export default function WishListPage() {
 
   useEffect(() => {
     fetchWishList(Number(id))
-  }, [])
+  }, [wish])
 
   useEffect(() => {
-    if (wishList) {
-      console.log(wishList.name)
+    if (typeof window !== "undefined" && wishList) {
+      const authToken = localStorage.getItem("auth")
+      if (authToken) {
+        const userId = jwtDecode<IUser>(authToken).id
+        setIsOwner(wishList.userId === userId)
+      }
+    }
+    if (wishList && wishList.id == Number(id)) {
       setPageTitle(wishList.name)
     }
   }, [wishList])
 
   const colors = ["primary", "secondary", "tertiary"]
   const access_lvls = ["Публичный", "Приватный", "По ссылке", "Для друзей"]
+
+  if (!wishList) return <Loader></Loader>
 
   if (!wishList) {
     return (
@@ -67,6 +93,7 @@ export default function WishListPage() {
     <>
       <Section withoutPad>
         <List>
+          {!isOwner && wishList ? <ListItem condition={2} headline={""} overline="владелец" /> : null}
           <ListItem condition={2} headline={wishList.name} overline="название" />
           <ListItem
             condition={2}
@@ -81,11 +108,11 @@ export default function WishListPage() {
             }
             overline="дата события"
           />
-          <ListItem condition={2} headline={access_lvls[wishList.accesslevelId - 1]} overline="доступ" />
+          <ListItem condition={2} headline={access_lvls[wishList.accessLevelId - 1]} overline="доступ" />
           <ListItem condition={2} headline={wishList.description ? wishList.description : "Не указано"} overline="описание" />
         </List>
       </Section>
-      {wishList.userId == jwtDecode<IUser>(localStorage.getItem("auth")!).id ? (
+      {isOwner ? (
         <Section align_items="right">
           <Section items_direction="row" withoutPad isFit>
             <Button variant="text" icon="add" onClick={() => router.push(`/add/?listId=${id}`)}>
@@ -99,9 +126,7 @@ export default function WishListPage() {
             </Button>
           </Section>
         </Section>
-      ) : (
-        ""
-      )}
+      ) : null}
       <Section>
         <hr />
       </Section>
@@ -119,7 +144,7 @@ export default function WishListPage() {
                 leading="featured_seasonal_and_gifts"
                 trailing_type="icon"
                 url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wish.image}
-                color={colors[wish.id % 3] as list_item_icon_color}
+                color={colors[wish.id % 3] as icon_color}
                 onClick={() => handleOpen(wish.id)}
               />
             ))

@@ -15,7 +15,7 @@ export interface IUser {
   /**Телефон пользователя */
   phone?: string
   /**Пол пользователя */
-  gender?: string
+  gender?: gender
 }
 /**Интерфейс проверки авторизации */
 export interface ILoginCheckFx {
@@ -33,5 +33,8 @@ export interface IUpdateInfoFx {
   /**Телефон пользователя */
   phone?: string
   /**Пол пользователя */
-  gender?: string
+  gender?: gender
 }
+
+/**Тип пола */
+export type gender = "male" | "female"

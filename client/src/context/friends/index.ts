@@ -23,6 +23,8 @@ export const handleCancelFriendRequest = createEvent<number>()
 export const handleAcceptFriendRequest = createEvent<number>()
 export const handleRejectFriendRequest = createEvent<number>()
 
+export const handleUnfriend = createEvent<number>()
+
 export const fetchFriendsFx = createEffect(async () => {
   const token = localStorage.getItem("auth")
 
@@ -249,6 +251,35 @@ export const rejectFriendRequestFx = createEffect(async (requestId: number) => {
   }
 })
 
+export const UnfriendFx = createEffect(async (friendId: number) => {
+  const token = localStorage.getItem("auth")
+
+  if (!token) {
+    toast.error("Отсутствует токен авторизации!")
+    handleSetAuth(false)
+    return null
+  }
+  try {
+    const { data } = await api.delete(`/api/friend/${friendId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    if (data.warningMessage) {
+      toast.error(data.warningMessage)
+      return null
+    }
+
+    toast.success("Друг удален!")
+    return data
+  } catch (error) {
+    if (error instanceof AxiosError) toast.error(error.response?.data.message)
+    else toast.error("Произошла непредвиденная ошибка: " + error)
+    throw error
+  }
+})
+
 $friends.on(fetchFriendsFx.doneData, (state, result) => (result ? result : state))
 $friend.on(fetchFriendFx.doneData, (state, result) => (result ? result : state))
 $sentRequests.on(fetchSentRequestsFx.doneData, (state, result) => (result ? result : state))
@@ -264,6 +295,10 @@ sample({ clock: handleCancelFriendRequest, target: cancelFriendRequestFx })
 sample({ clock: handleAcceptFriendRequest, target: acceptFriendRequestFx })
 sample({ clock: handleRejectFriendRequest, target: rejectFriendRequestFx })
 
+sample({ clock: handleUnfriend, target: UnfriendFx })
+
+//
+
 sample({ clock: sendFriendRequestFx.done, target: handleFetchSentRequests })
 sample({ clock: cancelFriendRequestFx.done, target: handleFetchSentRequests })
 sample({ clock: acceptFriendRequestFx.done, target: handleFetchRecivedRequests })
@@ -271,3 +306,5 @@ sample({ clock: rejectFriendRequestFx.done, target: handleFetchRecivedRequests }
 
 sample({ clock: acceptFriendRequestFx.done, target: handleFetchFriends })
 sample({ clock: rejectFriendRequestFx.done, target: handleFetchFriends })
+
+sample({ clock: UnfriendFx.done, target: handleFetchFriends })

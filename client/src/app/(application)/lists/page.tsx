@@ -86,7 +86,7 @@ export default function ListsPage() {
                   condition={2}
                   headline={list.name}
                   color={
-                    list.accesslevelId == 1 ? "primary" : list.accesslevelId == 2 ? "secondary" : list.accesslevelId == 3 ? "tertiary" : "tertiary"
+                    list.accessLevelId == 1 ? "primary" : list.accessLevelId == 2 ? "secondary" : list.accessLevelId == 3 ? "tertiary" : "tertiary"
                   }
                   overline={
                     list.eventDate != null
@@ -99,7 +99,7 @@ export default function ListsPage() {
                   }
                   leading_type="icon"
                   leading={
-                    list.accesslevelId == 1 ? "visibility" : list.accesslevelId == 2 ? "visibility_off" : list.accesslevelId == 3 ? "link" : "group"
+                    list.accessLevelId == 1 ? "visibility" : list.accessLevelId == 2 ? "visibility_off" : list.accessLevelId == 3 ? "link" : "group"
                   }
                   trailing_type="icon"
                   onClick={() => handleOpen(list.id)}
