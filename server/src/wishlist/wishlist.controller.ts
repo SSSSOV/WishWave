@@ -60,8 +60,9 @@ export class WishlistController {
         const p = wl.get({plain: true}) as any;
         const owner = {id: p.user.id, fullname: p.user.fullname, login: p.user.login, image: p.user.image};
         const booked = w.bookedByUser ? {id: w.bookedByUser.id, fullname: w.bookedByUser.fullname, login: w.bookedByUser.login, image: w.bookedByUser.image} : null;
+        const list = {id: p.id, name: p.name, eventDate: p.eventDate, accessLevelId: p.accesslevel.id}
 
-        return {id: w.id, name: w.name, price: w.price, productLink: w.productLink, image: w.image, wishStatusId: w.wishStatusId, bookedByUser: booked, createdAt: w.createdAt, updatedAt: w.updatedAt, shareToken: p.shareToken, owner}
+        return {id: w.id, name: w.name, price: w.price, productLink: w.productLink, image: w.image, wishStatusId: w.wishStatusId, bookedByUser: booked, createdAt: w.createdAt, updatedAt: w.updatedAt, shareToken: p.shareToken, owner, list}
     }
 
     @UseGuards(JwtAuthGuard)
@@ -106,8 +107,9 @@ export class WishlistController {
 
         const owner = {id: p.user.id, fullname: p.user.fullname, login: p.user.login, image: p.user.image};
         const booked = w.bookedByUser ? {id: w.bookedByUser.id, fullname: w.bookedByUser.fullname, login: w.bookedByUser.login, image: w.bookedByUser.image} : null;
+        const list = {id: p.id, name: p.name, eventDate: p.eventDate, accessLevelId: p.accesslevel.id}
 
-        return {id: w.id, name: w.name, price: w.price, productLink: w.productLink, image: w.image, wishStatusId: w.wishStatusId, bookedByUser: booked, createdAt: w.createdAt, updatedAt: w.updatedAt, shareToken: p.shareToken, owner}
+        return {id: w.id, name: w.name, price: w.price, productLink: w.productLink, image: w.image, wishStatusId: w.wishStatusId, bookedByUser: booked, createdAt: w.createdAt, updatedAt: w.updatedAt, shareToken: p.shareToken, owner, list}
     }
 
     @UseGuards(JwtAuthGuard)
