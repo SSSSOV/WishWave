@@ -43,21 +43,24 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Get(':id')
-    async getById(@Param('id', ParseIntPipe) id: number, @Req() req): Promise<Omit<UserResponseDto, 'wishlist'>> {
+    async getById(@Param('id', ParseIntPipe) id: number, @Req() req): Promise<Omit<UserResponseDto, 'wishlist'> & {isFriend: boolean}> {
         const viewerId = req.user.id;
         const viewerRole = req.user.roles?.value;
         const isOwner = viewerRole === 'admin' || viewerId === id;
+        let isFriend = false;
         if (!isOwner) {
-            const isFriend = await this.friendService.areFriends(viewerId, id);
+            isFriend = await this.friendService.areFriends(viewerId, id);
             if (!isFriend) {
                 throw new ForbiddenException('Профиль доступен только друзьям')
             }
+        } else {
+            isFriend = true;
         }
 
         const user = await this.usersService.getUserById(id);
         const {password, wishlist, ...rest} = user.get({plain: true}) as any;
 
-        return rest;
+        return {...rest, isFriend};
     }
     
     @UseGuards(JwtAuthGuard)
