@@ -992,13 +992,13 @@ Authorization: Bearer <token>
 
 ### Unfriend
 
-`DELETE /api/friend/:friendshipId`
+`DELETE /api/friend/:userId`
 Удалить пользователя из друзей
 
 **Path Parametrs:**
 
 ```makefile
-  friendshipId (number)
+  userId (number)
 ```
 
 **Responses:**
