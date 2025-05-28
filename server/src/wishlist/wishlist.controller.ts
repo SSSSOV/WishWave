@@ -36,7 +36,7 @@ export class WishlistController {
         }
         const lists = await this.wishListService.getAccessibleWishes(viewerId, targetUserId);
         return lists.map(l => {const p: any = l.get({plain: true}); 
-            return {id: p.id, name: p.name, accesslevelId: p.accesslevelId, description: p.description, eventDate: p.eventDate, userId: p.userId}})
+            return {id: p.id, name: p.name, accessLevelId: p.accesslevelId, description: p.description, eventDate: p.eventDate, userId: p.userId}})
     }
 
     @UseGuards(JwtAuthGuard)
