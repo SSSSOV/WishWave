@@ -1,35 +1,35 @@
-"use client";
+"use client"
 
-import Button from "@/components/ui/buttons/Button";
-import Input from "@/components/ui/inputs/Input";
-import Section from "@/components/ui/section/Section";
-import { handleCreateWishList } from "@/context/wish_lists";
-import { useUnit } from "effector-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import Button from "@/components/ui/buttons/Button"
+import Input from "@/components/ui/inputs/Input"
+import Section from "@/components/ui/section/Section"
+import { handleCreateWishList } from "@/context/wish_lists"
+import { useUnit } from "effector-react"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 export default function AddListPage() {
   // Роутер
-  const router = useRouter();
+  const router = useRouter()
 
   // Стор
-  const [createWishList] = useUnit([handleCreateWishList]);
+  const [createWishList] = useUnit([handleCreateWishList])
 
   // Переменные
-  const [name, setName] = useState("");
-  const [date, setDate] = useState("");
-  const [desc, setDisc] = useState("");
-  const [access, setAccess] = useState(0);
+  const [name, setName] = useState("")
+  const [date, setDate] = useState("")
+  const [desc, setDisc] = useState("")
+  const [access, setAccess] = useState(1)
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      createWishList({ name: name, eventDate: date, description: desc, accesslevelId: access });
-      router.back();
+      createWishList({ name: name, eventDate: date, description: desc, accesslevelId: access })
+      router.back()
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   return (
     <>
@@ -39,22 +39,23 @@ export default function AddListPage() {
             labelText="Название"
             value={name}
             onChange={(e) => {
-              setName(e.target.value);
+              setName(e.target.value)
             }}
           />
           <Input
-            labelText="Дата события (гггг-мм-дд)"
+            labelText="Дата события"
             value={date}
             onChange={(e) => {
-              setDate(e.target.value);
+              setDate(e.target.value)
             }}
+            type="date"
           />
 
           <Input
             labelText="Описание"
             value={desc}
             onChange={(e) => {
-              setDisc(e.target.value);
+              setDisc(e.target.value)
             }}
           />
           <Section title="Уровеь доступа" withoutPad>
@@ -65,8 +66,9 @@ export default function AddListPage() {
                 name="AccessLevel"
                 value="1"
                 onChange={(e) => {
-                  setAccess(Number(e.target.value));
+                  setAccess(Number(e.target.value))
                 }}
+                checked={access === 1}
               />
               <label htmlFor="public">Публичный</label>
             </Section>
@@ -77,8 +79,9 @@ export default function AddListPage() {
                 name="AccessLevel"
                 value="2"
                 onChange={(e) => {
-                  setAccess(Number(e.target.value));
+                  setAccess(Number(e.target.value))
                 }}
+                checked={access === 2}
               />
               <label htmlFor="private">Приватный</label>
             </Section>
@@ -89,8 +92,9 @@ export default function AddListPage() {
                 name="AccessLevel"
                 value="3"
                 onChange={(e) => {
-                  setAccess(Number(e.target.value));
+                  setAccess(Number(e.target.value))
                 }}
+                checked={access === 3}
               />
               <label htmlFor="link">По ссылке</label>
             </Section>
@@ -101,8 +105,9 @@ export default function AddListPage() {
                 name="AccessLevel"
                 value="4"
                 onChange={(e) => {
-                  setAccess(Number(e.target.value));
+                  setAccess(Number(e.target.value))
                 }}
+                checked={access === 4}
               />
               <label htmlFor="friends">Для друзей</label>
             </Section>
@@ -114,7 +119,7 @@ export default function AddListPage() {
               variant="text"
               type="reset"
               onClick={() => {
-                router.back();
+                router.back()
               }}>
               Отмена
             </Button>
@@ -123,7 +128,20 @@ export default function AddListPage() {
             </Button>
           </Section>
         </Section>
+        <Section title="Приватность">
+          {access == 1 ? (
+            <p>Этот список будет виден всем пользователям в сервсие.</p>
+          ) : access == 2 ? (
+            <p>Никто не сможет увидеть этот список, кроме вас.</p>
+          ) : access == 3 ? (
+            <p>Этот список будет виден пользователям, которые открыли его через ссылку.</p>
+          ) : access == 4 ? (
+            <p>Этот список будет виден пользователям, которые есть у вас в друзьях.</p>
+          ) : (
+            ""
+          )}
+        </Section>
       </form>
     </>
-  );
+  )
 }

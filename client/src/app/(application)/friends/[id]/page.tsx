@@ -1,46 +1,59 @@
-"use client";
+"use client"
 
-import List from "@/components/ui/list/List";
-import ListItem from "@/components/ui/list/ListItem";
-import Monogram from "@/components/ui/monogram/Monogram";
-import Section from "@/components/ui/section/Section";
-import { $friend, handleFetchFriend } from "@/context/friends";
-import { useUnit } from "effector-react";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { IWishList } from "@/types/wish_list";
-import { sortWishListsByDate } from "@/lib/utils/lists";
-import { handleSetWishList } from "@/context/wish_lists";
-import toast from "react-hot-toast";
-import { hasNameContent } from "@/lib/utils/hasNameContent";
-import { getInitials } from "@/lib/utils/getInitials";
+import List from "@/components/ui/list/List"
+import ListItem from "@/components/ui/list/ListItem"
+import Monogram from "@/components/ui/monogram/Monogram"
+import Section from "@/components/ui/section/Section"
+import { $friend, fetchFriendFx, handleFetchFriend } from "@/context/friends"
+import { useUnit } from "effector-react"
+import { useParams, useRouter } from "next/navigation"
+import { useEffect, useLayoutEffect, useState } from "react"
+import { IWishList } from "@/types/wish_list"
+import { sortWishListsByDate } from "@/lib/utils/lists"
+import { $wishLists, fetchWishListsFx, handleFetchWishLists, handleSetWishList, handleSetWishLists } from "@/context/wish_lists"
+import toast from "react-hot-toast"
+import { hasNameContent } from "@/lib/utils/hasNameContent"
+import { getInitials } from "@/lib/utils/getInitials"
+import Loader from "@/components/ui/loader/Loader"
+import { handleSetPageTitle } from "@/context/page"
+import { sample } from "effector"
+import { error } from "console"
 
 export default function UserPage() {
   // Роутер
-  const router = useRouter();
+  const router = useRouter()
 
   // Переменные
-  const { id } = useParams(); // Получаем ID из URL
+  const { id } = useParams() // Получаем ID из URL
 
-  const [friend, fetchFriend, setWishList] = useUnit([$friend, handleFetchFriend, handleSetWishList]);
-  const [shownLists, setShownLists] = useState<IWishList[] | undefined>(undefined);
+  const [friend, wishLists, fetchFriend, fetchWishLists, setWishList] = useUnit([
+    $friend,
+    $wishLists,
+    handleFetchFriend,
+    handleFetchWishLists,
+    handleSetWishList,
+  ])
+  const [shownLists, setShownLists] = useState<IWishList[] | null>(null)
 
+  // Контекст
+  const [setPageTitle] = useUnit([handleSetPageTitle])
+
+  // Эффекты
   useEffect(() => {
-    fetchFriend(Number(id));
-  }, []);
-
-  useEffect(() => {
-    if (friend && friend.wishlists && friend.wishlists?.length > 0) setShownLists(friend.wishlists);
-    else setShownLists(undefined);
-  }, [friend]);
+    console.log(friend, wishLists)
+    if (!friend || friend.id != Number(id)) fetchFriend(Number(id))
+    // if(friend && friend.id == Number(id)) fetchWishLists()
+  }, [friend, wishLists])
 
   const handleOpen = (listId: number) => {
-    const list = friend.wishlists?.find((list) => list.id == listId);
+    const list = wishLists?.find((list) => list.id == listId)
     if (list) {
-      setWishList(list);
-      router.push(`/friends/${id}/${listId}`);
-    } else toast.error("Список не найден!");
-  };
+      setWishList(list)
+      router.push(`/friends/${id}/${listId}`)
+    } else toast.error("Список не найден!")
+  }
+
+  if (!friend || friend.id != Number(id)) return <Loader />
 
   return (
     <>
@@ -101,7 +114,7 @@ export default function UserPage() {
                   trailing_type="icon"
                   onClick={() => handleOpen(list.id)}
                 />
-              );
+              )
             })
           ) : (
             <Section align_items="center" withoutPad>
@@ -111,5 +124,5 @@ export default function UserPage() {
         </List>
       </Section>
     </>
-  );
+  )
 }

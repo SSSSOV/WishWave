@@ -1,44 +1,44 @@
-"use client";
+"use client"
 
-import Button from "@/components/ui/buttons/Button";
-import Input from "@/components/ui/inputs/Input";
-import Section from "@/components/ui/section/Section";
-import { $wishList, handleUpdateWishList, handleSetWishList } from "@/context/wish_lists";
-import { useUnit } from "effector-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import Button from "@/components/ui/buttons/Button"
+import Input from "@/components/ui/inputs/Input"
+import Section from "@/components/ui/section/Section"
+import { $wishList, handleUpdateWishList, handleSetWishList } from "@/context/wish_lists"
+import { useUnit } from "effector-react"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 
 export default function EditWishListPage() {
   //Роутер
-  const router = useRouter();
+  const router = useRouter()
 
   // Контекст
-  const [wishList, updateWishList, setWishList] = useUnit([$wishList, handleUpdateWishList, handleSetWishList]);
+  const [wishList, updateWishList, setWishList] = useUnit([$wishList, handleUpdateWishList, handleSetWishList])
 
   // Переменные
-  const [name, setName] = useState("");
-  const [date, setDate] = useState("");
-  const [description, setDescription] = useState("");
-  const [access, setAccess] = useState(0);
+  const [name, setName] = useState<string>("")
+  const [date, setDate] = useState<string | undefined>("")
+  const [description, setDescription] = useState<string | undefined>("")
+  const [access, setAccess] = useState<number>(0)
 
   // Эффекты
   useEffect(() => {
-    setName(wishList.name);
-    setDate(wishList.eventDate);
-    setDescription(wishList.description);
-    setAccess(wishList.accesslevelId);
-  }, []);
+    setName(wishList.name)
+    setDate(wishList.eventDate)
+    setDescription(wishList.description)
+    setAccess(wishList.accesslevelId)
+  }, [])
 
   // Обработчики
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      updateWishList({ id: wishList.id, name: name, accesslevelId: access, description: description, eventDate: date });
-      router.back();
+      updateWishList({ id: wishList.id, name: name, accesslevelId: access, description: description, eventDate: date })
+      router.back()
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   return (
     <>
@@ -55,7 +55,7 @@ export default function EditWishListPage() {
                 name="AccessLevel"
                 value="1"
                 onChange={(e) => {
-                  setAccess(Number(e.target.value));
+                  setAccess(Number(e.target.value))
                 }}
                 checked={access === 1}
               />
@@ -68,7 +68,7 @@ export default function EditWishListPage() {
                 name="AccessLevel"
                 value="2"
                 onChange={(e) => {
-                  setAccess(Number(e.target.value));
+                  setAccess(Number(e.target.value))
                 }}
                 checked={access === 2}
               />
@@ -81,7 +81,7 @@ export default function EditWishListPage() {
                 name="AccessLevel"
                 value="3"
                 onChange={(e) => {
-                  setAccess(Number(e.target.value));
+                  setAccess(Number(e.target.value))
                 }}
                 checked={access === 3}
               />
@@ -94,7 +94,7 @@ export default function EditWishListPage() {
                 name="AccessLevel"
                 value="4"
                 onChange={(e) => {
-                  setAccess(Number(e.target.value));
+                  setAccess(Number(e.target.value))
                 }}
                 checked={access === 4}
               />
@@ -109,7 +109,7 @@ export default function EditWishListPage() {
               variant="text"
               type="reset"
               onClick={() => {
-                router.back();
+                router.back()
               }}>
               Отмена
             </Button>
@@ -118,7 +118,20 @@ export default function EditWishListPage() {
             </Button>
           </div>
         </Section>
+        <Section title="Приватность">
+          {access == 1 ? (
+            <p>Этот список будет виден всем пользователям в сервсие.</p>
+          ) : access == 2 ? (
+            <p>Никто не сможет увидеть этот список, кроме вас.</p>
+          ) : access == 3 ? (
+            <p>Этот список будет виден пользователям, которые открыли его через ссылку.</p>
+          ) : access == 4 ? (
+            <p>Этот список будет виден пользователям, которые есть у вас в друзьях.</p>
+          ) : (
+            ""
+          )}
+        </Section>
       </form>
     </>
-  );
+  )
 }
