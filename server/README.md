@@ -1111,7 +1111,7 @@ Authorization: Bearer <token>
     {
         "id": 9,
         "name": "Друг",
-        "accesslevelId": 1,
+        "accessLevelId": 1,
         "description": "подарки для друга",
         "eventDate": "2003-06-10",
         "userId": 3
@@ -1119,7 +1119,7 @@ Authorization: Bearer <token>
     {
         "id": 13,
         "name": "Друг",
-        "accesslevelId": 4,
+        "accessLevelId": 4,
         "description": "подарки для друга",
         "eventDate": "2003-06-10",
         "userId": 3
