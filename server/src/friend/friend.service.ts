@@ -146,6 +146,17 @@ export class FriendService {
         return {message: 'Вы больше не друзья'};
     }
 
+    async unfriendByUserId(me: number, friendUserId: number): Promise<{message: string}> {
+        const acceptedId = await this.getStatusId('accepted');
+        const fr = await this.friendRepository.findOne({where: {friendstatusId: acceptedId, [Op.or]: [{sender: me, recipient: friendUserId},{sender: friendUserId, recipient: me}]}});
+        if (!fr){
+            throw new ForbiddenException('Дружба не найдена');
+        }
+
+        await fr.destroy();
+        return {message: `Вы больше не друзья`}
+    }
+
     async areFriends(userA: number, userB: number): Promise<boolean> {
         const acceptedId = await this.getStatusId('accepted');
         const fr = await this.friendRepository.findOne({where: {friendstatusId: acceptedId, [Op.or]: [

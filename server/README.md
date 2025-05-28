@@ -325,7 +325,7 @@ Authorization: Bearer <token>
 
 ```json
 {
-    "id": 3,
+    "id": 2,
     "fullname": null,
     "login": "dima",
     "email": "dima@mail.ru",
@@ -336,8 +336,9 @@ Authorization: Bearer <token>
     "socials": null,
     "roleId": 1,
     "banId": null,
-    "createdAt": "2025-05-27T06:58:26.671Z",
-    "updatedAt": "2025-05-27T12:01:19.634Z"
+    "createdAt": "2025-05-27T14:45:24.141Z",
+    "updatedAt": "2025-05-27T14:45:24.141Z",
+    "isFriend": true
 }
 ```
 
@@ -369,12 +370,12 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "fullName?": "string",
-  "image?": "string",
-  "birthDate?": "string",
-  "phone?": "string",
-  "male?": "male | female",
-  "socials?": { "string": "string" }
+  "fullName?": "string" | null,
+  "image?": "string" | null,
+  "birthDate?": "string" | null,
+  "phone?": "string" | null,
+  "male?": "male | female" | null,
+  "socials?": { "string": "string" } | null
 }
 ```
 
@@ -991,13 +992,13 @@ Authorization: Bearer <token>
 
 ### Unfriend
 
-`DELETE /api/friend/:friendshipId`
+`DELETE /api/friend/:userId`
 Удалить пользователя из друзей
 
 **Path Parametrs:**
 
 ```makefile
-  friendshipId (number)
+  userId (number)
 ```
 
 **Responses:**
@@ -1945,7 +1946,7 @@ Authorization: Bearer <token>
 
 ### Book a Wish
 
-`PATCH /api/wish/book?=token=<shareToken>`
+`PATCH /api/wish/book?token=<shareToken>`
 Забронировать желание
 
 **Request Body:**
@@ -2030,7 +2031,7 @@ Authorization: Bearer <token>
 
 ### Unbook a Wish
 
-`PATCH /api/wish/unbook?=token=<shareToken>`
+`PATCH /api/wish/unbook?token=<shareToken>`
 Снять бронь (тот, кто забронировал или владелец желания)
 
 **Request Body:**
