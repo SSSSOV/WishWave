@@ -1388,7 +1388,7 @@ Authorization: Bearer <token>
 }
 ```
 
-### Duplicare a Wish into Another List
+### Duplicate a Wish into Another List
 
 `PATCH /api/wishlist/duplicate`
 Дублировать желание в другой список
@@ -1414,7 +1414,7 @@ Authorization: Bearer <token>
     "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
     "image": "",
     "wishStatusId": 1,
-    "bookedByUserId": null,
+    "bookedByUser": null,
     "createdAt": "2025-05-28T08:40:33.366Z",
     "updatedAt": "2025-05-28T08:40:33.366Z",
     "shareToken": "477128df-242f-4082-98b7-a677eb5824a5",
@@ -1473,7 +1473,7 @@ Authorization: Bearer <token>
     "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
     "image": "",
     "wishStatusId": 2,
-    "bookedByUserId": {
+    "bookedByUser": {
         "id": 3,
         "fullname": null,
         "login": "shaka",
