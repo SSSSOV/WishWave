@@ -1408,21 +1408,27 @@ Authorization: Bearer <token>
 
 ```json
 {
-    "id": 8,
+    "id": 21,
     "name": "айфон",
     "price": null,
     "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
     "image": "",
     "wishStatusId": 1,
     "bookedByUser": null,
-    "createdAt": "2025-05-28T08:40:33.366Z",
-    "updatedAt": "2025-05-28T08:40:33.366Z",
+    "createdAt": "2025-05-28T11:24:07.858Z",
+    "updatedAt": "2025-05-28T11:24:07.858Z",
     "shareToken": "477128df-242f-4082-98b7-a677eb5824a5",
     "owner": {
         "id": 2,
         "fullname": null,
         "login": "dima",
         "image": null
+    },
+    "list": {
+        "id": 9,
+        "name": "Для друзей",
+        "eventDate": "2003-06-10",
+        "accessLevelId": 3
     }
 }
 ```
@@ -1481,12 +1487,18 @@ Authorization: Bearer <token>
     },
     "createdAt": "2025-05-28T07:22:01.157Z",
     "updatedAt": "2025-05-28T08:24:55.441Z",
-    "shareToken": "5c161d4c-a2ff-4f8f-a805-5de4594a0635",
+    "shareToken": null,
     "owner": {
         "id": 2,
         "fullname": null,
         "login": "dima",
         "image": null
+    },
+    "list": {
+        "id": 10,
+        "name": "Для друзей",
+        "eventDate": "2003-06-10",
+        "accessLevelId": 4
     }
 }
 ```
@@ -1555,17 +1567,28 @@ Authorization: Bearer <token>
 
 ```json
 {
-    "id": 25,
-    "name": "кепка",
-    "image": "da0b8e27-0de1-46ca-8c18-a1be5b780165.jpg",
-    "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
-    "wishStatusId": 1,
-    "updatedAt": "2025-05-26T14:50:05.591Z",
-    "createdAt": "2025-05-26T14:50:05.591Z",
+    "id": 18,
+    "name": "айфон",
     "price": null,
-    "bookedByUserId": null,
-    "shareToken": null,
-    "userId": 1
+    "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+    "image": "",
+    "wishStatusId": 1,
+    "createdAt": "2025-05-28T11:15:32.050Z",
+    "updatedAt": "2025-05-28T11:15:32.050Z",
+    "shareToken": "e06a5842-e88d-445f-96c8-c2421f9e07ac",
+    "owner": {
+        "id": 2,
+        "fullname": null,
+        "login": "dima",
+        "image": null
+    },
+    "list": {
+        "id": 11,
+        "name": "Для друзей",
+        "eventDate": "2003-06-10",
+        "accessLevelId": 3
+    },
+    "bookedByUser": null
 }
 ```
 
@@ -1609,26 +1632,57 @@ Authorization: Bearer <token>
 ```json
 [
     {
-        "id": 8,
-        "name": "самсунг",
-        "image": null,
-        "price": 44000,
-        "productLink": null,
-        "wishStatusId": 1,
-        "bookedByUserId": null,
-        "createdAt": "2025-05-26T07:43:58.200Z",
-        "updatedAt": "2025-05-26T07:43:58.200Z"
+        "id": 2,
+        "name": "айфон",
+        "price": null,
+        "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+        "image": "",
+        "wishStatusId": 2,
+        "createdAt": "2025-05-28T07:22:01.157Z",
+        "updatedAt": "2025-05-28T08:24:55.441Z",
+        "shareToken": "477128df-242f-4082-98b7-a677eb5824a5",
+        "owner": {
+            "id": 2,
+            "fullname": null,
+            "login": "dima",
+            "image": null
+        },
+        "list": {
+            "id": 9,
+            "name": "Для друзей",
+            "eventDate": "2003-06-10",
+            "accessLevelId": 3
+        },
+        "bookedByUser": {
+            "id": 3,
+            "fullname": null,
+            "login": "shaka",
+            "image": null
+        }
     },
     {
-        "id": 9,
-        "name": "Wc",
-        "image": null,
-        "price": 44000,
-        "productLink": null,
+        "id": 3,
+        "name": "айфон",
+        "price": null,
+        "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+        "image": "",
         "wishStatusId": 1,
-        "bookedByUserId": null,
-        "createdAt": "2025-05-26T07:46:11.248Z",
-        "updatedAt": "2025-05-26T07:46:11.248Z"
+        "createdAt": "2025-05-28T07:34:54.927Z",
+        "updatedAt": "2025-05-28T07:34:54.927Z",
+        "shareToken": "5c161d4c-a2ff-4f8f-a805-5de4594a0635",
+        "owner": {
+            "id": 2,
+            "fullname": null,
+            "login": "dima",
+            "image": null
+        },
+        "list": {
+            "id": 8,
+            "name": "Для друзей",
+            "eventDate": "2003-06-10",
+            "accessLevelId": 3
+        },
+        "bookedByUser": null
     }
 ]
 ```
@@ -1645,36 +1699,62 @@ Authorization: Bearer <token>
 ```json
 [
     {
-        "id": 15,
-        "name": "кепка",
-        "price": 101,
-        "image": "93e30bb1-f43f-4dbc-9ea7-078a3ff6ab00.jpg",
+        "id": 1,
+        "name": "айфон",
+        "price": null,
         "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
-        "bookedByUserId": 4,
-        "wishlists": [
-            {
-                "id": 25,
-                "name": "Друг",
-                "userId": 5,
-                "shareToken": null
-            }
-        ]
+        "image": "",
+        "wishStatusId": 2,
+        "createdAt": "2025-05-28T07:21:53.875Z",
+        "updatedAt": "2025-05-28T08:22:38.048Z",
+        "shareToken": null,
+        "owner": {
+            "id": 3,
+            "fullname": null,
+            "login": "shaka",
+            "image": null
+        },
+        "list": {
+            "id": 2,
+            "name": "Личный",
+            "eventDate": "2003-06-10",
+            "accessLevelId": 2
+        },
+        "bookedByUser": {
+            "id": 3,
+            "fullname": null,
+            "login": "shaka",
+            "image": null
+        }
     },
     {
-        "id": 25,
-        "name": "кепка",
+        "id": 2,
+        "name": "айфон",
         "price": null,
-        "image": "da0b8e27-0de1-46ca-8c18-a1be5b780165.jpg",
         "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
-        "bookedByUserId": 4,
-        "wishlists": [
-            {
-                "id": 33,
-                "name": "Друг",
-                "userId": 5,
-                "shareToken": null
-            }
-        ]
+        "image": "",
+        "wishStatusId": 2,
+        "createdAt": "2025-05-28T07:22:01.157Z",
+        "updatedAt": "2025-05-28T08:24:55.441Z",
+        "shareToken": "477128df-242f-4082-98b7-a677eb5824a5",
+        "owner": {
+            "id": 2,
+            "fullname": null,
+            "login": "dima",
+            "image": null
+        },
+        "list": {
+            "id": 9,
+            "name": "Для друзей",
+            "eventDate": "2003-06-10",
+            "accessLevelId": 3
+        },
+        "bookedByUser": {
+            "id": 3,
+            "fullname": null,
+            "login": "shaka",
+            "image": null
+        }
     }
 ]
 ```
@@ -1702,17 +1782,28 @@ Authorization: Bearer <token>
 
 ```json
 {
-    "id": 15,
-    "name": "кепка",
-    "price": 101,
-    "image": "93e30bb1-f43f-4dbc-9ea7-078a3ff6ab00.jpg",
+    "id": 18,
+    "name": "айфон",
+    "price": null,
     "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
-    "wishStatusId": 2,
-    "bookedByUserId": 4,
-    "createdAt": "2025-05-26T13:16:24.482Z",
-    "updatedAt": "2025-05-26T14:53:01.113Z",
-    "userId": 5,
-    "shareToken": null
+    "image": "",
+    "wishStatusId": 1,
+    "createdAt": "2025-05-28T11:15:32.050Z",
+    "updatedAt": "2025-05-28T11:15:32.050Z",
+    "shareToken": "e06a5842-e88d-445f-96c8-c2421f9e07ac",
+    "owner": {
+        "id": 2,
+        "fullname": null,
+        "login": "dima",
+        "image": null
+    },
+    "list": {
+        "id": 11,
+        "name": "Для друзей",
+        "eventDate": "2003-06-10",
+        "accessLevelId": 3
+    },
+    "bookedByUser": null
 }
 ```
 
@@ -1759,17 +1850,33 @@ Authorization: Bearer <token>
 
 ```json
 {
-    "id": 17,
+    "id": 4,
     "name": "sony",
-    "image": "d75043e8-ea72-479a-a70e-0438e0673769.jpg",
     "price": 25000,
     "productLink": null,
-    "wishStatusId": 1,
-    "bookedByUserId": null,
-    "createdAt": "2025-05-26T13:17:54.286Z",
-    "updatedAt": "2025-05-26T13:26:51.843Z",
-    "userId": 2,
-    "shareToken": null
+    "image": "",
+    "wishStatusId": 2,
+    "createdAt": "2025-05-28T07:35:10.165Z",
+    "updatedAt": "2025-05-28T10:04:35.772Z",
+    "shareToken": "477128df-242f-4082-98b7-a677eb5824a5",
+    "owner": {
+        "id": 2,
+        "fullname": null,
+        "login": "dima",
+        "image": null
+    },
+    "list": {
+        "id": 9,
+        "name": "Для друзей",
+        "eventDate": "2003-06-10",
+        "accessLevelId": 3
+    },
+    "bookedByUser": {
+        "id": 3,
+        "fullname": null,
+        "login": "shaka",
+        "image": null
+    }
 }
 ```
 
@@ -1861,17 +1968,33 @@ Authorization: Bearer <token>
 
 ```json
 {
-    "id": 25,
-    "name": "кепка",
+    "id": 17,
+    "name": "айфон",
     "price": null,
     "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
-    "image": "da0b8e27-0de1-46ca-8c18-a1be5b780165.jpg",
+    "image": "",
     "wishStatusId": 2,
-    "bookedByUserId": 4,
-    "createdAt": "2025-05-26T14:50:05.591Z",
-    "updatedAt": "2025-05-26T14:54:02.473Z",
+    "createdAt": "2025-05-28T10:33:23.780Z",
+    "updatedAt": "2025-05-28T10:33:28.358Z",
     "shareToken": null,
-    "userId": 2
+    "owner": {
+        "id": 2,
+        "fullname": null,
+        "login": "dima",
+        "image": null
+    },
+    "list": {
+        "id": 10,
+        "name": "Для друзей",
+        "eventDate": "2003-06-10",
+        "accessLevelId": 4
+    },
+    "bookedByUser": {
+        "id": 3,
+        "fullname": null,
+        "login": "shaka",
+        "image": null
+    }
 }
 ```
 
@@ -1930,17 +2053,28 @@ Authorization: Bearer <token>
 
 ```json
 {
-    "id": 15,
-    "name": "кепка",
-    "price": 101,
+    "id": 14,
+    "name": "айфон",
+    "price": null,
     "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
-    "image": "93e30bb1-f43f-4dbc-9ea7-078a3ff6ab00.jpg",
+    "image": "",
     "wishStatusId": 1,
-    "bookedByUserId": null,
-    "createdAt": "2025-05-26T13:16:24.482Z",
-    "updatedAt": "2025-05-26T14:26:43.200Z",
+    "createdAt": "2025-05-28T10:28:57.707Z",
+    "updatedAt": "2025-05-28T10:29:09.215Z",
     "shareToken": null,
-    "userId": 2
+    "owner": {
+        "id": 2,
+        "fullname": null,
+        "login": "dima",
+        "image": null
+    },
+    "list": {
+        "id": 10,
+        "name": "Для друзей",
+        "eventDate": "2003-06-10",
+        "accessLevelId": 4
+    },
+    "bookedByUser": null
 }
 ```
 
@@ -1993,17 +2127,33 @@ Authorization: Bearer <token>
 
 ```json
 {
-    "id": 19,
-    "name": "кепка",
+    "id": 17,
+    "name": "айфон",
     "price": null,
     "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
-    "image": "5b9c8c7d-27b0-42c5-b60d-f71388b3886d.jpg",
+    "image": "",
     "wishStatusId": 3,
-    "bookedByUserId": null,
-    "createdAt": "2025-05-26T13:39:59.624Z",
-    "updatedAt": "2025-05-26T14:08:26.820Z",
+    "createdAt": "2025-05-28T10:33:23.780Z",
+    "updatedAt": "2025-05-28T10:33:36.436Z",
     "shareToken": null,
-    "userId": 2
+    "owner": {
+        "id": 2,
+        "fullname": null,
+        "login": "dima",
+        "image": null
+    },
+    "list": {
+        "id": 10,
+        "name": "Для друзей",
+        "eventDate": "2003-06-10",
+        "accessLevelId": 4
+    },
+    "bookedByUser": {
+        "id": 3,
+        "fullname": null,
+        "login": "shaka",
+        "image": null
+    }
 }
 ```
 
