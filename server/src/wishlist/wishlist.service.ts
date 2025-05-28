@@ -294,7 +294,8 @@ export class WishlistService {
         const wishlist = await this.wishListRepository.findByPk(wishlistId, {include: [
             {model: AccessLevel, as: 'accesslevel', attributes: ['id', 'name']},
             {model: User, as: 'user', attributes: ['id', 'login', 'fullname', 'email', 'image']},
-            {model: Wish, as: 'wishes', through: {attributes: []}, include: [{model: WishStatus, attributes: ['id', 'name']}]}
+            {model: Wish, as: 'wishes', through: {attributes: []}, include: [{model: WishStatus, attributes: ['id', 'name']}, {
+                model: User, as: 'bookedByUser', attributes: ['id', 'fullname', 'login', 'image']}]}
         ]});
 
         if (!wishlist) {
@@ -357,6 +358,6 @@ export class WishlistService {
             return [];
         }
 
-        return this.wishListRepository.findAll({where: {id: accessibleListIds}, attributes: ['id', 'name', 'accesslevelId', 'description', 'eventDate', 'userId']});
+        return this.wishListRepository.findAll({where: {id: accessibleListIds}, attributes: ['id', 'name', 'accesslevelId', 'description', 'eventDate', 'shareToken'], include: [{model: User, as: 'user', attributes: ['id', 'fullname', 'login', 'image']}]});
     }
 }

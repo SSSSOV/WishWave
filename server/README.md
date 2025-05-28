@@ -1071,13 +1071,19 @@ Authorization: Bearer <token>
 
 ```json
 {
-    "id": 15,
-    "name": "Друг",
+    "id": 9,
+    "name": "Для друзей",
     "accesslevelId": 3,
     "description": "подарки для друга",
     "eventDate": "2003-06-10",
-    "userId": 3,
-    "shareToken": "7f8c2e9e-c691-465a-99b2-b5f679702b7e"
+    "userId": 2,
+    "shareToken": "477128df-242f-4082-98b7-a677eb5824a5",
+    "owner": {
+        "id": 2,
+        "fullname": null,
+        "login": "dima",
+        "image": null
+    }
 }
 ```
 
@@ -1109,20 +1115,60 @@ Authorization: Bearer <token>
 ```json
 [
     {
-        "id": 9,
-        "name": "Друг",
-        "accesslevelId": 1,
-        "description": "подарки для друга",
-        "eventDate": "2003-06-10",
-        "userId": 3
+        "id": 6,
+        "name": "8 марта",
+        "accessLevelId": 2,
+        "description": "подарки на 8 марта",
+        "eventDate": "2003-06-30",
+        "shareToken": null,
+        "owner": {
+            "id": 2,
+            "fullname": null,
+            "login": "dima",
+            "image": null
+        }
     },
     {
-        "id": 13,
-        "name": "Друг",
-        "accesslevelId": 4,
+        "id": 7,
+        "name": "Для друзей",
+        "accessLevelId": 4,
         "description": "подарки для друга",
         "eventDate": "2003-06-10",
-        "userId": 3
+        "shareToken": null,
+        "owner": {
+            "id": 2,
+            "fullname": null,
+            "login": "dima",
+            "image": null
+        }
+    },
+    {
+        "id": 8,
+        "name": "Для друзей",
+        "accessLevelId": 3,
+        "description": "подарки для друга",
+        "eventDate": "2003-06-10",
+        "shareToken": "5c161d4c-a2ff-4f8f-a805-5de4594a0635",
+        "owner": {
+            "id": 2,
+            "fullname": null,
+            "login": "dima",
+            "image": null
+        }
+    },
+    {
+        "id": 9,
+        "name": "Для друзей",
+        "accessLevelId": 3,
+        "description": "подарки для друга",
+        "eventDate": "2003-06-10",
+        "shareToken": "477128df-242f-4082-98b7-a677eb5824a5",
+        "owner": {
+            "id": 2,
+            "fullname": null,
+            "login": "dima",
+            "image": null
+        }
     }
 ]
 ```
@@ -1150,13 +1196,75 @@ Authorization: Bearer <token>
 
 ```json
 {
-    "id": 4,
+    "id": 9,
     "name": "Для друзей",
-    "accessLevelId": 4,
+    "accessLevelId": 3,
     "description": "подарки для друга",
     "eventDate": "2003-06-10",
-    "userId": 3,
-    "wishes": []
+    "shareToken": "477128df-242f-4082-98b7-a677eb5824a5",
+    "owner": {
+        "id": 2,
+        "fullname": null,
+        "login": "dima",
+        "image": null
+    },
+    "wishes": [
+        {
+            "id": 5,
+            "name": "айфон",
+            "price": null,
+            "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+            "image": "",
+            "wishStatusId": 1,
+            "bookedByUser": null
+        },
+        {
+            "id": 6,
+            "name": "айфон",
+            "price": null,
+            "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+            "image": "",
+            "wishStatusId": 1,
+            "bookedByUser": null
+        },
+        {
+            "id": 7,
+            "name": "айфон",
+            "price": null,
+            "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+            "image": "",
+            "wishStatusId": 1,
+            "bookedByUser": null
+        },
+        {
+            "id": 2,
+            "name": "айфон",
+            "price": null,
+            "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+            "image": "",
+            "wishStatusId": 2,
+            "bookedByUser": {
+                "id": 3,
+                "fullname": null,
+                "login": "shaka",
+                "image": null
+            }
+        },
+        {
+            "id": 4,
+            "name": "айфон",
+            "price": null,
+            "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+            "image": "",
+            "wishStatusId": 2,
+            "bookedByUser": {
+                "id": 3,
+                "fullname": null,
+                "login": "shaka",
+                "image": null
+            }
+        }
+    ]
 }
 ```
 
@@ -1203,13 +1311,19 @@ Authorization: Bearer <token>
 
 ```json
 {
-    "id": 8,
+    "id": 6,
     "name": "8 марта",
     "accesslevelId": 2,
     "description": "подарки на 8 марта",
     "eventDate": "2003-06-30",
     "userId": 2,
-    "shareToken": null
+    "shareToken": null,
+    "owner": {
+        "id": 2,
+        "fullname": null,
+        "login": "dima",
+        "image": null
+    }
 }
 ```
 
@@ -1274,7 +1388,7 @@ Authorization: Bearer <token>
 }
 ```
 
-### Duplicare a Wish into Another List
+### Duplicate a Wish into Another List
 
 `PATCH /api/wishlist/duplicate`
 Дублировать желание в другой список
@@ -1294,17 +1408,22 @@ Authorization: Bearer <token>
 
 ```json
 {
-    "id": 10,
-    "name": "sony",
-    "price": 25000,
-    "productLink": null,
+    "id": 8,
+    "name": "айфон",
+    "price": null,
+    "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
     "image": "",
     "wishStatusId": 1,
-    "bookedByUserId": null,
-    "createdAt": "2025-05-27T07:18:48.575Z",
-    "updatedAt": "2025-05-27T07:18:48.575Z",
-    "shareToken": null,
-    "userId": 3
+    "bookedByUser": null,
+    "createdAt": "2025-05-28T08:40:33.366Z",
+    "updatedAt": "2025-05-28T08:40:33.366Z",
+    "shareToken": "477128df-242f-4082-98b7-a677eb5824a5",
+    "owner": {
+        "id": 2,
+        "fullname": null,
+        "login": "dima",
+        "image": null
+    }
 }
 ```
 
@@ -1348,17 +1467,27 @@ Authorization: Bearer <token>
 
 ```json
 {
-    "id": 11,
+    "id": 2,
     "name": "айфон",
     "price": null,
     "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
     "image": "",
-    "wishStatusId": 1,
-    "bookedByUserId": null,
-    "createdAt": "2025-05-27T07:22:45.006Z",
-    "updatedAt": "2025-05-27T07:22:45.006Z",
-    "shareToken": null,
-    "userId": 2
+    "wishStatusId": 2,
+    "bookedByUser": {
+        "id": 3,
+        "fullname": null,
+        "login": "shaka",
+        "image": null
+    },
+    "createdAt": "2025-05-28T07:22:01.157Z",
+    "updatedAt": "2025-05-28T08:24:55.441Z",
+    "shareToken": "5c161d4c-a2ff-4f8f-a805-5de4594a0635",
+    "owner": {
+        "id": 2,
+        "fullname": null,
+        "login": "dima",
+        "image": null
+    }
 }
 ```
 

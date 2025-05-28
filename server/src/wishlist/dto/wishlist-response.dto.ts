@@ -1,6 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { WishResponsDto } from "src/wish/dto/wish-response.dto";
 
+export class OwnerInfoDto {
+    @ApiProperty() id: number;
+    @ApiProperty() login: number;
+    @ApiProperty({required: false}) fullname?: string;
+    @ApiProperty() image?: string;
+}
 
 export class WishListResponseDto {
     @ApiProperty() id: number;
@@ -10,4 +15,5 @@ export class WishListResponseDto {
     @ApiProperty() accesslevelId: number;
     @ApiProperty() userId: string;
     @ApiProperty() shareToken?: string;
+    @ApiProperty({type: () => OwnerInfoDto}) owner: OwnerInfoDto;
 }

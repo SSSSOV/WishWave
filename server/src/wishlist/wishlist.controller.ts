@@ -8,7 +8,7 @@ import { UpdateWishlistDto } from './dto/update-wishlist.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Wish } from 'src/wish/wish.model';
 import { WishListWish } from './wishlist-wish.model';
-import { DeleteWishlistDto } from './dto/delete-wishlist.dto';
+import { User } from 'src/users/users.model';
 
 @Controller('wishlist')
 export class WishlistController {
@@ -19,9 +19,11 @@ export class WishlistController {
     async create(@Body() dto: CreateWishlistDto, @Req() req): Promise<WishListResponseDto> {
         const userId = req.user.id;
         const list = await this.wishListService.create(dto, userId);
-        const plain = list.get({plain: true}) as any;
-        const {shareToken: realToken} = plain;
-        const response: WishListResponseDto = {id: plain.id, name: plain.name, accesslevelId: plain.accesslevelId, description: plain.description, eventDate: plain.eventDate, userId: plain.userId, shareToken: realToken};
+        const withOwner = await list.reload({include: [{model: User, as: 'user', attributes: ['id', 'fullname', 'login', 'image']}]})
+        const plain = withOwner.get({plain: true}) as any;
+        const response: WishListResponseDto = {id: plain.id, name: plain.name, accesslevelId: plain.accesslevelId, description: plain.description, eventDate: plain.eventDate, userId: plain.userId, shareToken: plain.shareToken, owner: {
+            id: plain.user.id, fullname: plain.user.fullname, login: plain.user.login, image: plain.user.image
+        }};
 
         return response;
     }
@@ -36,7 +38,9 @@ export class WishlistController {
         }
         const lists = await this.wishListService.getAccessibleWishes(viewerId, targetUserId);
         return lists.map(l => {const p: any = l.get({plain: true}); 
-            return {id: p.id, name: p.name, accesslevelId: p.accesslevelId, description: p.description, eventDate: p.eventDate, userId: p.userId}})
+            return {id: p.id, name: p.name, accessLevelId: p.accesslevelId, description: p.description, eventDate: p.eventDate, shareToken: p.shareToken, owner: {
+                id: p.user.id, fullname: p.user.fullname, login: p.user.login, image: p.user.image
+            }}})
     }
 
     @UseGuards(JwtAuthGuard)
@@ -44,16 +48,20 @@ export class WishlistController {
     async duplicateWish(@Body() dto: DuplicateWishDto, @Req() req): Promise<any> {
         const userId = req.user.id;
         const cloned = await this.wishListService.duplicate(userId, dto.wishId, dto.targetListId);
-        const wl = await this.wishListService.findByIdWithAccess(dto.targetListId);
+        const plainCloned = cloned.get({plain: true}) as any;
+        const fullWish = await this.wishRepository.findByPk(plainCloned.id, {include: [{
+            model: User, as: 'bookedByUser', attributes: ['id', 'fullname', 'login', 'image']}]});
+        const w = fullWish?.get({plain: true}) as any;
+        const wl = await this.wishListService.getFullById(userId, dto.targetListId, undefined);
         if (!wl) {
             throw new NotFoundException('Список не нйаден')
         }
 
-        const plainWl = wl.get({plain: true}) as any;
-        const {shareToken, userId: ownerId} = plainWl;
-        const plain = cloned.get({plain: true}) as any;
+        const p = wl.get({plain: true}) as any;
+        const owner = {id: p.user.id, fullname: p.user.fullname, login: p.user.login, image: p.user.image};
+        const booked = w.bookedByUser ? {id: w.bookedByUser.id, fullname: w.bookedByUser.fullname, login: w.bookedByUser.login, image: w.bookedByUser.image} : null;
 
-        return {id: plain.id, name: plain.name, price: plain.price, productLink: plain.productLink,image: plain.image, wishStatusId: plain.wishStatusId, bookedByUserId: plain.bookedByUserId, createdAt: plain.createdAt, updatedAt: plain.updatedAt, shareToken, userId: ownerId}
+        return {id: w.id, name: w.name, price: w.price, productLink: w.productLink, image: w.image, wishStatusId: w.wishStatusId, bookedByUser: booked, createdAt: w.createdAt, updatedAt: w.updatedAt, shareToken: p.shareToken, owner}
     }
 
     @UseGuards(JwtAuthGuard)
@@ -66,10 +74,12 @@ export class WishlistController {
         }
 
         const updated = await this.wishListService.update(id,data);
-        const plain = updated.get({plain:true}) as any;
-        const {shareToken} = plain;
+        const withOwner = await updated.reload({include: [{model: User, as: 'user', attributes: ['id', 'fullname', 'login', 'image']}]});
+        const plain = withOwner.get({plain:true}) as any;
 
-        const response: WishListResponseDto = {id: plain.id, name: plain.name, accesslevelId: plain.accesslevelId, description: plain.description, eventDate: plain.eventDate, userId: plain.userId, shareToken};
+        const response: WishListResponseDto = {id: plain.id, name: plain.name, accesslevelId: plain.accesslevelId, description: plain.description, eventDate: plain.eventDate, userId: plain.userId, shareToken: plain.shareToken, owner: {
+            id: plain.user.id, fullname: plain.user.fullname, login: plain.user.login, image: plain.user.image
+        }};
 
         return response;
     }
@@ -80,19 +90,24 @@ export class WishlistController {
         const userId = req.user.id;
         const {wishId, targetListId} = dto;
         await this.wishListService.copyToList(userId, wishId,targetListId);
+        const fullWish = await this.wishRepository.findByPk(wishId, {include: [{
+            model: User, as: 'bookedByUser', attributes: ['id', 'fullname', 'login', 'image']}]});
+        const w = fullWish?.get({plain: true}) as any;
         const wish = await this.wishRepository.findByPk(wishId)
         if (!wish) {
             throw new NotFoundException(`Желание с id ${wishId} не найдено`)
         }
 
-        const plainWish = wish.get({plain: true}) as any;
-        const wl = await this.wishListService.findByIdWithAccess(targetListId);
+        const wl = await this.wishListService.getFullById(userId, targetListId);
         if (!wl) {
             throw new NotFoundException(`Список с id ${targetListId} не найден`)
         }
-        const {userId: ownerId, shareToken} = wl.get({plain: true}) as any;
+        const p = wl.get({plain: true}) as any;
 
-        return {id: plainWish.id, name: plainWish.name, price: plainWish.price, productLink: plainWish.productLink,image: plainWish.image, wishStatusId: plainWish.wishStatusId, bookedByUserId: plainWish.bookedByUserId, createdAt: plainWish.createdAt, updatedAt: plainWish.updatedAt, shareToken, userId: ownerId}
+        const owner = {id: p.user.id, fullname: p.user.fullname, login: p.user.login, image: p.user.image};
+        const booked = w.bookedByUser ? {id: w.bookedByUser.id, fullname: w.bookedByUser.fullname, login: w.bookedByUser.login, image: w.bookedByUser.image} : null;
+
+        return {id: w.id, name: w.name, price: w.price, productLink: w.productLink, image: w.image, wishStatusId: w.wishStatusId, bookedByUser: booked, createdAt: w.createdAt, updatedAt: w.updatedAt, shareToken: p.shareToken, owner}
     }
 
     @UseGuards(JwtAuthGuard)
@@ -114,11 +129,13 @@ export class WishlistController {
             throw new NotFoundException('Список не найден')
         }
         
-        const plainList = wl.get({plain: true}) as any;
+        const p = wl.get({plain: true}) as any;
+        const owner = {id: p.user.id, fullname: p.user.fullname, login: p.user.login, image: p.user.image};
+        const wishes = (p.wishes || []).map((w: any) => ({id: w.id, name: w.name, price: w.price, productLink: w.productLink, image: w.image, wishStatusId: w.wishstatus?.id ?? w.wishStatusId, bookedByUser: w.bookedByUser ? {
+            id: w.bookedByUser.id, fullname: w.bookedByUser.fullname, login: w.bookedByUser.login, image: w.bookedByUser.image
+        }: null}));
 
-        return {id: plainList.id, name: plainList.name, accessLevelId: plainList.accesslevelId, description: plainList.description, eventDate: plainList.eventDate, userId: plainList.userId, wishes: (plainList.wishes || []).map((w: any) => ({
-            id: w.id, name: w.name, price: w.price, productLink: w.productLink, image: w.image, userId: plainList.userId
-        }))};
+        return {id: p.id, name: p.name, accessLevelId: p.accesslevelId, description: p.description, eventDate: p.eventDate, shareToken: p.shareToken, owner, wishes};
     }
 
 }
