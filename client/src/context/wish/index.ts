@@ -6,6 +6,7 @@ import toast from "react-hot-toast"
 import { handleSetAuth } from "../user"
 import api from "@/api"
 import { AxiosError } from "axios"
+import { $wishList, fetchWishListFx, handleFetchWishList } from "../wish_lists"
 
 // СТОРЫ
 
@@ -56,7 +57,7 @@ export const createWishFx = createEffect(async (params: ICreateWish) => {
     return null
   }
   try {
-    const { data } = await api.post(`/api/wish/${params.listId}`, params, {
+    const { data } = await api.post(`/api/wish/`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
 
@@ -82,7 +83,7 @@ export const updateWishFx = createEffect(async (params: IUpdateWish) => {
     return null
   }
   try {
-    const { data } = await api.patch(`/api/wish/${params.id}`, params, {
+    const { data } = await api.patch(`/api/wish/`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
 

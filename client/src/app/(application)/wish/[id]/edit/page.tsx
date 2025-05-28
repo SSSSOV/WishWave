@@ -1,45 +1,44 @@
-"use client";
+"use client"
 
-import Button from "@/components/ui/buttons/Button";
-import Input from "@/components/ui/inputs/Input";
-import Monogram from "@/components/ui/monogram/Monogram";
-import Section from "@/components/ui/section/Section";
-import { $wish, handleSetWish, handleUpdateWish } from "@/context/wish";
-import { useUnit } from "effector-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import Button from "@/components/ui/buttons/Button"
+import Input from "@/components/ui/inputs/Input"
+import Monogram from "@/components/ui/monogram/Monogram"
+import Section from "@/components/ui/section/Section"
+import { $wish, handleSetWish, handleUpdateWish } from "@/context/wish"
+import { useUnit } from "effector-react"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 
 export default function EditWishPage() {
   //Роутер
-  const router = useRouter();
+  const router = useRouter()
 
   // Контекст
-  const [wish, updateWish, setWish] = useUnit([$wish, handleUpdateWish, handleSetWish]);
+  const [wish, updateWish, setWish] = useUnit([$wish, handleUpdateWish, handleSetWish])
 
   // Переменные
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState(0);
-  const [productLink, setProductLink] = useState("");
-  const [image, setImage] = useState("");
+  const [name, setName] = useState("")
+  const [price, setPrice] = useState(0)
+  const [productLink, setProductLink] = useState("")
+  const [image, setImage] = useState("")
 
   // Эффекты
   useEffect(() => {
-    setName(wish.name);
-    setPrice(wish.price ? wish.price : 0);
-    setProductLink(wish.productLink ? wish.productLink : "");
-    setImage(wish.image ? wish.image : "");
-  }, []);
+    setName(wish.name)
+    setPrice(wish.price ? wish.price : 0)
+    setProductLink(wish.productLink ? wish.productLink : "")
+  }, [])
 
   // Обработчики
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      updateWish({ id: wish.id, name: name, price: price, productLink: productLink, image: image });
-      router.back();
+      updateWish({ id: wish.id, name: name, price: price, productLink: productLink, image: image })
+      router.back()
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   return (
     <>
@@ -50,7 +49,7 @@ export default function EditWishPage() {
               monogram_type={wish.image ? "image" : "icon"}
               icon="featured_seasonal_and_gifts"
               size="md"
-              url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wish.image}
+              url={image ? image : process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wish.image}
             />
           </Section>
         </Section>
@@ -67,7 +66,7 @@ export default function EditWishPage() {
               variant="text"
               type="reset"
               onClick={() => {
-                router.back();
+                router.back()
               }}>
               Отмена
             </Button>
@@ -78,5 +77,5 @@ export default function EditWishPage() {
         </Section>
       </form>
     </>
-  );
+  )
 }

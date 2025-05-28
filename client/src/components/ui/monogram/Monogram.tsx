@@ -1,8 +1,8 @@
-import style from "./Monogram.module.css";
+import style from "./Monogram.module.css"
 
-type monogram_size = "xs" | "sm" | "md" | "lg";
-type color = "primary" | "secondary" | "tertiary";
-type monogram_type = "monogram" | "icon" | "image";
+type monogram_size = "xs" | "sm" | "md" | "lg"
+type color = "primary" | "secondary" | "tertiary" | "none"
+type monogram_type = "monogram" | "icon" | "image"
 
 export default function Monogram({
   monogram_type,
@@ -13,13 +13,13 @@ export default function Monogram({
   url,
   isLoading,
 }: {
-  monogram_type?: monogram_type;
-  letter?: string;
-  icon?: string;
-  color?: color;
-  size?: monogram_size;
-  url?: string;
-  isLoading?: boolean;
+  monogram_type?: monogram_type
+  letter?: string
+  icon?: string
+  color?: color
+  size?: monogram_size
+  url?: string
+  isLoading?: boolean
 }) {
   return (
     <>
@@ -95,5 +95,5 @@ export default function Monogram({
         </div>
       )}
     </>
-  );
+  )
 }

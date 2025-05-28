@@ -7,6 +7,7 @@ import { handleSetAuth } from "../user"
 import api from "@/api"
 import { IWish } from "@/types/wish"
 import { fetchFriendFx } from "../friends"
+import { AxiosError } from "axios"
 
 // СТОРЫ
 
@@ -57,6 +58,9 @@ export const fetchWishListsFx = createEffect(async (id: number | null) => {
       return null
     }
 
+    console.log("fetchWishListsFx: " + `GET /api/wishlist${id ? `?userId=${id}` : ``}`)
+    console.log(data)
+
     return data as IWishList[]
   } catch (error) {
     toast.error("Ошибка получения списка желаний: " + error)
@@ -74,19 +78,21 @@ export const fetchWishListFx = createEffect(async (id: number) => {
     return null
   }
   try {
-    const { data } = await api.get("/api/wishlist", {
+    const { data } = await api.get(`/api/wishlist${id ? `/${id}` : ``}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
 
     if (data.warningMessage) {
       toast.error(data.warningMessage)
-      handleSetAuth(false)
       return null
     }
 
+    console.log("fetchWishListFx: " + `GET /api/wishlist${id ? `/${id}` : ``}`)
+    console.log(data)
     return data as IWishList
   } catch (error) {
-    toast.error("Ошибка получения списка желаний: " + error)
+    if (error instanceof AxiosError) toast.error(error.response?.data.message)
+    else toast.error("Ошибка получения списка желаний: " + error)
     throw error
   }
 })
@@ -134,7 +140,8 @@ export const deleteWishListFx = createEffect(async (id: number) => {
       return
     }
   } catch (error) {
-    toast.error("Ошибка получения списка желаний: " + error)
+    if (error instanceof AxiosError) toast.error(error.response?.data.message)
+    else toast.error("Ошибка получения списка желаний: " + error)
     throw error
   }
 })

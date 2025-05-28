@@ -163,3 +163,41 @@ p {
   background-color: var(--error-container) !important;
   color: var(--on-error-container) !important;
 }
+
+/* Скрываем стандартный инпут */
+.radio-real {
+  opacity: 0;
+  appearance: none;
+  height: 0;
+  width: 0;
+  margin: 0;
+}
+
+/* Создаем кастомный элемент */
+.radio-fake {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #e2e2e2;
+  margin-right: 10px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+/* Стили для активного состояния */
+.radio-real:checked + .radio-fake {
+  background-color: #007bff;
+}
+
+/* Можно добавить анимацию */
+.radio-fake {
+  transition: background-color 0.3s;
+}
+
+/* Дополнительно можно стилизовать текст рядом */
+.radio-fake + label {
+  font-size: 16px;
+  color: #333;
+  vertical-align: middle;
+}

@@ -94,9 +94,7 @@ export const fetchUserFx = createEffect(async (id: number | null) => {
   }
 
   try {
-    const { id } = jwtDecode<IUser>(token)
-
-    const { data } = await api.get("/api/user/" + id, {
+    const { data } = await api.get(`/api/user${id ? "/" + id : ""}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
 
@@ -118,7 +116,8 @@ export const fetchUserFx = createEffect(async (id: number | null) => {
 
     return userData
   } catch (error) {
-    toast.error("Ошибка получения пользователя: " + error)
+    if (error instanceof AxiosError) toast.error(error.response?.data.message)
+    else toast.error("Ошибка получения пользователя: " + error)
     throw error
   }
 })
@@ -129,7 +128,7 @@ export const logOutFx = createEffect(() => {
   handleSetUser(null)
 })
 
-export const updateInfoFx = createEffect(async ({ fullname, birthday, phone, image }: IUpdateInfoFx) => {
+export const updateInfoFx = createEffect(async ({ fullname, birthday, phone, image, gender }: IUpdateInfoFx) => {
   const token = localStorage.getItem("auth")
 
   if (!token) {
@@ -139,12 +138,14 @@ export const updateInfoFx = createEffect(async ({ fullname, birthday, phone, ima
 
   try {
     const { data } = await api.patch(
-      "/api/user/" + jwtDecode<IUser>(token).id,
-      { fullname, birthDate: birthday, phone, image },
+      "/api/user/",
+      { fullname, birthDate: birthday, phone, image, gender },
       {
         headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
       }
     )
+
+    console.log(data)
 
     if (data.warningMessage) {
       toast.error(data.warningMessage)
@@ -175,7 +176,6 @@ export const checkAuthFx = createEffect(async () => {
   const token = localStorage.getItem("auth")
 
   if (!token) {
-    handleSetAuth(false)
     return false
   }
 
@@ -188,6 +188,7 @@ export const checkAuthFx = createEffect(async () => {
       return false
     }
 
+    console.log(data, !!data)
     return !!data
   } catch (error) {
     if (error instanceof AxiosError) toast.error(error.response?.data.message)
@@ -201,7 +202,7 @@ $isAuth
   .on(handleSetAuth, (_, value) => value) // Установка значения
   .on(signInFx.doneData, (_, result) => !!result)
   .on(signUpFx.doneData, (_, result) => !!result)
-  .on(checkAuthFx.done, () => true)
+  .on(checkAuthFx.doneData, (_, result) => !!result)
   .on(checkAuthFx.fail, () => false)
   .reset(handleLogeOut)
 

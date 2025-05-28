@@ -46,8 +46,8 @@
 .condition3 {
   height: 72px;
 }
-.clickable {
-  cursor: pointer;
+.non_clickable {
+  cursor: auto;
 }
 .load_div {
   border-radius: var(--full);
@@ -69,4 +69,14 @@
   100% {
     background-position: 0% 50%;
   }
+}
+
+.primary {
+  color: var(--primary);
+}
+.secondary {
+  color: var(--secondary);
+}
+.tertiary {
+  color: var(--tertiary);
 }

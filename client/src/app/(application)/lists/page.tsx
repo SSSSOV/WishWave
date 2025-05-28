@@ -30,12 +30,10 @@ export default function ListsPage() {
   const [search, setSearch] = useState("")
   const [shownLists, setShownLists] = useState<IWishList[] | null>(null)
 
-  if (!isAuth) return <NonAuthPage text="Для того чтобы создавать и просматривать списки, пожалуйста, авторизуйтесь" />
-
   // Эффекты
   useEffect(() => {
     if (isAuth) fetchWishLists(null)
-  }, [])
+  }, [isAuth])
 
   // Обработчики событий
   const handleOpen = (id: number) => {
@@ -51,6 +49,8 @@ export default function ListsPage() {
       setShownLists(wishLists.filter((list) => list.name.toLowerCase().includes(searchTerm)))
     }
   }, [search, wishLists])
+
+  if (!isAuth) return <NonAuthPage text="Для того чтобы создавать и просматривать списки, пожалуйста, авторизуйтесь" />
 
   return (
     <>
@@ -85,6 +85,9 @@ export default function ListsPage() {
                   key={list.id}
                   condition={2}
                   headline={list.name}
+                  color={
+                    list.accessLevelId == 1 ? "primary" : list.accessLevelId == 2 ? "secondary" : list.accessLevelId == 3 ? "tertiary" : "tertiary"
+                  }
                   overline={
                     list.eventDate != null
                       ? new Date(list.eventDate).toLocaleDateString(undefined, {
@@ -96,7 +99,7 @@ export default function ListsPage() {
                   }
                   leading_type="icon"
                   leading={
-                    list.accesslevelId == 1 ? "visibility" : list.accesslevelId == 2 ? "visibility_off" : list.accesslevelId == 3 ? "link" : "group"
+                    list.accessLevelId == 1 ? "visibility" : list.accessLevelId == 2 ? "visibility_off" : list.accessLevelId == 3 ? "link" : "group"
                   }
                   trailing_type="icon"
                   onClick={() => handleOpen(list.id)}
