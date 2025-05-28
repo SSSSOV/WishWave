@@ -60,50 +60,45 @@ export class UsersService {
 
   async updateUser(id: number, dto: UpdateUserDto, image?: Express.Multer.File): Promise<User> {
     const user = await this.userRepository.findByPk(id);
-    if (!user) throw new Error("Пользователь не найден");
+    if (!user) { 
+      throw new Error("Пользователь не найден");
+    }
 
-    if (dto.fullname && this.profanity.containsProfanity(dto.fullname)) {
-      throw new BadRequestException("В тексте найдены запрещенные слова");
+    const updatedData: any = {};
+    if ('fullname' in dto) {
+      updatedData.fullname = dto.fullname;
     }
-    if (dto.phone && this.profanity.containsProfanity(dto.phone)) {
-      throw new BadRequestException("В тексте найдены запрещенные слова");
+    if ('birthday' in dto) {
+      updatedData.birthDate = dto.birthday ? this.normalizeData(dto.birthday) : null;
     }
-    if (dto.image && this.profanity.containsProfanity(dto.image)) {
-      throw new BadRequestException("В тексте найдены запрещенные слова");
+    if ('phone' in dto) {
+      updatedData.phone = dto.phone;
     }
-    if (dto.socials) {
-      for (const [key, val] of Object.entries(dto.socials)) {
-        if (this.profanity.containsProfanity(val)) {
-          throw new BadRequestException("В тексте найдены запрещенные слова");
+    if ('gender' in dto) {
+      updatedData.gender = dto.gender;
+    }
+    if ('socials' in dto) {
+      updatedData.socials = dto.socials;
+    }
+    if (image) {
+      const fileName = await this.fileService.createFile(image);
+      if (user.image) {
+        await this.fileService.deleteFile(user.image);
+      }
+      updatedData.image = fileName;
+    } else if ('image' in dto) {
+      if (dto.image === null) {
+        updatedData.image = null;
+      } else if (typeof dto.image === 'string' && dto.image.startsWith('http')) {
+        const fileName = await this.fileService.downloadImage(dto.image);
+        if (user.image) {
+          await this.fileService.deleteFile(user.image);
         }
+        updatedData.image = fileName;
       }
     }
 
-    const oldImage = user.image;
-    let filename: string | null = null;
-
-    if (image) {
-      filename = await this.fileService.createFile(image);
-    } else if (dto.image && typeof dto.image === "string" && dto.image.startsWith("http")) {
-      filename = await this.fileService.downloadImage(dto.image);
-    }
-
-    const updateData: any = { ...dto };
-    if ("birhDate" in dto) {
-      updateData.birthDate = this.normalizeData(dto.birhDate as string);
-    }
-    if (filename) {
-      updateData.image = filename;
-    } else {
-      delete updateData.image;
-    }
-
-    await user.update(updateData);
-
-    if (oldImage && filename && oldImage !== filename) {
-      await this.fileService.deleteFile(oldImage);
-    }
-
+    await user.update(updatedData);
     return user;
   }
 
