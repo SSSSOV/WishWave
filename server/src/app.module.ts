@@ -27,7 +27,9 @@ import { SeedService } from './seed/seed.service';
 import { ProfanityService } from './profanity/profanity.service';
 import { ProfanityModule } from './profanity/profanity.module';
 import { PublicwishlistModule } from './publicwishlist/publicwishlist.module';
+import { BugreportModule } from './bugreport/bugreport.module';
 import * as path from 'path';
+import { BugReport } from "./bugreport/bugreport.model";
 
 @Module({
     controllers: [],
@@ -50,7 +52,7 @@ import * as path from 'path';
           username: process.env.POSTGRES_USER,
           password: process.env.POSTGRES_PASSWORD,
           database:  process.env.POSTGRES_DB,
-          models: [WishStatus, Wish, WishListWish, WishList, AccessLevel, User, Friend, Ban, Role, FriendStatus],
+          models: [WishStatus, Wish, WishListWish, WishList, AccessLevel, User, Friend, Ban, Role, FriendStatus, BugReport],
           autoLoadModels: true,
           logging: console.log
         }),
@@ -68,6 +70,7 @@ import * as path from 'path';
         FileModule,
         ProfanityModule,
         PublicwishlistModule,
+        BugreportModule,
       ]
 })
 export class AppModule {}

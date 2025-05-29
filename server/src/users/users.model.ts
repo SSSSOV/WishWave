@@ -1,5 +1,6 @@
 import { AllowNull, BelongsTo, BelongsToMany, Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
 import { Ban } from "src/ban/ban.model";
+import { BugReport } from "src/bugreport/bugreport.model";
 import { Friend } from "src/friend/friend.model";
 import { Role } from "src/roles/roles.model";
 import { Wish } from "src/wish/wish.model";
@@ -71,4 +72,7 @@ export class User extends Model<User, UserCreationAttrs> {
 
   @HasMany(() => Wish)
   wishstatuses: Wish[];
+
+  @HasMany(() => BugReport)
+  bagReports: BugReport[];
 }
