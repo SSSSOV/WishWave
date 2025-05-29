@@ -3313,15 +3313,13 @@ Authorization: Bearer <token>
 
 ### Delete a Wish
 
-`DELETE /api/wish`
+`DELETE /api/wish/:id`
 Удалить желание (владелец списка или админ)
 
-**Request Body:**
+**Path Parametrs:**
 
-```json
-{
-  "id": "number"
-}
+```makefile
+  id (number)
 ```
 
 **Responses:**
