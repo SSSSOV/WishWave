@@ -14,7 +14,7 @@ export class FriendService {
     private async getStatusId(name: string): Promise<number> {
         const st = await this.statusRepository.findOne({where: {name}});
         if (!st) {
-            throw new NotFoundException(`Статус ${name} не найден`)
+            throw new NotFoundException(`Статус не найден`)
         }
         return st.id;
     }
@@ -75,7 +75,7 @@ export class FriendService {
     async acceptedRequest(userId: number, requestId: number) {
         const fr = await this.friendRepository.findByPk(requestId)
         if (!fr) {
-            throw new ForbiddenException('Заявка не найдена')
+            throw new NotFoundException('Заявка не найдена')
         }
         const pendingId = await this.getStatusId('pending');
         if (fr.friendstatusId !== pendingId) {

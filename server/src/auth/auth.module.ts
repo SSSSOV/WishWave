@@ -4,9 +4,10 @@ import { AuthController } from './auth.controller';
 import { UsersModule } from 'src/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ProfanityModule } from 'src/profanity/profanity.module';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Module({
-  providers: [AuthService],
+  providers: [AuthService, JwtAuthGuard],
   controllers: [AuthController],
   imports: [
     ProfanityModule,
@@ -20,7 +21,8 @@ import { ProfanityModule } from 'src/profanity/profanity.module';
   ],
   exports: [
     AuthService,
-    JwtModule
+    JwtModule,
+    JwtAuthGuard
   ]
 })
 export class AuthModule {}

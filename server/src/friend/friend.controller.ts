@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { FriendService } from './friend.service';
 import { CreateFriendRequestDto } from './dto/create-friend-request.dto';
@@ -57,7 +57,7 @@ export class FriendController {
 
             const other = sender === userId ? recipientUser : senderUser;
             if (!other) {
-            throw new Error(`Не удалось найти информацию о другом пользователе в дружбе ${fr.id}`);
+            throw new NotFoundException(`Не удалось найти информацию о другом пользователе`);
             }
 
             const { birthDate, phone, socials, ...rest } = other;

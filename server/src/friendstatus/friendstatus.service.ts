@@ -19,7 +19,7 @@ export class FriendstatusService {
     async getById(id: number): Promise<FriendStatus> {
         const status = await this.friendStatusModel.findByPk(id);
         if (!status) {
-            throw new NotFoundException(`Статус дружбы с id ${id} не найден`);
+            throw new NotFoundException(`Статус дружбы не найден`);
         }
 
         return status;
@@ -32,7 +32,7 @@ export class FriendstatusService {
     async update(id: number, dto: UpdateFriendStatusDto): Promise<FriendStatus> {
         const status = await this.friendStatusModel.findByPk(id);
         if (!status) {
-            throw new NotFoundException('Статус дружбы с таким ID не найден');
+            throw new NotFoundException('Статус дружбы не найден');
         }
         await status.update({name: dto.name});
         return status;
@@ -41,9 +41,9 @@ export class FriendstatusService {
     async remove(id: number): Promise<{message: string}> {
         const status = await this.getById(id);
         if (!status) {
-            throw new NotFoundException('Статус дружбы с таким ID не найден')
+            throw new NotFoundException('Статус дружбы не найден')
         }
         await status.destroy();
-        return {message: `Статус дружбы ${status.name} удален`};
+        return {message: `Статус дружбы удален`};
     }
 }

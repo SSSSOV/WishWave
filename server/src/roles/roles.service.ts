@@ -24,7 +24,7 @@ export class RolesService {
     async updateRole(id: number, dto: UpdateRoleDto): Promise<Role> {
         const role = await this.roleRepository.findByPk(id);
         if(!role) {
-            throw new NotFoundException(`Роль с id ${id} не найдена`);
+            throw new NotFoundException(`Роль не найдена`);
         }
         await role.update(dto);
         return role;
@@ -33,9 +33,9 @@ export class RolesService {
     async deleteRole(id: number): Promise<{message: string}> {
         const role = await this.roleRepository.findByPk(id);
         if (!role) {
-            throw new NotFoundException(`Роль с id ${id} не найдена`);
+            throw new NotFoundException(`Роль не найдена`);
         }
         await role.destroy();
-        return {message: `Роль ${role.value} удалена`}
+        return {message: `Роль удалена`}
     }
 }
