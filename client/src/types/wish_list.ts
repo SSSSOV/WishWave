@@ -1,3 +1,4 @@
+import { IUser } from "./user"
 import { IWish } from "./wish"
 
 /**Интерфейс списка желаний */
@@ -13,7 +14,7 @@ export interface IWishList {
   /**Дата события списка */
   eventDate?: string
   /**ID пользователя которому принадлежит список */
-  userId: number
+  owner: IUser
   /**Желания в списке */
   wishes?: IWish[]
 }

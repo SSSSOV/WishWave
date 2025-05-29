@@ -60,6 +60,8 @@ export default function AddFriendPage() {
 
   // Состояния
   const [targetUserId, setTargetUserId] = useState("")
+  const [isCopied, setIsCopied] = useState(false)
+  const [isCopiedLink, setIsCopiedLink] = useState(false)
 
   useEffect(() => {
     fetchRecivedRequests()
@@ -81,26 +83,61 @@ export default function AddFriendPage() {
   }
 
   const handleCopyToClipboard = async () => {
-    if (user) {
-      try {
+    if (!user?.id) return
+
+    try {
+      // Создаем временный input элемент
+      const tempInput = document.createElement("input")
+      tempInput.value = String(user.id)
+      document.body.appendChild(tempInput)
+      tempInput.select()
+
+      // Пробуем использовать современный API
+      if (navigator.clipboard) {
         await navigator.clipboard.writeText(String(user.id))
-        toast.success("ID успешно скопирован!")
-      } catch (err) {
-        toast.error("Не удалось скопировать ID: " + err)
       }
+      // Fallback для старых браузеров
+      else {
+        document.execCommand("copy")
+      }
+
+      document.body.removeChild(tempInput)
+      toast.success("ID успешно скопирован!")
+
+      setIsCopied(true)
+      setTimeout(() => setIsCopied(false), 2000)
+    } catch (err) {
+      toast.error("Не удалось скопировать ID")
+      console.error("Copy error:", err)
     }
   }
 
-  const handleCreateFriendLink = async () => {
-    if (user) {
-      try {
-        await navigator.clipboard.writeText(
-          `Добавляй меня в друзья 🤝 на сервисе обмена списками желаний 🎁 WishWave!\n${process.env.NEXT_PUBLIC_CLIENT_URL}friends/add?addFriend=${user.id}`
-        )
-        toast.success("Ссылка успешно скопирована!")
-      } catch (err) {
-        toast.error("Не удалось скопировать ссылку: " + err)
+  const handleCopyFriendLink = async () => {
+    const link = `Добавь меня в друзья на WishWave!\n${process.env.NEXT_PUBLIC_CLIENT_URL}friends/add?addFriend=${user?.id}`
+
+    try {
+      // Modern API
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(link)
+        toast.success("Ссылка скопирована!")
+        setIsCopiedLink(true)
+        setTimeout(() => setIsCopiedLink(false), 2000)
       }
+      // Legacy method
+      else {
+        const textarea = document.createElement("textarea")
+        textarea.value = link
+        document.body.appendChild(textarea)
+        textarea.select()
+        document.execCommand("copy")
+        document.body.removeChild(textarea)
+        toast.success("Ссылка скопирована!")
+        setIsCopiedLink(true)
+        setTimeout(() => setIsCopiedLink(false), 2000)
+      }
+    } catch (err) {
+      toast.error("Не удалось скопировать ссылку")
+      console.error("Copy error:", err)
     }
   }
 
@@ -140,11 +177,11 @@ export default function AddFriendPage() {
         </Section>
         <Section withoutPad align_items="center">
           <Section items_direction="row" withoutPad isFit>
-            <Button variant="text" icon="content_copy" onClick={handleCopyToClipboard}>
-              {"Ваш ID: " + user.id}
+            <Button variant="text" icon={isCopied ? "check" : "content_copy"} onClick={handleCopyToClipboard}>
+              {`Ваш ID: ${user.id}`}
             </Button>
-            <Button variant="text" icon="share" onClick={handleCreateFriendLink}>
-              Ссылкой
+            <Button variant="text" icon={isCopiedLink ? "check" : "content_copy"} onClick={handleCopyFriendLink}>
+              Ссылку
             </Button>
           </Section>
         </Section>

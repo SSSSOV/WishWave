@@ -5,7 +5,7 @@ export interface IUser {
   /**Логин пользователя */
   login: string
   /**Почта пользователя */
-  email: string
+  email?: string
   /**Имя пользователя */
   fullname?: string
   /**Фото пользователя */
@@ -34,6 +34,11 @@ export interface IUpdateInfoFx {
   phone?: string
   /**Пол пользователя */
   gender?: gender
+}
+
+export interface IUpdatePasswordFx {
+  oldPassword: string
+  newPassword: string
 }
 
 /**Тип пола */

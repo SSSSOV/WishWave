@@ -1,8 +1,8 @@
-import styles from "./Section.module.css";
+import styles from "./Section.module.css"
 
-type align_items = "left" | "center" | "right";
-type size = "sm" | "md" | "lg" | "xs";
-type direction = "col" | "row";
+type align_items = "left" | "center" | "right"
+type size = "sm" | "md" | "lg" | "xs"
+type direction = "col" | "row"
 
 export default function Section({
   title,
@@ -15,15 +15,15 @@ export default function Section({
   isFit = false,
   children,
 }: {
-  title?: string;
-  title_size?: size;
-  padding_top_size?: size;
-  padding_bot_size?: size;
-  align_items?: align_items;
-  items_direction?: direction;
-  withoutPad?: boolean;
-  isFit?: boolean;
-  children?: React.ReactNode;
+  title?: string
+  title_size?: size
+  padding_top_size?: size
+  padding_bot_size?: size
+  align_items?: align_items
+  items_direction?: direction
+  withoutPad?: boolean
+  isFit?: boolean
+  children?: React.ReactNode
 }) {
   return (
     <div
@@ -54,5 +54,5 @@ export default function Section({
       )}
       {children}
     </div>
-  );
+  )
 }

@@ -88,7 +88,7 @@ export default function UserPage() {
         </Section>
         <List withoutPad>
           <ListItem condition={2} headline={friend.login} overline="логин" />
-          {friend.fullname ? <ListItem condition={2} headline={friend.fullname} overline="имя" /> : ""}
+          {friend.fullname && hasNameContent(friend.fullname) ? <ListItem condition={2} headline={friend.fullname} overline="имя" /> : ""}
           {friend.birthday ? (
             <ListItem
               condition={2}
@@ -102,7 +102,6 @@ export default function UserPage() {
           ) : (
             ""
           )}
-          {friend.gender ? <ListItem condition={2} headline={friend.gender} overline="дата рождения" /> : ""}
         </List>
       </Section>
       {!isOwner ? (
@@ -114,7 +113,6 @@ export default function UserPage() {
           </Section>
         </Section>
       ) : null}
-      {/* <Section></Section> */}
       <Section>
         <hr />
       </Section>
