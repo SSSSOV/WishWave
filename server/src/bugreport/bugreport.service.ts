@@ -66,7 +66,7 @@ export class BugreportService {
     async findById(id: number): Promise<BugReport> {
         const br = await this.BugRepository.findByPk(id, {include: [{model: User, as: 'user', attributes: ['id', 'fullname', 'login', 'image']}]});
         if (!br) {
-            throw new NotFoundException(`Баг-репорт с id ${id} не найден`);
+            throw new NotFoundException(`Баг-репорт не найден`);
         }
 
         return br;

@@ -53,7 +53,7 @@ export class BugreportController {
         const role = req.user.roles?.value;
         const br = await this.bugService.findById(id);
         if (br.userId !== userId && role !== 'admin') {
-            throw new ForbiddenException('Нет парв на просмотр этого списка')
+            throw new ForbiddenException('Нет прав на просмотр этого списка')
         }
 
         const p = br.get({plain: true}) as any;
