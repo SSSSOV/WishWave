@@ -12,7 +12,6 @@ import * as bcrypt from "bcryptjs";
 import { UserResponseDto } from "./dto/user-response.dto";
 import { ProfanityService } from "src/profanity/profanity.service";
 import { AccessLevel } from "src/accesslevel/accesslevel.model";
-import { AuthService } from "src/auth/auth.service";
 
 @Injectable()
 export class UsersService {
@@ -31,7 +30,7 @@ export class UsersService {
     const role = await this.roleService.getRoleByValue("user");
 
     if (!role) {
-      throw new Error('Role "user" not found');
+      throw new Error('Роль "user" не найдена');
     }
 
     const user = await this.userRepository.create({ ...dto, roleId: role.id });
@@ -51,7 +50,7 @@ export class UsersService {
 
     const match = input.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
     if (!match) {
-      throw new BadRequestException(`Неподдерживаемый формат даты: ${input}. Ожидается dd.mm.yyyy`);
+      throw new BadRequestException(`Неподдерживаемый формат даты. Ожидается dd.mm.yyyy`);
     }
 
     const [, dd, mm, yyyy] = match;
@@ -105,7 +104,7 @@ export class UsersService {
   async getAllUsers() {
     const users = await this.userRepository.findAll({ include: { all: true } });
     if (!users) {
-      throw Error("пользователи не найдены");
+      throw Error("Пользователи не найдены");
     }
     return users;
   }
@@ -166,7 +165,7 @@ export class UsersService {
       await this.fileService.deleteFile(oldImage);
     }
 
-    return { message: `Пользователь ${login} с ID ${userId} удалён` };
+    return { message: `Пользователь удалён` };
   }
 
   async updatePassword(userId: number, oldPassword: string, newPassword: string): Promise<void> {
