@@ -725,6 +725,20 @@ Authorization: Bearer <token>
 
 --- 
 
+## Bug Report
+
+Для всех защищенных маршрутов требуется заголовок, кроме POST
+
+```makefile
+Authorization: Bearer <token>
+```
+
+### Get a List Your Bugreports
+
+`POST /api/`
+
+---
+
 ## Friend
 
 Для всех защищенных маршрутов требуется заголовок

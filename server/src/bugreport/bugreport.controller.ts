@@ -15,19 +15,9 @@ export class BugreportController {
     async create(@Body() dto: CreateBugReportDto, @Req() req): Promise<BugReportResponseDto> {
         const userId = req.user?.id ?? null;
         const br = await this.bugService.create(dto, userId);
-        const {id, title, description, email, userId: uid, createdAt} = br.get({plain:true});
+        const {id, title, description, email, userId: uid, createdAt, updatedAt} = br.get({plain:true});
 
-        return {id, title, description, email, ...(uid != null && uid !== null ? {userId: uid} : {}), createdAt};
-    }
-
-    @Get()
-    @UseGuards(JwtAuthGuard)
-    async findMine(@Req() req): Promise<BugReportResponseDto[]> {
-        const userId = req.user.id;
-        const rows = await this.bugService.findByUser(userId);
-        
-        return rows.map(br => {const {id, title, description, email, userId, createdAt} = br.get({plain: true});
-            return {id, title, description, email, ...(userId != null && {userId}), createdAt} as BugReportResponseDto});
+        return {id, title, description, email, ...(uid != null && uid !== null ? {userId: uid} : {}), createdAt, updatedAt};
     }
 
     @Get('all')
@@ -38,9 +28,34 @@ export class BugreportController {
         }
 
         const rows = await this.bugService.findAll();
-        return rows.map(br => {const {id, title, description, email, userId, createdAt} = br.get({plain: true});
-            return {id, title, description, email, ...(userId != null && {userId}), createdAt} as BugReportResponseDto});
+        return rows.map(br => {const {id, title, description, email, userId, createdAt, updatedAt} = br.get({plain: true});
+            return {id, title, description, email, ...(userId != null && {userId}), createdAt, updatedAt} as BugReportResponseDto});
     }
+
+    @Get()
+    @UseGuards(JwtAuthGuard)
+    async findMine(@Req() req): Promise<BugReportResponseDto[]> {
+        const userId = req.user.id;
+        const rows = await this.bugService.findByUser(userId);
+        
+        return rows.map(br => {const {id, title, description, email, userId, createdAt, updatedAt} = br.get({plain: true});
+            return {id, title, description, email, ...(userId != null && {userId}), createdAt, updatedAt} as BugReportResponseDto});
+    }
+
+    @Get(':id')
+    @UseGuards(JwtAuthGuard)
+    async getOne(@Param('id') id: number, @Req() req): Promise<BugReportResponseDto> {
+        const userId = req.user.id;
+        const role = req.user.roles?.value;
+        const br = await this.bugService.findById(id);
+        if (br.userId !== userId && role !== 'admin') {
+            throw new ForbiddenException('Нет парв на просмотр этого списка')
+        }
+
+        const p = br.get({plain: true}) as any;
+        return {id: p.id, title: p.title, description: p.description, email: p.email, ...(p.userId != null ? {userId: p.userId} : {}), createdAt: p.createdAt, updatedAt: p.updatedAt};
+    }
+
 
     @Patch(':id')
     @UseGuards(JwtAuthGuard)
