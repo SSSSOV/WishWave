@@ -67,8 +67,8 @@ export class UsersService {
     if ('fullname' in dto) {
       updatedData.fullname = dto.fullname;
     }
-    if ('birthday' in dto) {
-      updatedData.birthDate = dto.birthday ? this.normalizeData(dto.birthday) : null;
+    if ('birthDate' in dto) {
+      updatedData.birthDate = dto.birthDate ? this.normalizeData(dto.birthDate) : null;
     }
     if ('phone' in dto) {
       updatedData.phone = dto.phone;
