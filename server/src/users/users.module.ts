@@ -13,6 +13,7 @@ import { AuthModule } from 'src/auth/auth.module';
 import { FileModule } from 'src/file/file.module';
 import { FriendModule } from 'src/friend/friend.module';
 import { ProfanityModule } from 'src/profanity/profanity.module';
+import { BugReport } from 'src/bugreport/bugreport.model';
 
 @Module({
   controllers: [UsersController],
@@ -22,6 +23,7 @@ import { ProfanityModule } from 'src/profanity/profanity.module';
     RolesModule,
     FileModule,
     ProfanityModule,
+    BugReport,
     forwardRef(() => AuthModule),
     forwardRef(() => FriendModule),
   ],

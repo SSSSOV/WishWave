@@ -17,7 +17,7 @@ export class AccesslevelService {
     async findById(id: number): Promise<AccessLevel> {
         const lvl = await this.accessLevelRepository.findByPk(id);
         if (!lvl) {
-            throw new NotFoundException(`Уровень доступа с id ${id} не найден`)
+            throw new NotFoundException(`Уровень доступа не найден`)
         }
         return lvl;
     }
@@ -31,6 +31,6 @@ export class AccesslevelService {
     async remove(id: number): Promise<{message: string}> {
         const lvl = await this.findById(id);
         await lvl.destroy();
-        return {message: `Уровень доступа ${lvl.name} удален`};
+        return {message: `Уровень доступа удален`};
     }
 }

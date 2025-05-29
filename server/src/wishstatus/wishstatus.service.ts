@@ -19,7 +19,7 @@ export class WishstatusService {
     async getById(id: number): Promise<WishStatus> {
         const status = await this.wishStatusRepository.findByPk(id);
         if (!status) {
-            throw new NotFoundException(`Статус желания с id ${id} не найден`);
+            throw new NotFoundException(`Статус желания не найден`);
         }
         return status;
     }

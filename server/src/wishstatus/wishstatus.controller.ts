@@ -43,6 +43,6 @@ export class WishstatusController {
     async remove(@Param('id', ParseIntPipe) id: number, @Req() req) {
         this.ensureAdmin(req);
         await this.wishStatusService.remove(id);
-        return {message: `Статус с id ${id} удален`};
+        return {message: `Статус удален`};
     }
 }

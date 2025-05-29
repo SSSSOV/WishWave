@@ -72,11 +72,10 @@ export class WishController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Delete()
-    async deleteWish(@Body() dto: WishIdDto, @Req() req) {
+    @Delete(':id')
+    async deleteWish(@Param('id') wishId: number, @Req() req) {
         const userId = req.user.id;
         const userRole = req.user.roles?.value;
-        const wishId = dto.id;
         const record = await this.wishListWishRepository.findOne({where: {wishId}});
         if (!record) {
             throw new NotFoundException('Желание не найдено в списках')
