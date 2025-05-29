@@ -1,4 +1,4 @@
-import { Body, Controller, ForbiddenException, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, ForbiddenException, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { BugreportService } from './bugreport.service';
 import { CreateBugReportDto } from './dto/create-bugreport.dto';
 import { BugReportResponseDto } from './dto/bugreport-response.dto';
@@ -50,6 +50,20 @@ export class BugreportController {
         const p = updated.get({plain:true}) as any;
         
         return {id: p.id, title: p.title, description: p.description, email: p.email, ...(p.userId != null ? {userId: p.userId} : {}), createdAt: p.createdAt, updatedAt: p.updatedAt};
+    }
+
+    @Delete(':id')
+    @UseGuards(JwtAuthGuard)
+    async remove(@Param('id') id: number, @Req() req): Promise<{message: string}> {
+        const userId = req.user.id;
+        const role = req.user.roles?.value;
+        const br = await this.bugService.findById(id);
+        if (br.userId !== userId && role !== 'admin') {
+            throw new ForbiddenException('Нет прав на удаление этого баг-репорта');
+        }
+
+        await this.bugService.remove(id);
+        return {message: 'Баг репорт удален'};
     }
 
 }

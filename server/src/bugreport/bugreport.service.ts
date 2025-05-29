@@ -52,4 +52,21 @@ export class BugreportService {
         await br.save;
         return br;
     }
+
+    async remove(id: number): Promise<void> {
+        const br = await this.BugRepository.findByPk(id);
+        if (!br) {
+            throw new NotFoundException('Баг репорт не найден')
+        }
+        await br.destroy();
+    }
+
+    async findById(id: number): Promise<BugReport> {
+        const br = await this.BugRepository.findByPk(id);
+        if (!br) {
+            throw new NotFoundException(`Баг-репорт с id ${id} не найден`);
+        }
+        
+        return br;
+    }
 }
