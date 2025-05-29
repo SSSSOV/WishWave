@@ -64,6 +64,9 @@ export default function FriendsPage() {
           </Button>
         </Section>
       </Section>
+      <Section>
+        <hr />
+      </Section>
       <Section title="Ваши друзья" padding_bot_size="lg">
         <List withoutPad>
           {friends && friends.length > 0 ? (

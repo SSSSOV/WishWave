@@ -18,6 +18,8 @@ import {
   handleSetWishList,
 } from "@/context/wish_lists"
 import { usePageTitle } from "@/hooks/usePageTitle"
+import { getInitials } from "@/lib/utils/getInitials"
+import { hasNameContent } from "@/lib/utils/hasNameContent"
 import { IUser } from "@/types/user"
 import { IWishList } from "@/types/wish_list"
 import { useUnit } from "effector-react"
@@ -63,9 +65,9 @@ export default function WishListPage() {
   useEffect(() => {
     if (typeof window !== "undefined" && wishList) {
       const authToken = localStorage.getItem("auth")
-      if (authToken) {
+      if (authToken && wishList.owner) {
         const userId = jwtDecode<IUser>(authToken).id
-        setIsOwner(wishList.userId === userId)
+        setIsOwner(wishList.owner.id === userId)
       }
     }
     if (wishList && wishList.id == Number(id)) {
@@ -91,9 +93,20 @@ export default function WishListPage() {
 
   return (
     <>
-      <Section withoutPad>
-        <List>
-          {!isOwner && wishList ? <ListItem condition={2} headline={""} overline="владелец" /> : null}
+      <Section padding_top_size="sm">
+        <List withoutPad>
+          {wishList && wishList.owner && !isOwner ? (
+            <ListItem
+              condition={2}
+              leading_type={
+                wishList.owner.image && wishList.owner.image != "" ? "image" : hasNameContent(wishList.owner.fullname) ? "monogram" : "icon"
+              }
+              leading={hasNameContent(wishList.owner.fullname) ? getInitials(wishList.owner.fullname) : "person"}
+              url={wishList.owner.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wishList.owner.image : ""}
+              headline={wishList.owner.fullname ? wishList.owner.fullname : wishList.owner.login}
+              overline="владелец списка"
+            />
+          ) : null}
           <ListItem condition={2} headline={wishList.name} overline="название" />
           <ListItem
             condition={2}

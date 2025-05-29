@@ -9,7 +9,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 136px;
+  padding-top: 198px;
   padding-bottom: 56px;
-  gap: var(--lg);
+  gap: 64px;
+}
+
+.navs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--md);
 }

@@ -12,6 +12,7 @@ import { useUnit } from "effector-react"
 import { $isAuth, $user, handleCheckAuth, handleSignIn } from "@/context/user"
 import toast from "react-hot-toast"
 import Container from "@/components/ui/container/Container"
+import Loader from "@/components/ui/loader/Loader"
 
 export default function LoginPage() {
   // Маршрутизатор
@@ -29,7 +30,6 @@ export default function LoginPage() {
     e.preventDefault()
     try {
       handle({ loginOrEmail, password })
-      // router.replace("main/")
     } catch (error) {
       console.log(error)
     }
@@ -47,13 +47,14 @@ export default function LoginPage() {
   return (
     <>
       <ThemeToggle isAbsolute></ThemeToggle>
-      <Content topBarSize="none" navigationType="none">
-        <Container>
-          <Section align_items="right" items_direction="row" padding_bot_size="lg" padding_top_size="lg">
+      <Content topBarSize="none" navigationType="none" withPad isScreen>
+        <Container withRadius>
+          {/* <Section align_items="right" items_direction="row" padding_bot_size="lg" padding_top_size="lg">
             <Monogram monogram_type="monogram" letter="ww" size="md" color="primary"></Monogram>
             <Monogram monogram_type="icon" icon="person" size="md" color="secondary"></Monogram>
             <Monogram monogram_type="icon" icon="login" size="md" color="tertiary"></Monogram>
-          </Section>
+          </Section> */}
+          <Loader fit></Loader>
           {/* <Section title="WishWave" title_size="lg" align_items="center" items_direction="col" padding_bot_size="lg" padding_top_size="lg"></Section> */}
           <form action="login" onSubmit={handleSubmit}>
             <Section title="Уже есть аккаунт? Входите!" title_size="md" padding_top_size="lg">

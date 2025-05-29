@@ -49,12 +49,13 @@
   transition: all 0.2s;
   pointer-events: none;
   border-radius: var(--sm);
+  line-height: 10px;
 }
 
 .input:focus + .label,
 .input:not(:placeholder-shown) + .label {
   top: 0;
-  transform: translateY(-20px);
+  transform: translateY(-16px);
   font-size: 12px;
   background: var(--surface);
   padding: 0 4px;

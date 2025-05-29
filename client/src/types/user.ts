@@ -5,7 +5,7 @@ export interface IUser {
   /**Логин пользователя */
   login: string
   /**Почта пользователя */
-  email: string
+  email?: string
   /**Имя пользователя */
   fullname?: string
   /**Фото пользователя */

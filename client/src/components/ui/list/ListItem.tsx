@@ -6,7 +6,7 @@ import style from "./ListItem.module.css"
 type list_item_leading = "monogram" | "icon" | "image"
 type list_item_trailing = "icon"
 
-export type icon_color = "primary" | "secondary" | "tertiary" | "none"
+export type icon_color = "primary" | "secondary" | "tertiary" | "access" | "warning" | "error" | "none"
 
 type ListItemProps = {
   nowrap?: boolean
@@ -87,6 +87,12 @@ export default function ListItem({
                       ? style.secondary
                       : trailing_color == "tertiary"
                       ? style.tertiary
+                      : trailing_color == "access"
+                      ? style.access
+                      : trailing_color == "warning"
+                      ? style.warning
+                      : trailing_color == "error"
+                      ? style.error
                       : ""
                     : "")
                 }>
@@ -147,6 +153,12 @@ export default function ListItem({
                     ? style.secondary
                     : trailing_color == "tertiary"
                     ? style.tertiary
+                    : trailing_color == "access"
+                    ? style.access
+                    : trailing_color == "warning"
+                    ? style.warning
+                    : trailing_color == "error"
+                    ? style.error
                     : ""
                   : "")
               }>

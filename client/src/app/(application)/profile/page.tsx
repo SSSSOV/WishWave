@@ -52,17 +52,18 @@ export default function ProfilePage() {
         <span className={style.body}>{user.data!.login}</span>
       </Section>
       <Section title="Информация вашего профиля в сервсие WishWave" title_size="md" padding_top_size="lg" padding_bot_size="lg">
-        <span className={style.body}>
-          Здесь можно посмотреть или изменить личную информацию.
-          {/*Некоторые данные, например контактные, можно сделать доступными всем, чтобы с вами
-          было проще связаться. */}
-        </span>
+        <span className={style.body}>Здесь можно посмотреть или изменить личную информацию.</span>
       </Section>
       <Section>
         <hr />
       </Section>
       <Section title="Основная информация" title_size="sm" padding_top_size="lg">
-        <span className={style.label}>Некоторая информация может быть видна другим пользователям сервиса WishWave. Узнать больше</span>
+        <span className={style.label}>
+          Некоторая информация может быть видна другим пользователям сервиса WishWave.{" "}
+          <a className={style.link} href="/documents#terms" target="_blank" rel="noopener noreferrer">
+            Узнать больше
+          </a>
+        </span>
         <List withoutPad>
           <ListItem
             condition={2}
@@ -128,6 +129,12 @@ export default function ProfilePage() {
         <hr />
       </Section>
       <Section title="Контактная информация" title_size="sm" padding_top_size="lg">
+        <span className={style.label}>
+          Эта информация не видна другим пользователям сервиса WishWave.{" "}
+          <a className={style.link} href="/documents#terms" target="_blank" rel="noopener noreferrer">
+            Узнать больше
+          </a>
+        </span>
         <List withoutPad>
           <ListItem condition={2} overline="почта" headline={user.data!.email ? user.data!.email : "Не указано"} />
           <ListItem

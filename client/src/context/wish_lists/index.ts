@@ -58,8 +58,8 @@ export const fetchWishListsFx = createEffect(async (id: number | null) => {
       return null
     }
 
-    console.log("fetchWishListsFx: " + `GET /api/wishlist${id ? `?userId=${id}` : ``}`)
-    console.log(data)
+    // console.log("fetchWishListsFx: " + `GET /api/wishlist${id ? `?userId=${id}` : ``}`)
+    // console.log(data)
 
     return data as IWishList[]
   } catch (error) {
@@ -87,8 +87,9 @@ export const fetchWishListFx = createEffect(async (id: number) => {
       return null
     }
 
-    console.log("fetchWishListFx: " + `GET /api/wishlist${id ? `/${id}` : ``}`)
-    console.log(data)
+    // console.log("fetchWishListFx: " + `GET /api/wishlist${id ? `/${id}` : ``}`)
+    // console.log(data as IWishList)
+
     return data as IWishList
   } catch (error) {
     if (error instanceof AxiosError) toast.error(error.response?.data.message)

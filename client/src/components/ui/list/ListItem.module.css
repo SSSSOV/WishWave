@@ -80,3 +80,12 @@
 .tertiary {
   color: var(--tertiary);
 }
+.access {
+  color: var(--access);
+}
+.warning {
+  color: var(--warning);
+}
+.error {
+  color: var(--error);
+}

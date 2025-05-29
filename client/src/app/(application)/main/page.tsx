@@ -7,6 +7,7 @@ import styles from "@/app/home.module.css"
 import { $pageTitle, handleSetPageTitle } from "@/context/page"
 import Button from "@/components/ui/buttons/Button"
 import { usePageTitle } from "@/hooks/usePageTitle"
+import FABButton from "@/components/ui/buttons/FABButton"
 
 export default function MainPage() {
   usePageTitle("Главная")

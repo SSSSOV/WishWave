@@ -11,3 +11,9 @@
   right: 0;
   width: 100%;
 }
+
+.FAB_place {
+  position: fixed;
+  bottom: 100;
+  right: 16;
+}

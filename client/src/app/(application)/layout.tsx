@@ -67,13 +67,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       icon: "group",
       isNav: true,
     },
-    {
-      title: "Создать",
-      label: "Создать",
-      path: "/add",
-      icon: "add",
-      isNav: true,
-    },
+    // {
+    //   title: "Создать",
+    //   label: "Создать",
+    //   path: "/add",
+    //   icon: "add",
+    //   isNav: true,
+    // },
     {
       title: "Ваши списки",
       label: "Списки",
@@ -140,13 +140,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         router.push("/friends")
       },
     },
-    {
-      label: "Создать",
-      icon: "add",
-      action: () => {
-        router.push("/add")
-      },
-    },
+    // {
+    //   label: "Создать",
+    //   icon: "add",
+    //   action: () => {
+    //     router.push("/add")
+    //   },
+    // },
     {
       label: "Списки",
       icon: "bookmark",
@@ -168,16 +168,33 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       {isMobile ? (
         <>
           <TopAppBar variant="small" />
-          <Content navigationType="bar" topBarSize="sm" withoutPad>
+          <Content navigationType="bar" topBarSize="sm">
             <Container>{children}</Container>
           </Content>
-          <NavigationBar pages={PAGES} />
+          <NavigationBar
+            pages={PAGES}
+            FAB
+            FAB_icon="add"
+            FAB_label="Желание"
+            FAB_onClick={() => {
+              router.push("/add")
+            }}
+            FAB_size="sm"
+          />
         </>
       ) : (
         <>
-          <NavigationRail pages={PAGES}></NavigationRail>
+          <NavigationRail
+            pages={PAGES}
+            FAB
+            FAB_icon="add"
+            FAB_label="Желание"
+            FAB_onClick={() => {
+              router.push("/add")
+            }}
+            FAB_size="sm"></NavigationRail>
           <TopAppBar withRail variant="large" />
-          <Content navigationType="rail" topBarSize="lg">
+          <Content navigationType="rail" topBarSize="lg" withPad>
             <Container gap="md" withPad>
               {children}
             </Container>
