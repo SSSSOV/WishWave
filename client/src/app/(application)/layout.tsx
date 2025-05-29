@@ -189,6 +189,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             FAB
             FAB_icon="add"
             FAB_label="Желание"
+            FAB_color="primary"
             FAB_onClick={() => {
               router.push("/add")
             }}

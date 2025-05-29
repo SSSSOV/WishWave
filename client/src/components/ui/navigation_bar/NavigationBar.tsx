@@ -29,7 +29,7 @@ export default function NavigationBar({
     <>
       {FAB ? (
         <div className={styles.FAB_place}>
-          <FABButton button_color={FAB_color} button_size={FAB_size} icon={FAB_icon} label={FAB_label} onClick={FAB_onClick} />
+          <FABButton button_color={FAB_color} button_size={FAB_size} icon={FAB_icon} label={FAB_label} onClick={FAB_onClick} hasShadow />
         </div>
       ) : null}
       <div className={styles.container}>

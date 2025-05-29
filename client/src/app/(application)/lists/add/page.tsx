@@ -4,11 +4,13 @@ import Button from "@/components/ui/buttons/Button"
 import Input from "@/components/ui/inputs/Input"
 import Section from "@/components/ui/section/Section"
 import { handleCreateWishList } from "@/context/wish_lists"
+import { usePageTitle } from "@/hooks/usePageTitle"
 import { useUnit } from "effector-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 export default function AddListPage() {
+  usePageTitle("Создать список")
   // Роутер
   const router = useRouter()
 

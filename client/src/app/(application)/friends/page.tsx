@@ -12,6 +12,7 @@ import { $friends, handleFetchFriends } from "@/context/friends"
 import { handleSetPageTitle } from "@/context/page"
 import { $isAuth } from "@/context/user"
 import { usePageTitle } from "@/hooks/usePageTitle"
+import { IUser } from "@/types/user"
 import { useUnit } from "effector-react"
 import type { Metadata } from "next"
 import { useRouter } from "next/navigation"
@@ -27,12 +28,28 @@ export default function FriendsPage() {
   useLayoutEffect(() => {}, [])
 
   const [search, setSearch] = useState("")
+  const [shownFriends, setShownFriends] = useState<IUser[] | null>(null)
 
   const [isAuth, friends, fetchFriends] = useUnit([$isAuth, $friends, handleFetchFriends])
 
   useEffect(() => {
     if (isAuth) fetchFriends()
   }, [isAuth])
+
+  useEffect(() => {
+    if (search === "") {
+      setShownFriends(friends)
+    } else {
+      const searchTerm = search.toLowerCase()
+      setShownFriends(
+        friends
+          ? friends.filter(
+              (friend) => friend.login.toLowerCase().includes(searchTerm) || (friend.fullname && friend.fullname.toLowerCase().includes(searchTerm))
+            )
+          : null
+      )
+    }
+  }, [search, friends])
 
   const openUser = (id: number) => {
     router.push(`/users/${id}`)
@@ -69,8 +86,8 @@ export default function FriendsPage() {
       </Section>
       <Section title="Ваши друзья" padding_bot_size="lg">
         <List withoutPad>
-          {friends && friends.length > 0 ? (
-            friends.map((friend) => (
+          {shownFriends && shownFriends.length > 0 ? (
+            shownFriends.map((friend) => (
               <ListItem
                 key={friend.id}
                 url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + friend.image}

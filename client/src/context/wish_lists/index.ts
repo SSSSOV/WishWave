@@ -156,7 +156,7 @@ export const updateWishListFx = createEffect(async (params: IUpdateWishList) => 
     return null
   }
   try {
-    const { data } = await api.patch("/api/wishlist/" + params.id, params, {
+    const { data } = await api.patch("/api/wishlist/", params, {
       headers: { Authorization: `Bearer ${token}` },
     })
 
@@ -167,7 +167,8 @@ export const updateWishListFx = createEffect(async (params: IUpdateWishList) => 
 
     return data as IWishList
   } catch (error) {
-    toast.error("Ошибка получения списка желаний: " + error)
+    if (error instanceof AxiosError) toast.error(error.response?.data.message)
+    else toast.error("Ошибка получения списка желаний: " + error)
     throw error
   }
 })

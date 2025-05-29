@@ -26,6 +26,7 @@ export default function WishPage() {
   const { id, shareToken } = useParams() // Получаем ID из URL
   const [isOwner, setIsOwner] = useState(false)
   const [isBooker, setBooker] = useState(true)
+  const [isCopied, setIsCopied] = useState(false)
 
   // Стор
   const [wish, fetchWish, deleteWish, bookWish, unbookWish, completeWish] = useUnit([
@@ -76,11 +77,32 @@ export default function WishPage() {
   }
 
   const handleCopyToClipboard = async (text: string) => {
+    if (!text) return
+
     try {
-      await navigator.clipboard.writeText(text)
-      toast.success("Успешно скопировано!")
+      // Создаем временный input элемент
+      const tempInput = document.createElement("input")
+      tempInput.value = String(text)
+      document.body.appendChild(tempInput)
+      tempInput.select()
+
+      // Пробуем использовать современный API
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(String(text))
+      }
+      // Fallback для старых браузеров
+      else {
+        document.execCommand("copy")
+      }
+
+      document.body.removeChild(tempInput)
+      toast.success("Название успешно скопировано!")
+
+      setIsCopied(true)
+      setTimeout(() => setIsCopied(false), 2000)
     } catch (err) {
-      toast.error("Не удалось скопировать: " + err)
+      toast.error("Не удалось скопировать название")
+      console.error("Copy error:", err)
     }
   }
 
@@ -140,10 +162,10 @@ export default function WishPage() {
             }}
             trailing_type="icon"
             trailing_color="primary"
-            trailing="content_copy"
+            trailing={isCopied ? "check" : "content_copy"}
             overline="название"
           />
-          <ListItem condition={2} headline={String(wish.price) + " руб."} overline="цена" />
+          <ListItem condition={2} headline={wish.price ? String(wish.price) + " руб." : "Не указано"} overline="цена" />
           {wish.productLink ? (
             <ListItem
               condition={2}
@@ -261,27 +283,29 @@ export default function WishPage() {
           ) : null}
         </List>
       </Section>
-      {isOwner ? (
-        <Section align_items="right">
-          <Section items_direction="row" withoutPad isFit>
-            {wish.wishStatusId == 2 && wish.bookedByUser ? (
-              <Button variant="text" icon="check_circle" onClick={() => handleComplete(wish.id)}>
-                выполнено
-              </Button>
-            ) : wish.wishStatusId == 3 ? (
-              <Button variant="text" icon="cancel" onClick={() => handleUncomplete(wish.id)} color="error">
-                отменить
-              </Button>
-            ) : null}
 
-            <Button variant="text" icon="edit" onClick={() => handleEdit(wish.id)}>
-              желание
-            </Button>
-            <Button variant="text" icon="delete" color="error" onClick={() => handleDelete(wish.id)}>
-              желание
-            </Button>
+      {isOwner ? (
+        <>
+          <Section>
+            <hr />
           </Section>
-        </Section>
+          <Section align_items="right" padding_bot_size="lg" padding_top_size="md">
+            <Section items_direction="row" withoutPad isFit>
+              {wish.wishStatusId == 2 && wish.bookedByUser ? (
+                <Button variant="text" icon="check_circle" onClick={() => handleComplete(wish.id)}>
+                  выполнено
+                </Button>
+              ) : wish.wishStatusId == 3 ? (
+                <Button variant="text" icon="cancel" onClick={() => handleUncomplete(wish.id)} color="error">
+                  не выполнено
+                </Button>
+              ) : null}
+
+              <Button variant="text" icon="edit" onClick={() => handleEdit(wish.id)}></Button>
+              <Button variant="text" icon="delete" color="error" onClick={() => handleDelete(wish.id)}></Button>
+            </Section>
+          </Section>
+        </>
       ) : null}
     </>
   )

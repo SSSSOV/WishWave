@@ -11,7 +11,7 @@ type rail_configuration = "default" | "with_menu" | "with_FAB" | "with_menu&FAB"
 export default function NavigationRail({
   pages,
   FAB,
-  FAB_label,
+  FAB_hasShadow,
   FAB_icon,
   FAB_size,
   FAB_color,
@@ -19,6 +19,7 @@ export default function NavigationRail({
 }: {
   pages: PageConfig[]
   FAB?: boolean
+  FAB_hasShadow?: boolean
   FAB_label?: string
   FAB_icon?: string
   FAB_size?: FAB_size

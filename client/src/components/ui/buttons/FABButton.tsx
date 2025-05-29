@@ -9,6 +9,7 @@ export interface IFABButton {
   label?: string
   button_size?: FAB_size
   button_color?: FAB_color
+  hasShadow?: boolean
   onClick?: MouseEventHandler<HTMLButtonElement>
 }
 
@@ -22,6 +23,8 @@ export default function FABButton(props: IFABButton) {
   if (props.button_color == "secondary") button_classes.push(style.FAB_secondary)
   else if (props.button_color == "tertiary") button_classes.push(style.FAB_tertiary)
   else button_classes.push(style.FAB_primary)
+
+  if (props.hasShadow) button_classes.push(style.FAB_shadow)
 
   return (
     <button onClick={props.onClick} className={button_classes.join(" ")}>

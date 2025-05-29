@@ -36,5 +36,10 @@ export interface IUpdateInfoFx {
   gender?: gender
 }
 
+export interface IUpdatePasswordFx {
+  oldPassword: string
+  newPassword: string
+}
+
 /**Тип пола */
 export type gender = "male" | "female"

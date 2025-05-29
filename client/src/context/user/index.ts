@@ -2,7 +2,7 @@
 
 import api from "@/api"
 import { ISignInFx, ISignUpFx } from "@/types/auth"
-import { IUpdateInfoFx, IUser } from "@/types/user"
+import { IUpdateInfoFx, IUpdatePasswordFx, IUser } from "@/types/user"
 import { AxiosError } from "axios"
 import { createDomain, createEffect, createEvent, createStore, sample } from "effector"
 import { jwtDecode } from "jwt-decode"
@@ -20,6 +20,7 @@ export const handleSignIn = createEvent<ISignInFx>()
 export const handleSignUp = createEvent<ISignUpFx>()
 export const handleFetchUser = createEvent<number | null>()
 export const handleUpdateInfo = createEvent<IUpdateInfoFx>()
+export const handleUpdatePassword = createEvent<IUpdatePasswordFx>()
 export const handleCheckAuth = createEvent()
 export const handleLogeOut = createEvent()
 
@@ -137,6 +138,8 @@ export const updateInfoFx = createEffect(async ({ fullname, birthday, phone, ima
   }
 
   try {
+    console.log({ fullname, birthDate: birthday, phone, image, gender })
+
     const { data } = await api.patch(
       "/api/user/",
       { fullname, birthDate: birthday, phone, image, gender },
@@ -165,6 +168,34 @@ export const updateInfoFx = createEffect(async ({ fullname, birthday, phone, ima
 
     toast.success("Изменения сохранены!")
     return userData
+  } catch (error) {
+    if (error instanceof AxiosError) toast.error(error.response?.data.message)
+    else toast.error("Ошибка сохранения: " + error)
+    throw error
+  }
+})
+
+export const updatePasswordFx = createEffect(async (props: IUpdatePasswordFx) => {
+  const token = localStorage.getItem("auth")
+
+  if (!token) {
+    handleSetAuth(false)
+    return null
+  }
+
+  try {
+    const { data } = await api.patch("/api/user/password", props, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
+    })
+
+    console.log(data)
+
+    if (data.warningMessage) {
+      toast.error(data.warningMessage)
+      return null
+    }
+
+    toast.success("Изменения сохранены!")
   } catch (error) {
     if (error instanceof AxiosError) toast.error(error.response?.data.message)
     else toast.error("Ошибка сохранения: " + error)
@@ -237,6 +268,10 @@ sample({
 sample({
   clock: handleUpdateInfo,
   target: updateInfoFx,
+})
+sample({
+  clock: handleUpdatePassword,
+  target: updatePasswordFx,
 })
 sample({
   clock: handleFetchUser,

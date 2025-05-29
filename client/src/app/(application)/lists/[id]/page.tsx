@@ -126,19 +126,20 @@ export default function WishListPage() {
         </List>
       </Section>
       {isOwner ? (
-        <Section align_items="right">
-          <Section items_direction="row" withoutPad isFit>
-            <Button variant="text" icon="add" onClick={() => router.push(`/add/?listId=${id}`)}>
-              Желание
-            </Button>
-            <Button variant="text" icon="edit" onClick={handleEdit}>
-              Список
-            </Button>
-            <Button variant="text" icon="delete" color="error" onClick={handleDelete}>
-              Список
-            </Button>
+        <>
+          <Section>
+            <hr />
           </Section>
-        </Section>
+          <Section align_items="right">
+            <Section items_direction="row" withoutPad isFit>
+              <Button variant="text" icon="add" onClick={() => router.push(`/add/?listId=${id}`)}>
+                Желание
+              </Button>
+              <Button variant="text" icon="edit" onClick={handleEdit}></Button>
+              <Button variant="text" icon="delete" color="error" onClick={handleDelete}></Button>
+            </Section>
+          </Section>
+        </>
       ) : null}
       <Section>
         <hr />
