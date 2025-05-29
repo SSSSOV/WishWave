@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { BugReport } from './bugreport.model';
 import { CreateBugReportDto } from './dto/create-bugreport.dto';
+import { UpdateBugReportDto } from './dto/update-bugreport.dto';
 
 @Injectable()
 export class BugreportService {
@@ -23,5 +24,32 @@ export class BugreportService {
 
     async findByUser(userId: number): Promise<BugReport[]> {
         return this.BugRepository.findAll({where: {userId}});
+    }
+
+    async update (id: number, dto: UpdateBugReportDto, userId): Promise<BugReport> {
+        const br = await this.BugRepository.findByPk(id);
+        if (!br) {
+            throw new NotFoundException('Баг-репорт не найден')
+        }
+
+        if (br.userId !== userId) {
+            throw new ForbiddenException('Редактировать может только автор')
+        }
+
+        const updateData: Record<string, any> = {};
+
+        if (dto.hasOwnProperty('title')) {
+            updateData.title = dto.title;
+        }
+        if (dto.hasOwnProperty('description')) {
+            updateData.description = dto.description;
+        }
+        if (dto.hasOwnProperty('email')) {
+            updateData.email = dto.email;
+        }
+
+        br.set(updateData);
+        await br.save;
+        return br;
     }
 }

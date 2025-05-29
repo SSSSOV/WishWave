@@ -6,5 +6,6 @@ export class BugReportResponseDto {
     @ApiProperty() description: string;
     @ApiProperty() email: string;
     @ApiPropertyOptional() userId?: number;
-    @ApiProperty() createdAt: Date;
+    @ApiProperty() createdAt: string;
+    @ApiProperty() updatedAt?: string;
 }
