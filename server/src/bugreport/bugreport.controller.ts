@@ -15,9 +15,11 @@ export class BugreportController {
     async create(@Body() dto: CreateBugReportDto, @Req() req): Promise<BugReportResponseDto> {
         const userId = req.user?.id ?? null;
         const br = await this.bugService.create(dto, userId);
-        const {id, title, description, email, userId: uid, createdAt, updatedAt} = br.get({plain:true});
+        const full = await this.bugService.findById(br.id);
+        const p = full.get({plain: true}) as any;
+        const owner = p.user ? {id: p.user.id, fullname: p.user.fullname, login: p.user.login, image: p.user.image} : null;
 
-        return {id, title, description, email, ...(uid != null && uid !== null ? {userId: uid} : {}), createdAt, updatedAt};
+        return {id: p.id, title: p.title, description: p.description, email: p.email, owner, createdAt: p.createdAt, updatedAt: p.updatedAt};
     }
 
     @Get('all')
@@ -28,8 +30,9 @@ export class BugreportController {
         }
 
         const rows = await this.bugService.findAll();
-        return rows.map(br => {const {id, title, description, email, userId, createdAt, updatedAt} = br.get({plain: true});
-            return {id, title, description, email, ...(userId != null && {userId}), createdAt, updatedAt} as BugReportResponseDto});
+        return rows.map(br => {const p = br.get({plain: true}) as any;
+            const owner = p.user ? {id: p.user.id, fullname: p.user.fullname, login: p.user.login, image: p.user.image} : null;
+                return {id: p.id, title: p.title, description: p.description, email: p.email, owner, createdAt: p.createdAt, updatedAt: p.updatedAt};})
     }
 
     @Get()
@@ -38,8 +41,9 @@ export class BugreportController {
         const userId = req.user.id;
         const rows = await this.bugService.findByUser(userId);
         
-        return rows.map(br => {const {id, title, description, email, userId, createdAt, updatedAt} = br.get({plain: true});
-            return {id, title, description, email, ...(userId != null && {userId}), createdAt, updatedAt} as BugReportResponseDto});
+        return rows.map(br => {const p = br.get({plain: true}) as any;
+            const owner = p.user ? {id: p.user.id, fullname: p.user.fullname, login: p.user.login, image: p.user.image} : null;
+                return {id: p.id, title: p.title, description: p.description, email: p.email, owner, createdAt: p.createdAt, updatedAt: p.updatedAt};})
     }
 
     @Get(':id')
@@ -53,7 +57,9 @@ export class BugreportController {
         }
 
         const p = br.get({plain: true}) as any;
-        return {id: p.id, title: p.title, description: p.description, email: p.email, ...(p.userId != null ? {userId: p.userId} : {}), createdAt: p.createdAt, updatedAt: p.updatedAt};
+        const owner = p.user ? {id: p.user.id, fullname: p.user.fullname, login: p.user.login, image: p.user.image} : null;
+
+        return {id: p.id, title: p.title, description: p.description, email: p.email, owner, createdAt: p.createdAt, updatedAt: p.updatedAt};
     }
 
 
@@ -63,8 +69,9 @@ export class BugreportController {
         const userId = req.user.id;
         const updated = await this.bugService.update(id, dto, userId);
         const p = updated.get({plain:true}) as any;
-        
-        return {id: p.id, title: p.title, description: p.description, email: p.email, ...(p.userId != null ? {userId: p.userId} : {}), createdAt: p.createdAt, updatedAt: p.updatedAt};
+        const owner = p.user ? {id: p.user.id, fullname: p.user.fullname, login: p.user.login, image: p.user.image} : null;
+
+        return {id: p.id, title: p.title, description: p.description, email: p.email, owner, createdAt: p.createdAt, updatedAt: p.updatedAt};
     }
 
     @Delete(':id')

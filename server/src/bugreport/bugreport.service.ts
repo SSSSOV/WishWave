@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { BugReport } from './bugreport.model';
 import { CreateBugReportDto } from './dto/create-bugreport.dto';
 import { UpdateBugReportDto } from './dto/update-bugreport.dto';
+import { User } from 'src/users/users.model';
 
 @Injectable()
 export class BugreportService {
@@ -19,11 +20,11 @@ export class BugreportService {
     }
 
     async findAll(): Promise<BugReport[]> {
-        return this.BugRepository.findAll();
+        return this.BugRepository.findAll({include: [{model: User, as: 'user', attributes: ['id', 'fullname', 'login', 'image']}]});
     }
 
     async findByUser(userId: number): Promise<BugReport[]> {
-        return this.BugRepository.findAll({where: {userId}});
+        return this.BugRepository.findAll({where: {userId}, include: [{model: User, as: 'user', attributes: ['id', 'fullname', 'login', 'image']}]});
     }
 
     async update (id: number, dto: UpdateBugReportDto, userId): Promise<BugReport> {
@@ -49,7 +50,8 @@ export class BugreportService {
         }
 
         br.set(updateData);
-        await br.save;
+        await br.save();
+        await br.reload({include: [{ model: User, as: 'user', attributes: ['id','fullname','login','image'] }]});
         return br;
     }
 
@@ -62,11 +64,11 @@ export class BugreportService {
     }
 
     async findById(id: number): Promise<BugReport> {
-        const br = await this.BugRepository.findByPk(id);
+        const br = await this.BugRepository.findByPk(id, {include: [{model: User, as: 'user', attributes: ['id', 'fullname', 'login', 'image']}]});
         if (!br) {
             throw new NotFoundException(`Баг-репорт с id ${id} не найден`);
         }
-        
+
         return br;
     }
 }

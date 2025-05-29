@@ -1,5 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
+export class OwnerInfoDto {
+    @ApiProperty() id: number;
+    @ApiProperty({required: false}) fullname?: string;
+    @ApiProperty() login: string;
+    @ApiProperty({required: false}) image?: string;
+}
+
 export class BugReportResponseDto {
     @ApiProperty() id: number;
     @ApiProperty() title: string;
@@ -8,4 +15,5 @@ export class BugReportResponseDto {
     @ApiPropertyOptional() userId?: number;
     @ApiProperty() createdAt: string;
     @ApiProperty() updatedAt?: string;
+    @ApiProperty({type: () => OwnerInfoDto}) owner?: OwnerInfoDto | null;
 }
