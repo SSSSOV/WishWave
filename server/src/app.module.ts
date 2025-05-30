@@ -30,9 +30,11 @@ import { PublicwishlistModule } from './publicwishlist/publicwishlist.module';
 import { BugreportModule } from './bugreport/bugreport.module';
 import * as path from 'path';
 import { BugReport } from "./bugreport/bugreport.model";
+import { RecommendationController } from './recommendation/recommendation.controller';
+import { RecommendationModule } from './recommendation/recommendation.module';
 
 @Module({
-    controllers: [],
+    controllers: [RecommendationController],
     providers: [SeedService, ProfanityService],
     imports: [
         ConfigModule.forRoot({
@@ -71,6 +73,7 @@ import { BugReport } from "./bugreport/bugreport.model";
         ProfanityModule,
         PublicwishlistModule,
         BugreportModule,
+        RecommendationModule,
       ]
 })
 export class AppModule {}
