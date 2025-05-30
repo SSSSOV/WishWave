@@ -2018,6 +2018,70 @@ Authorization: Bearer <token>
 
 ---
 
+## Recommendation
+
+Для всех маршрутов требуется не заголовок, но он возможен как
+
+```makefile
+Authorization: Bearer <token>
+```
+
+### Get Recommendation List
+
+`GET /api/recommendation`
+Выводить список, состоящий из 30 желаний. Для зарегистрированных пользователей список основан на возрасте и поле, а для незарегестрированных пользователей просто выводится 30 последних созданных желаний.
+
+**Responses:**
+
+- 201:
+
+```json
+[
+    {
+        "id": 26,
+        "name": "плей",
+        "image": "",
+        "price": null,
+        "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+        "UpdatedAt": "2025-05-30T06:11:23.069Z"
+    },
+    {
+        "id": 25,
+        "name": "сони",
+        "image": "",
+        "price": null,
+        "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+        "UpdatedAt": "2025-05-30T06:11:11.106Z"
+    },
+    {
+        "id": 24,
+        "name": "приставка",
+        "image": "",
+        "price": null,
+        "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+        "UpdatedAt": "2025-05-30T06:10:51.408Z"
+    },
+    {
+        "id": 23,
+        "name": "самсунг",
+        "image": "",
+        "price": null,
+        "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+        "UpdatedAt": "2025-05-30T06:10:47.050Z"
+    },
+    {
+        "id": 22,
+        "name": "айфон",
+        "image": "",
+        "price": null,
+        "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+        "UpdatedAt": "2025-05-30T06:10:40.698Z"
+    }
+]
+```
+
+---
+
 ## Role
 
 Для всех защищенных маршрутов требуется заголовок
