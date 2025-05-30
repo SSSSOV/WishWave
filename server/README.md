@@ -30,13 +30,13 @@
 
 Ему возвращается токен, вида:
 
-```json
+```makefile
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImRpbWEiLCJpZCI6MiwiZW1haWwiOiJkaW1hQG1haWwucnUiLCJmdWxsbmFtZSI6bnVsbCwicm9sZXMiOnsiaWQiOjEsInZhbHVlIjoidXNlciIsImRlc2NyaXB0aW9uIjoi0J_QvtC70YzQt9C-0LLQsNGC0LXQu9GMIiwiY3JlYXRlZEF0IjoiMjAyNS0wNS0yN1QxNDo0NToxMi4zNDJaIiwidXBkYXRlZEF0IjoiMjAyNS0wNS0yN1QxNDo0NToxMi4zNDJaIn0sImlhdCI6MTc0ODQxNTQzMCwiZXhwIjoxNzQ4NTAxODMwfQ.MsE_NRgn9sFVkhGEbQ6dqgIKu78ILv8_QOeucTECm3s
 ```
 
 Который подписан секретным ключом, описанным в переменном окружении:
 
-```json
+```makefile
   PORT=5000
   POSTGRES_HOST=localhost
   POSTGRES_USER=postgres
@@ -1141,6 +1141,36 @@ Authorization: Bearer <token>
   "message": "Не удалось найти информацию о другом пользователе",
   "error": "Not Found"
 }
+```
+
+### Get Friends Activity
+
+`GET /api/friend/activity`
+Получить 15 последних друзей, отсортированных по их активности
+
+**Responses:**
+
+- 200:
+
+```json
+[
+    {
+        "id": 3,
+        "login": "dima",
+        "email": "dima@mail.ru",
+        "fullname": null,
+        "image": null,
+        "lastActivity": "2025-05-30T04:30:04.700Z"
+    },
+    {
+        "id": 4,
+        "login": "sanya",
+        "email": "sanya@mail.ru",
+        "fullname": null,
+        "image": null,
+        "lastActivity": "2025-05-30T04:29:10.688Z"
+    }
+]
 ```
 
 ### Send Friend Request
@@ -3563,7 +3593,7 @@ Authorization: Bearer <token>
 ```json
 {
   "name": "string",
-  "accesslevelId": 1,            // 1–private, 2–friends, 3–linkOnly, 4–public
+  "accesslevelId": 1,
   "description?": "string",       
   "eventDate?": "dd.mm.yyyy"      
 }

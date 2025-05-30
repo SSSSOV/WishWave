@@ -30,6 +30,14 @@ export class FriendController {
             return {id: plain.id, friendStatusId: plain.friendstatusId, createdAt: plain.createdAt, updatedAt: plain.updatedAt, sender: plain.senderUser, recipient: plain.recipientUser}});
     }
 
+    @Get('activity')
+    async getByLastActivity(@Req() req) {
+        const userId = req.user.id;
+        const friendsWithActivity = await this.friendService.getFriendsByLastActivity(userId);
+
+        return friendsWithActivity.slice(0, 15).map(({user, lastActivity}) => ({id: user.id, login: user.login, email: user.email, fullname: user.fullname, image: user.image, lastActivity}));
+    }
+
     @Patch('request/:requestId/accept')
     async accept(@Param('requestId') id: number, @Req() req) {
         const fr = await this.friendService.acceptedRequest(req.user.id, id);
