@@ -30,13 +30,13 @@
 
 Ему возвращается токен, вида:
 
-```json
+```makefile
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImRpbWEiLCJpZCI6MiwiZW1haWwiOiJkaW1hQG1haWwucnUiLCJmdWxsbmFtZSI6bnVsbCwicm9sZXMiOnsiaWQiOjEsInZhbHVlIjoidXNlciIsImRlc2NyaXB0aW9uIjoi0J_QvtC70YzQt9C-0LLQsNGC0LXQu9GMIiwiY3JlYXRlZEF0IjoiMjAyNS0wNS0yN1QxNDo0NToxMi4zNDJaIiwidXBkYXRlZEF0IjoiMjAyNS0wNS0yN1QxNDo0NToxMi4zNDJaIn0sImlhdCI6MTc0ODQxNTQzMCwiZXhwIjoxNzQ4NTAxODMwfQ.MsE_NRgn9sFVkhGEbQ6dqgIKu78ILv8_QOeucTECm3s
 ```
 
 Который подписан секретным ключом, описанным в переменном окружении:
 
-```json
+```makefile
   PORT=5000
   POSTGRES_HOST=localhost
   POSTGRES_USER=postgres

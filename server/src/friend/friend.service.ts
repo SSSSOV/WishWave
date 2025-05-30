@@ -3,7 +3,10 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Friend } from './friend.model';
 import { FriendStatus } from 'src/friendstatus/friendstatus.model';
 import { User } from 'src/users/users.model';
-import { Op } from 'sequelize';
+import { Model, Op } from 'sequelize';
+import { WishList } from 'src/wishlist/wishlist.model';
+import { Wish } from 'src/wish/wish.model';
+import { AccessLevel } from 'src/accesslevel/accesslevel.model';
 
 @Injectable()
 export class FriendService {
@@ -163,5 +166,29 @@ export class FriendService {
             {sender: userA, recipient: userB}, {sender: userB, recipient: userA}
         ]}});
         return !!fr;
+    }
+
+    async getFriendsByLastActivity(userId: number) {
+        const acceptedId = await this.getStatusId('accepted');
+
+        const raw = await this.friendRepository.findAll({where: {friendstatusId: acceptedId, [Op.or]: [{ sender: userId }, { recipient: userId }],}, attributes: ['sender','recipient'], raw: true});
+        const friendIds = Array.from(new Set(raw.map(r => r.sender === userId ? r.recipient : r.sender)));
+        if (!friendIds.length) {
+            return [];
+        }
+
+        const friends = await this.userRepository.findAll({ where: { id: friendIds }, include: [{model: WishList, as: 'wishlist', include: [ { model: AccessLevel, as: 'accesslevel', attributes: ['name'] }, { model: Wish, as: 'wishes' }]}]});
+        type PlainWL = { updatedAt: Date; wishes?: Array<{ updatedAt: Date }>; accesslevel?: { name: string }};
+        const plain = friends.map(f => f.get({ plain: true }) as any & { wishlist: PlainWL[] });
+        const withActivity = plain.map(u => {const allowed = u.wishlist.filter(wl => wl.accesslevel?.name === 'public' || wl.accesslevel?.name === 'friends');
+            const timestamps = [ ...allowed.map(wl => wl.updatedAt.getTime()), ...allowed.flatMap(wl => (wl.wishes ?? []).map(w => w.updatedAt.getTime()))];
+            if (!timestamps.length) {
+                return null;
+            }
+
+            return { user: u,lastActivity: new Date(Math.max(...timestamps))};
+        }).filter((x): x is { user: typeof plain[0]; lastActivity: Date } => x != null).sort((a,b) => b.lastActivity.getTime() - a.lastActivity.getTime());
+
+        return withActivity;
     }
 }
