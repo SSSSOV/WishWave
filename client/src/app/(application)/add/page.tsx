@@ -34,7 +34,7 @@ export default function AddPage() {
   const [image, setImage] = useState("")
   const [list, setList] = useState<number>(0)
   const [name, setName] = useState("")
-  const [price, setPrice] = useState<number>(0)
+  const [price, setPrice] = useState<string>("")
   const [link, setLink] = useState("")
   const [selectedOption, setSelectedOption] = useState<OptionType | null>(null)
   const [options, setOptions] = useState<OptionType[]>([])
@@ -52,6 +52,13 @@ export default function AddPage() {
         })
         return
       }
+      if (selectedOption.value == 0) {
+        toast("Сначала создайте список", {
+          icon: "⚠️",
+        })
+        router.push("lists/add")
+        return
+      }
 
       if (!name) {
         toast("Пожалуйста, введите название", {
@@ -60,11 +67,16 @@ export default function AddPage() {
         return
       }
 
-      createWish({ listId: selectedOption?.value, name: name, price: price, productLink: link, image: image })
+      createWish({ listId: selectedOption?.value, name: name, price: price ? Number(price) : undefined, productLink: link, image: image })
       router.back()
     } catch (error) {
       console.log(error)
     }
+  }
+
+  const handleCancel = (e: React.FormEvent) => {
+    e.preventDefault()
+    router.back()
   }
 
   // Еффекты
@@ -108,15 +120,7 @@ export default function AddPage() {
               setName(e.target.value)
             }}
           />
-          <Input
-            labelText="Цена"
-            value={price}
-            type="number"
-            onChange={(e) => {
-              setPrice(Number(e.target.value))
-            }}
-            trailingIcon="currency_ruble"
-          />
+          <Input labelText="Цена" value={price} onChange={(e) => setPrice(e.target.value.replace(/[^0-9]/g, ""))} trailingIcon="currency_ruble" />
           <Input
             labelText="Ссылка на маркетплейс"
             value={link}
@@ -140,7 +144,7 @@ export default function AddPage() {
         </Section>
         <Section align_items="right" padding_bot_size="lg">
           <Section items_direction="row" isFit withoutPad>
-            <Button variant="text" type="reset">
+            <Button variant="text" onClick={handleCancel}>
               Отмена
             </Button>
             <Button variant="filled" type="submit">

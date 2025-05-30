@@ -5,6 +5,7 @@ import Input from "@/components/ui/inputs/Input"
 import Monogram from "@/components/ui/monogram/Monogram"
 import Section from "@/components/ui/section/Section"
 import { $wish, handleSetWish, handleUpdateWish } from "@/context/wish"
+import { IUpdateWish } from "@/types/wish"
 import { useUnit } from "effector-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -14,26 +15,33 @@ export default function EditWishPage() {
   const router = useRouter()
 
   // Контекст
-  const [wish, updateWish, setWish] = useUnit([$wish, handleUpdateWish, handleSetWish])
+  const [wish, updateWish] = useUnit([$wish, handleUpdateWish])
 
   // Переменные
-  const [name, setName] = useState("")
-  const [price, setPrice] = useState(0)
-  const [productLink, setProductLink] = useState("")
-  const [image, setImage] = useState("")
+  const [name, setName] = useState<string>("")
+  const [price, setPrice] = useState<string>("")
+  const [productLink, setProductLink] = useState<string>("")
+  const [image, setImage] = useState<string>("")
 
   // Эффекты
   useEffect(() => {
-    setName(wish.name)
-    setPrice(wish.price ? wish.price : 0)
-    setProductLink(wish.productLink ? wish.productLink : "")
-  }, [])
+    if (wish) {
+      setName(wish.name || "")
+      setPrice(wish.price?.toString() || "") // Конвертируем число в строку
+      setProductLink(wish.productLink || "")
+    }
+  }, [wish])
 
   // Обработчики
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      updateWish({ id: wish.id, name: name, price: price, productLink: productLink, image: image })
+      updateWish({
+        id: wish.id,
+        name,
+        price: price ? Number(price) : wish.price ? 0 : undefined, // Конвертируем обратно в число
+        productLink: productLink || undefined,
+      } as IUpdateWish)
       router.back()
     } catch (error) {
       console.log(error)
@@ -56,7 +64,7 @@ export default function EditWishPage() {
         <Section padding_top_size="lg">
           <Input labelText="Ссылка на изображение" value={image} onChange={(e) => setImage(e.target.value)} />
           <Input labelText="Название" value={name} onChange={(e) => setName(e.target.value)} />
-          <Input labelText="Цена" value={price} onChange={(e) => setPrice(Number(e.target.value))} type="number" trailingIcon="currency_ruble" />
+          <Input labelText="Цена" value={price} onChange={(e) => setPrice(e.target.value.replace(/[^0-9]/g, ""))} trailingIcon="currency_ruble" />
           <Input labelText="Ссылка на товар" value={productLink} onChange={(e) => setProductLink(e.target.value)} />
         </Section>
 

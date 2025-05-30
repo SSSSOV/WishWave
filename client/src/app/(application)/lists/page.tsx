@@ -76,7 +76,23 @@ export default function ListsPage() {
       <Section>
         <hr />
       </Section>
-      <Section title="Все ваши списки" padding_top_size="xs">
+      <Section>
+        <List withoutPad>
+          <ListItem
+            condition={1}
+            headline="Нажмите, чтобы посмотреть"
+            overline="забронированные вами желания"
+            trailing_type="icon"
+            onClick={() => {
+              router.push("booked/")
+            }}
+          />
+        </List>
+      </Section>
+      <Section>
+        <hr />
+      </Section>
+      <Section title={search ? "Найденные списки" : "Все ваши списки"} padding_top_size="xs" title_size="sm">
         <List withoutPad>
           {shownLists && shownLists.length > 0 ? (
             sortWishListsByDate(shownLists, "asc").map((list) => {

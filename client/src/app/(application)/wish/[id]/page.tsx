@@ -6,11 +6,16 @@ import ListItem, { icon_color } from "@/components/ui/list/ListItem"
 import Loader from "@/components/ui/loader/Loader"
 import Monogram from "@/components/ui/monogram/Monogram"
 import Section from "@/components/ui/section/Section"
-import { $wish, handleDeleteWish, handleFetchWish } from "@/context/wish"
+import { $wish, handleBookWish, handleCompleteWish, handleDeleteWish, handleFetchWish, handleUnbookWish } from "@/context/wish"
+import { usePageTitle } from "@/hooks/usePageTitle"
+import { getInitials } from "@/lib/utils/getInitials"
+import { hasNameContent } from "@/lib/utils/hasNameContent"
+import { IUser } from "@/types/user"
 import { IWish } from "@/types/wish"
 import { useUnit } from "effector-react"
+import { jwtDecode } from "jwt-decode"
 import { useParams, useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 
 export default function WishPage() {
@@ -19,9 +24,21 @@ export default function WishPage() {
 
   // Переменные
   const { id, shareToken } = useParams() // Получаем ID из URL
+  const [isOwner, setIsOwner] = useState(false)
+  const [isBooker, setBooker] = useState(true)
+  const [isCopied, setIsCopied] = useState(false)
 
   // Стор
-  const [wish, fetchWish, deleteWish] = useUnit([$wish, handleFetchWish, handleDeleteWish])
+  const [wish, fetchWish, deleteWish, bookWish, unbookWish, completeWish] = useUnit([
+    $wish,
+    handleFetchWish,
+    handleDeleteWish,
+    handleBookWish,
+    handleUnbookWish,
+    handleCompleteWish,
+  ])
+
+  usePageTitle(wish ? wish.name : "Желание")
 
   // Эффекты
 
@@ -29,28 +46,81 @@ export default function WishPage() {
     fetchWish({ id: Number(id), shareToken: String(shareToken) })
   }, [])
 
+  useEffect(() => {
+    if (wish) console.log(wish)
+  }, [wish])
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && wish) {
+      const authToken = localStorage.getItem("auth")
+      if (authToken && wish.owner) {
+        const userId = jwtDecode<IUser>(authToken).id
+        setIsOwner(wish.owner.id === userId)
+        if (wish.bookedByUser) setBooker(wish.bookedByUser.id === userId)
+      }
+    }
+  }, [wish])
+
   // Обработчики
 
   const handleOpenProduct = (url: string) => {
     window.open(url, "_blank")?.focus()
   }
 
-  const handleEdit = () => {
-    router.push(`/wish/${wish.id}/edit`)
+  const handleEdit = (id: number) => {
+    router.push(`/wish/${id}/edit`)
   }
 
-  const handleDelete = () => {
-    deleteWish(wish.id)
+  const handleDelete = (id: number) => {
+    deleteWish(id)
     router.back()
   }
 
   const handleCopyToClipboard = async (text: string) => {
+    if (!text) return
+
     try {
-      await navigator.clipboard.writeText(text)
-      toast.success("Успешно скопировано!")
+      // Создаем временный input элемент
+      const tempInput = document.createElement("input")
+      tempInput.value = String(text)
+      document.body.appendChild(tempInput)
+      tempInput.select()
+
+      // Пробуем использовать современный API
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(String(text))
+      }
+      // Fallback для старых браузеров
+      else {
+        document.execCommand("copy")
+      }
+
+      document.body.removeChild(tempInput)
+      toast.success("Название успешно скопировано!")
+
+      setIsCopied(true)
+      setTimeout(() => setIsCopied(false), 2000)
     } catch (err) {
-      toast.error("Не удалось скопировать: " + err)
+      toast.error("Не удалось скопировать название")
+      console.error("Copy error:", err)
     }
+  }
+
+  const handleBook = async (id: number) => {
+    bookWish(id)
+    toast.success("Успешно забронировано!")
+  }
+  const handleUnbook = async (id: number) => {
+    unbookWish(id)
+    toast.success("Успешно разбронировано!")
+  }
+  const handleComplete = async (id: number) => {
+    completeWish(id)
+    toast.success("Успешно завершено!")
+  }
+  const handleUncomplete = async (id: number) => {
+    unbookWish(id)
+    toast.success("Статус изменен!")
   }
 
   const colors = ["primary", "secondary", "tertiary"]
@@ -74,6 +144,16 @@ export default function WishPage() {
       </Section>
       <Section>
         <List withoutPad>
+          {wish && wish.owner && !isOwner ? (
+            <ListItem
+              condition={2}
+              leading_type={wish.owner.image && wish.owner.image != "" ? "image" : hasNameContent(wish.owner.fullname) ? "monogram" : "icon"}
+              leading={hasNameContent(wish.owner.fullname) ? getInitials(wish.owner.fullname) : "person"}
+              url={wish.owner.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wish.owner.image : ""}
+              headline={wish.owner.fullname ? (hasNameContent(wish.owner.fullname) ? wish.owner.fullname : wish.owner.login) : wish.owner.login}
+              overline="владелец желания"
+            />
+          ) : null}
           <ListItem
             condition={2}
             headline={wish.name}
@@ -82,10 +162,10 @@ export default function WishPage() {
             }}
             trailing_type="icon"
             trailing_color="primary"
-            trailing="content_copy"
+            trailing={isCopied ? "check" : "content_copy"}
             overline="название"
           />
-          <ListItem condition={2} headline={String(wish.price) + " руб."} overline="цена" />
+          <ListItem condition={2} headline={wish.price ? String(wish.price) + " руб." : "Не указано"} overline="цена" />
           {wish.productLink ? (
             <ListItem
               condition={2}
@@ -99,25 +179,134 @@ export default function WishPage() {
           ) : (
             <ListItem condition={2} headline={wish.productLink ? wish.productLink : "Не указано"} overline="ссылка" />
           )}
-          <ListItem
-            condition={2}
-            headline={"Нажмите, чтобы забронировать"}
-            overline="бронирование"
-            trailing_type="icon"
-            trailing="radio_button_unchecked"
-          />
+          {wish ? (
+            wish.wishStatusId == 1 ? ( // Если желание не забронировано
+              <ListItem
+                condition={2}
+                headline={"Нажмите, чтобы забронировать"}
+                overline="бронирование"
+                trailing_type="icon"
+                trailing="radio_button_unchecked"
+                onClick={() => handleBook(wish.id)}
+              />
+            ) : wish.wishStatusId == 2 && wish.bookedByUser && !isBooker && !isOwner ? ( // Если желание забронировано но не пользователем
+              <ListItem
+                condition={2}
+                leading_type={
+                  wish.bookedByUser.image && wish.bookedByUser.image != ""
+                    ? "image"
+                    : hasNameContent(wish.bookedByUser.fullname)
+                    ? "monogram"
+                    : "icon"
+                }
+                leading={hasNameContent(wish.bookedByUser.fullname) ? getInitials(wish.bookedByUser.fullname) : "person"}
+                url={wish.bookedByUser.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wish.bookedByUser!.image : ""}
+                headline={
+                  (wish.bookedByUser.fullname
+                    ? hasNameContent(wish.bookedByUser.fullname)
+                      ? wish.bookedByUser.fullname
+                      : wish.bookedByUser.login
+                    : wish.bookedByUser.login) + " забронировал"
+                }
+                overline="бронирование"
+                trailing_type="icon"
+                trailing_color="tertiary"
+                trailing="radio_button_checked"
+              />
+            ) : wish.wishStatusId == 2 && wish.bookedByUser && isBooker && !isOwner ? ( // Если желание забронировано пользователем
+              <ListItem
+                condition={2}
+                leading_type={
+                  wish.bookedByUser.image && wish.bookedByUser.image != ""
+                    ? "image"
+                    : hasNameContent(wish.bookedByUser.fullname)
+                    ? "monogram"
+                    : "icon"
+                }
+                leading={hasNameContent(wish.bookedByUser.fullname) ? getInitials(wish.bookedByUser.fullname) : "person"}
+                url={wish.bookedByUser.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wish.bookedByUser.image : ""}
+                headline={"Вы забронировали"}
+                onClick={() => {
+                  handleUnbook(wish.id)
+                }}
+                overline="бронирование"
+                trailing_type="icon"
+                trailing_color="error"
+                trailing="cancel"
+              />
+            ) : wish.wishStatusId == 2 && wish.bookedByUser && isOwner ? ( // Если желание забронировано и смотрит владелец
+              <ListItem
+                condition={2}
+                leading_type={
+                  wish.bookedByUser.image && wish.bookedByUser.image != ""
+                    ? "image"
+                    : hasNameContent(wish.bookedByUser.fullname)
+                    ? "monogram"
+                    : "icon"
+                }
+                leading={hasNameContent(wish.bookedByUser.fullname) ? getInitials(wish.bookedByUser.fullname) : "person"}
+                url={wish.bookedByUser.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wish.bookedByUser.image : ""}
+                headline={"Вы забронировали"}
+                onClick={() => {
+                  handleUnbook(wish.id)
+                }}
+                overline="бронирование"
+                trailing_type="icon"
+                trailing_color="error"
+                trailing="cancel"
+              />
+            ) : wish.wishStatusId == 3 && wish.bookedByUser ? (
+              <ListItem
+                condition={2}
+                leading_type={
+                  wish.bookedByUser.image && wish.bookedByUser.image != ""
+                    ? "image"
+                    : hasNameContent(wish.bookedByUser.fullname)
+                    ? "monogram"
+                    : "icon"
+                }
+                leading={hasNameContent(wish.bookedByUser.fullname) ? getInitials(wish.bookedByUser.fullname) : "person"}
+                url={wish.bookedByUser.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wish.bookedByUser.image : ""}
+                headline={
+                  (wish.bookedByUser.fullname
+                    ? hasNameContent(wish.bookedByUser.fullname)
+                      ? wish.bookedByUser.fullname
+                      : wish.bookedByUser.login
+                    : wish.bookedByUser.login) + " выполнил"
+                }
+                overline="бронирование"
+                trailing_type="icon"
+                trailing_color="primary"
+                trailing="check_circle"
+              />
+            ) : null
+          ) : null}
         </List>
       </Section>
-      {/* <Section align_items="right">
-        <Section items_direction="row" withoutPad isFit>
-          <Button variant="text" icon="edit" onClick={handleEdit}>
-            желание
-          </Button>
-          <Button variant="text" icon="delete" color="error" onClick={handleDelete}>
-            желание
-          </Button>
-        </Section>
-      </Section> */}
+
+      {isOwner ? (
+        <>
+          <Section>
+            <hr />
+          </Section>
+          <Section align_items="right" padding_bot_size="lg" padding_top_size="md">
+            <Section items_direction="row" withoutPad isFit>
+              {wish.wishStatusId == 2 && wish.bookedByUser ? (
+                <Button variant="text" icon="check_circle" onClick={() => handleComplete(wish.id)}>
+                  выполнено
+                </Button>
+              ) : wish.wishStatusId == 3 ? (
+                <Button variant="text" icon="cancel" onClick={() => handleUncomplete(wish.id)} color="error">
+                  не выполнено
+                </Button>
+              ) : null}
+
+              <Button variant="text" icon="edit" onClick={() => handleEdit(wish.id)}></Button>
+              <Button variant="text" icon="delete" color="error" onClick={() => handleDelete(wish.id)}></Button>
+            </Section>
+          </Section>
+        </>
+      ) : null}
     </>
   )
 }

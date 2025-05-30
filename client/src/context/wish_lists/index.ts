@@ -58,8 +58,8 @@ export const fetchWishListsFx = createEffect(async (id: number | null) => {
       return null
     }
 
-    console.log("fetchWishListsFx: " + `GET /api/wishlist${id ? `?userId=${id}` : ``}`)
-    console.log(data)
+    // console.log("fetchWishListsFx: " + `GET /api/wishlist${id ? `?userId=${id}` : ``}`)
+    // console.log(data)
 
     return data as IWishList[]
   } catch (error) {
@@ -87,8 +87,9 @@ export const fetchWishListFx = createEffect(async (id: number) => {
       return null
     }
 
-    console.log("fetchWishListFx: " + `GET /api/wishlist${id ? `/${id}` : ``}`)
-    console.log(data)
+    // console.log("fetchWishListFx: " + `GET /api/wishlist${id ? `/${id}` : ``}`)
+    // console.log(data as IWishList)
+
     return data as IWishList
   } catch (error) {
     if (error instanceof AxiosError) toast.error(error.response?.data.message)
@@ -155,7 +156,7 @@ export const updateWishListFx = createEffect(async (params: IUpdateWishList) => 
     return null
   }
   try {
-    const { data } = await api.patch("/api/wishlist/" + params.id, params, {
+    const { data } = await api.patch("/api/wishlist/", params, {
       headers: { Authorization: `Bearer ${token}` },
     })
 
@@ -166,7 +167,8 @@ export const updateWishListFx = createEffect(async (params: IUpdateWishList) => 
 
     return data as IWishList
   } catch (error) {
-    toast.error("Ошибка получения списка желаний: " + error)
+    if (error instanceof AxiosError) toast.error(error.response?.data.message)
+    else toast.error("Ошибка получения списка желаний: " + error)
     throw error
   }
 })

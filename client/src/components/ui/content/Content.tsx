@@ -1,26 +1,26 @@
-import style from "./Content.module.css";
-type top_app_bar_size = "sm" | "md" | "lg" | "none";
-type navigation_type = "bar" | "rail" | "none";
+import style from "./Content.module.css"
+type top_app_bar_size = "sm" | "md" | "lg" | "none"
+type navigation_type = "bar" | "rail" | "none"
 
 export default function Content({
   topBarSize = "sm",
   isScreen = false,
   navigationType = "none",
-  withoutPad = false,
+  withPad = false,
   children,
 }: {
-  topBarSize?: top_app_bar_size;
-  isScreen?: boolean;
-  navigationType?: navigation_type;
-  withoutPad?: boolean;
-  children?: React.ReactNode;
+  topBarSize?: top_app_bar_size
+  isScreen?: boolean
+  navigationType?: navigation_type
+  withPad?: boolean
+  children?: React.ReactNode
 }) {
   return (
     <div
       className={
         style.h +
         " " +
-        (withoutPad ? "" : "") +
+        (withPad ? style.withPad : "") +
         " " +
         (topBarSize == "sm" ? style.top_sm : topBarSize == "md" ? style.top_md : topBarSize == "lg" ? style.top_lg : style.top_none) +
         " " +
@@ -30,5 +30,5 @@ export default function Content({
       }>
       {children}
     </div>
-  );
+  )
 }

@@ -1,14 +1,14 @@
 .top_sm {
-  padding-top: 56px;
+  margin-top: 56px;
 }
 .top_md {
-  padding-top: 56px;
+  margin-top: 56px;
 }
 .top_lg {
-  padding-top: 136px;
+  margin-top: 136px;
 }
 .top_none {
-  padding-top: 0px;
+  margin-top: 0px;
 }
 
 .screen {
@@ -20,13 +20,17 @@
 }
 
 .nav_rail {
-  padding-left: 72px;
+  margin-left: 72px;
 }
 .nav_bar {
-  padding-bottom: 84px;
+  margin-bottom: 184px;
 }
 
 .h {
-  min-height: 100vh;
+  min-height: 70vh;
   z-index: 1;
+}
+
+.withPad {
+  padding: var(--xl);
 }
