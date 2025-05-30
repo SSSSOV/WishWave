@@ -1,7 +1,7 @@
 import style from "./Monogram.module.css"
 
 type monogram_size = "xs" | "sm" | "md" | "lg"
-type color = "primary" | "secondary" | "tertiary" | "access" | "warning" | "error" | "none"
+export type color = "primary" | "secondary" | "tertiary" | "access" | "warning" | "error" | "none"
 type monogram_type = "monogram" | "icon" | "image"
 
 export default function Monogram({
@@ -59,6 +59,12 @@ export default function Monogram({
               ? style.secondary
               : color == "tertiary"
               ? style.tertiary
+              : color == "access"
+              ? style.access
+              : color == "warning"
+              ? style.warning
+              : color == "error"
+              ? style.error
               : " ")
           }>
           {monogram_type == "image" ? (

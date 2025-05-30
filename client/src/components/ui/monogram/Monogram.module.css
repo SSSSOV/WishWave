@@ -80,6 +80,18 @@
   background-color: var(--tertiary-container);
   color: var(--on-tertiary-container);
 }
+.access {
+  background-color: var(--access-container);
+  color: var(--on-access-container);
+}
+.warning {
+  background-color: var(--warning-container);
+  color: var(--on-warning-container);
+}
+.error {
+  background-color: var(--error-container);
+  color: var(--on-error-container);
+}
 .none {
   background-color: transparent;
   color: var(--on-primary-container);

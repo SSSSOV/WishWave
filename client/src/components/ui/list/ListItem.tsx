@@ -1,6 +1,6 @@
 "use client"
 import { DOMAttributes, MouseEventHandler } from "react"
-import Monogram from "../monogram/Monogram"
+import Monogram, { color } from "../monogram/Monogram"
 import style from "./ListItem.module.css"
 
 type list_item_leading = "monogram" | "icon" | "image"
@@ -12,10 +12,10 @@ type ListItemProps = {
   nowrap?: boolean
   condition: number
   leading_type?: list_item_leading
-  leading_color?: icon_color
+  leading_color?: color
   leading?: string
   trailing_type?: list_item_trailing
-  trailing_color?: icon_color
+  trailing_color?: color
   trailing?: string
   overline?: string
   headline: string
@@ -55,10 +55,10 @@ export default function ListItem({
         {leading_type ? (
           <div className={style.leading_element}>
             {leading_type == "monogram" ? (
-              <Monogram monogram_type="monogram" letter={leading} isLoading={isLoading} color={color} />
+              <Monogram monogram_type="monogram" letter={leading} isLoading={isLoading} color={leading_color} />
             ) : leading_type == "icon" ? (
               // <span className="material-symbols-rounded">{leading}</span>
-              <Monogram monogram_type="icon" isLoading={isLoading} icon={leading} color={color} />
+              <Monogram monogram_type="icon" isLoading={isLoading} icon={leading} color={leading_color} />
             ) : leading_type == "image" ? (
               <Monogram monogram_type="image" isLoading={isLoading} url={url} />
             ) : (
@@ -121,10 +121,10 @@ export default function ListItem({
       {leading_type ? (
         <div className={style.leading_element}>
           {leading_type == "monogram" ? (
-            <Monogram monogram_type="monogram" letter={leading} isLoading={isLoading} color={color} />
+            <Monogram monogram_type="monogram" letter={leading} isLoading={isLoading} color={leading_color} />
           ) : leading_type == "icon" ? (
             // <span className="material-symbols-rounded">{leading}</span>
-            <Monogram monogram_type="icon" isLoading={isLoading} icon={leading} color={color} />
+            <Monogram monogram_type="icon" isLoading={isLoading} icon={leading} color={leading_color} />
           ) : leading_type == "image" ? (
             <Monogram monogram_type="image" isLoading={isLoading} url={url} />
           ) : (

@@ -16,6 +16,8 @@ export interface IUser {
   phone?: string
   /**Пол пользователя */
   gender?: gender
+  /**Роль пользователя */
+  roleId: number
 }
 /**Интерфейс проверки авторизации */
 export interface ILoginCheckFx {

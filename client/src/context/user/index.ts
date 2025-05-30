@@ -113,6 +113,7 @@ export const fetchUserFx = createEffect(async (id: number | null) => {
       phone: data.phone || undefined,
       birthday: data.birthDate || undefined, // Преобразуем birthDate в birthday
       gender: data.gender || undefined, // Серверные данные не содержат gender
+      roleId: data.roleId,
     }
 
     return userData
@@ -164,6 +165,7 @@ export const updateInfoFx = createEffect(async ({ fullname, birthday, phone, ima
       phone: data.phone || undefined,
       birthday: data.birthDate || undefined, // Преобразуем birthDate в birthday
       gender: data.gender || undefined, // Серверные данные не содержат gender
+      roleId: data.roleId,
     }
 
     toast.success("Изменения сохранены!")
