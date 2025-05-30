@@ -1143,6 +1143,36 @@ Authorization: Bearer <token>
 }
 ```
 
+### Get Friends Activity
+
+`GET /api/friend/activity`
+Получить 15 последних друзей, отсортированных по их активности
+
+**Responses:**
+
+- 200:
+
+```json
+[
+    {
+        "id": 3,
+        "login": "dima",
+        "email": "dima@mail.ru",
+        "fullname": null,
+        "image": null,
+        "lastActivity": "2025-05-30T04:30:04.700Z"
+    },
+    {
+        "id": 4,
+        "login": "sanya",
+        "email": "sanya@mail.ru",
+        "fullname": null,
+        "image": null,
+        "lastActivity": "2025-05-30T04:29:10.688Z"
+    }
+]
+```
+
 ### Send Friend Request
 
 `POST /api/friend/request`
@@ -3563,7 +3593,7 @@ Authorization: Bearer <token>
 ```json
 {
   "name": "string",
-  "accesslevelId": 1,            // 1–private, 2–friends, 3–linkOnly, 4–public
+  "accesslevelId": 1,
   "description?": "string",       
   "eventDate?": "dd.mm.yyyy"      
 }
