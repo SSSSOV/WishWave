@@ -3,8 +3,10 @@
   margin: auto;
   display: flex;
   flex-direction: column;
+}
+
+.bg {
   background-color: var(--surface);
-  /* min-height: 100%; */
 }
 
 .with_pad {

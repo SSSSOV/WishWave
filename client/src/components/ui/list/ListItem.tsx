@@ -23,6 +23,7 @@ type ListItemProps = {
   isLoading?: boolean
   color?: icon_color
   onClick?: MouseEventHandler<HTMLButtonElement>
+  children?: React.ReactNode
 }
 
 export default function ListItem({
@@ -40,6 +41,7 @@ export default function ListItem({
   isLoading = false,
   color = "primary",
   onClick,
+  children,
 }: ListItemProps) {
   if (onClick)
     return (
@@ -105,6 +107,7 @@ export default function ListItem({
         ) : (
           ""
         )}
+        {children}
       </button>
     )
 
@@ -171,6 +174,7 @@ export default function ListItem({
       ) : (
         ""
       )}
+      {children}
     </div>
   )
 }

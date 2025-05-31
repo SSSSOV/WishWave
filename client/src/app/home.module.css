@@ -33,15 +33,15 @@
   border-radius: var(--md);
   padding: var(--sm);
   margin-bottom: var(--md);
-  background-color: var(--secondary-container);
-  color: var(--on-secondary-container);
   transition: 0.5s all;
+  border: 1px solid var(--outline);
 }
 .ul:hover {
   border-radius: var(--sm);
-  background-color: var(--tertiary-container);
-  color: var(--on-tertiary-container);
+  background-color: var(--surface);
+  color: var(--on-surface);
   box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--surface);
 }
 
 .row {

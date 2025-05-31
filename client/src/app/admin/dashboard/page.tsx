@@ -18,8 +18,8 @@ export default function DashboardPage() {
     <>
       <ThemeToggle isAbsolute></ThemeToggle>
       <TopAppBar />
-      <Content topBarSize="sm">
-        <Container>
+      <Content topBarSize="sm" bgColor="none">
+        <Container withoutBg>
           <Section title="Проблемы" padding_top_size="lg">
             <p>Здесь вы можете отследить проблемы работы приложения, а так же возможно опасный контент.</p>
             <List withoutPad>

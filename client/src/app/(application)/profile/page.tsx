@@ -77,7 +77,7 @@ export default function ProfilePage() {
           </Section>
           <Section>
             <hr />
-          </Section>{" "}
+          </Section>
         </>
       ) : null}
       <Section title="Основная информация" title_size="sm">
@@ -94,7 +94,7 @@ export default function ProfilePage() {
             leading_type={user.data!.image && user.data!.image != "" ? "image" : hasNameContent(user.data!.fullname) ? "monogram" : "icon"}
             leading={hasNameContent(user.data!.fullname) ? getInitials(user.data!.fullname) : "person"}
             url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + user.data!.image}
-            headline="Персонализирует ваш аккаунт"
+            headline="Персонализирует аккаунт"
             trailing_type="icon"
             onClick={() => {
               router.push("/profile/image")

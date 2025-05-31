@@ -2,7 +2,7 @@ import React from "react"
 import styles from "./Input.module.css"
 import Button from "../buttons/Button"
 
-export default function Input({
+export default function TextArea({
   leadingIcon,
   trailingIcon,
   labelText,
@@ -19,13 +19,13 @@ export default function Input({
   isFull?: boolean
   isMultiline?: boolean
   id?: string
-} & React.InputHTMLAttributes<HTMLInputElement>) {
+} & React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return (
-    <div className={styles.text_field + " " + (isFull ? styles.w_full : "")}>
+    <div className={styles.textarea_field + " " + (isFull ? styles.w_full : "")}>
       {leadingIcon ? <Button variant="text" icon={leadingIcon}></Button> : ""}
       {/* <span className={"material-symbols-rounded " + styles.icon}>search</span> */}
       <div className={styles.input_container}>
-        <input className={styles.input} id={id} type="text" placeholder=" " {...props} />
+        <textarea className={styles.input} id={id} placeholder=" " {...props} />
 
         <label htmlFor={id} className={styles.label}>
           {labelText}

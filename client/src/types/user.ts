@@ -19,6 +19,19 @@ export interface IUser {
   /**Роль пользователя */
   roleId: number
 }
+
+export interface IJWT {
+  login: string
+  id: number
+  email: string
+  fullname: string
+  roles: {
+    id: number
+    value: string
+    description: string
+  }
+}
+
 /**Интерфейс проверки авторизации */
 export interface ILoginCheckFx {
   /**Токен сессии */

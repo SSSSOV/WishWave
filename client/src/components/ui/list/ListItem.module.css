@@ -25,6 +25,9 @@
   /* padding: 8px 16px; */
   align-items: center;
   width: 100%;
+  border-radius: var(--xs);
+  background-color: var(--surface);
+  padding: 0 var(--md);
 }
 .leading_element,
 .trailing_element {

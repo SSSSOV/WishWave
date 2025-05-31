@@ -169,7 +169,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <>
           <TopAppBar variant="small" />
           <Content navigationType="bar" topBarSize="sm">
-            <Container>{children}</Container>
+            <Container withoutBg>{children}</Container>
           </Content>
           <NavigationBar
             pages={PAGES}

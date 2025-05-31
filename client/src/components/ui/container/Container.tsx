@@ -9,6 +9,7 @@ export default function Container({
   gap = "none",
   withPad = false,
   withRadius = false,
+  withoutBg = false,
   children,
 }: {
   padding_top?: size
@@ -17,12 +18,15 @@ export default function Container({
   gap?: size
   withPad?: boolean
   withRadius?: boolean
+  withoutBg?: boolean
   children?: React.ReactNode
 }) {
   return (
     <div
       className={
         style.container +
+        " " +
+        (withoutBg ? "" : style.bg) +
         " " +
         (padding_top == "none"
           ? ""
