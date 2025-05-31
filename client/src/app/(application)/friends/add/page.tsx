@@ -194,15 +194,15 @@ export default function AddFriendPage() {
           {sentRequests && sentRequests.length > 0
             ? sentRequests.map(({ id, recipient }) => {
                 return (
-                  <Section key={id} items_direction="row" withoutPad align_items="center">
-                    <ListItem
-                      condition={2}
-                      url={recipient.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + recipient.image : ""}
-                      leading_type={recipient.image ? "image" : "icon"}
-                      leading="person"
-                      headline={recipient ? (recipient.fullname ? recipient.fullname : recipient.login) : ""}
-                      overline={recipient ? (recipient.fullname ? recipient.login : "") : ""}
-                    />
+                  // <Section key={id} items_direction="row" withoutPad align_items="center">
+                  <ListItem
+                    key={id}
+                    condition={2}
+                    url={recipient.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + recipient.image : ""}
+                    leading_type={recipient.image ? "image" : "icon"}
+                    leading="person"
+                    headline={recipient ? (recipient.fullname ? recipient.fullname : recipient.login) : ""}
+                    overline={recipient ? (recipient.fullname ? recipient.login : "") : ""}>
                     <Button
                       variant="text"
                       icon="cancel"
@@ -211,7 +211,9 @@ export default function AddFriendPage() {
                         handleCancel(id)
                       }}
                     />
-                  </Section>
+                  </ListItem>
+
+                  // </Section>
                 )
               })
             : "пусто"}

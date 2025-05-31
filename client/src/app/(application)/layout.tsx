@@ -169,7 +169,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <>
           <TopAppBar variant="small" />
           <Content navigationType="bar" topBarSize="sm">
-            <Container>{children}</Container>
+            <Container withoutBg>{children}</Container>
           </Content>
           <NavigationBar
             pages={PAGES}
@@ -196,7 +196,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             FAB_size="sm"></NavigationRail>
           <TopAppBar withRail variant="large" />
           <Content navigationType="rail" topBarSize="lg" withPad>
-            <Container gap="md" withPad>
+            <Container gap="sm" withPad>
               {children}
             </Container>
           </Content>

@@ -51,13 +51,36 @@ export default function ProfilePage() {
         </span>
         <span className={style.body}>{user.data!.login}</span>
       </Section>
-      <Section title="Информация вашего профиля в сервсие WishWave" title_size="md" padding_top_size="lg" padding_bot_size="lg">
+      <Section title="Информация вашего профиля в сервсие WishWave" title_size="md" padding_top_size="lg">
         <span className={style.body}>Здесь можно посмотреть или изменить личную информацию.</span>
       </Section>
       <Section>
         <hr />
       </Section>
-      <Section title="Основная информация" title_size="sm" padding_top_size="lg">
+      {user.data && user.data.roleId == 2 ? (
+        <>
+          <Section>
+            <List withoutPad>
+              <ListItem
+                condition={2}
+                headline="Нажмите, чтобы перейти"
+                leading="shield_person"
+                leading_type="icon"
+                color="tertiary"
+                overline="админ панель"
+                trailing_type="icon"
+                onClick={() => {
+                  router.push("/admin/dashboard")
+                }}
+              />
+            </List>
+          </Section>
+          <Section>
+            <hr />
+          </Section>
+        </>
+      ) : null}
+      <Section title="Основная информация" title_size="sm">
         <span className={style.label}>
           Некоторая информация может быть видна другим пользователям сервиса WishWave.{" "}
           <a className={style.link} href="/documents#terms" target="_blank" rel="noopener noreferrer">
@@ -71,7 +94,7 @@ export default function ProfilePage() {
             leading_type={user.data!.image && user.data!.image != "" ? "image" : hasNameContent(user.data!.fullname) ? "monogram" : "icon"}
             leading={hasNameContent(user.data!.fullname) ? getInitials(user.data!.fullname) : "person"}
             url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + user.data!.image}
-            headline="Персонализирует ваш аккаунт"
+            headline="Персонализирует аккаунт"
             trailing_type="icon"
             onClick={() => {
               router.push("/profile/image")
@@ -117,7 +140,7 @@ export default function ProfilePage() {
           <ListItem
             condition={2}
             overline="пароль"
-            headline={"Нажмите, чтобы изменить"}
+            headline="Нажмите, чтобы изменить"
             trailing_type="icon"
             onClick={() => {
               router.push("/profile/password")
@@ -128,7 +151,7 @@ export default function ProfilePage() {
       <Section>
         <hr />
       </Section>
-      <Section title="Контактная информация" title_size="sm" padding_top_size="lg">
+      <Section title="Контактная информация" title_size="sm">
         <span className={style.label}>
           Эта информация не видна другим пользователям сервиса WishWave.{" "}
           <a className={style.link} href="/documents#terms" target="_blank" rel="noopener noreferrer">
@@ -151,7 +174,7 @@ export default function ProfilePage() {
       <Section>
         <hr />
       </Section>
-      <Section padding_bot_size="lg" align_items="right">
+      <Section padding_bot_size="sm" align_items="right">
         <Section items_direction="row" isFit withoutPad>
           <Button variant="text" color="error" icon="delete">
             Удалить аккаунт

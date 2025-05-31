@@ -1,3 +1,10 @@
 .list {
   padding: 0px 16px;
 }
+.new {
+  border-radius: var(--lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}

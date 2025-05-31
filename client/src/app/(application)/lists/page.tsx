@@ -79,7 +79,7 @@ export default function ListsPage() {
       <Section>
         <List withoutPad>
           <ListItem
-            condition={1}
+            condition={2}
             headline="Нажмите, чтобы посмотреть"
             overline="забронированные вами желания"
             trailing_type="icon"
