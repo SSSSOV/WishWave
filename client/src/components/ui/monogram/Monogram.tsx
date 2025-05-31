@@ -1,3 +1,4 @@
+import { MouseEventHandler } from "react"
 import style from "./Monogram.module.css"
 
 type monogram_size = "xs" | "sm" | "md" | "lg"
@@ -12,6 +13,7 @@ export default function Monogram({
   size = "xs",
   url,
   isLoading,
+  onClick,
 }: {
   monogram_type?: monogram_type
   letter?: string
@@ -20,6 +22,7 @@ export default function Monogram({
   size?: monogram_size
   url?: string
   isLoading?: boolean
+  onClick?: MouseEventHandler<HTMLDivElement>
 }) {
   return (
     <>
@@ -66,7 +69,8 @@ export default function Monogram({
               : color == "error"
               ? style.error
               : " ")
-          }>
+          }
+          onClick={onClick}>
           {monogram_type == "image" ? (
             <img
               src={url}
