@@ -10,6 +10,7 @@ import { UpdateWishDto } from './dto/update-wish.dto';
 import { WishIdDto } from './dto/wish-id.dto';
 import { FUllWIshDto } from './dto/full-wish.dto';
 import { FriendService } from 'src/friend/friend.service';
+import { OptionalJwtAuthGuard } from 'src/auth/optional-jwt-auth.guard';
 
 @Controller('wish')
 export class WishController {
@@ -45,10 +46,10 @@ export class WishController {
         return this.wishService.getBookedFullByUser(userId);
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(OptionalJwtAuthGuard)
     @Get(':id')
     async getWIshById(@Param('id') wishId: number, @Req() req, @Query('token') shareToken?: string | undefined): Promise<FUllWIshDto> {
-        const userId = req.user.id;
+        const userId: number | null = req.user?.id ?? null;
         return this.wishService.getFullWishById(wishId, userId, shareToken)
     }
     

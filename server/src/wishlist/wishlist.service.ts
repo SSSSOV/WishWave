@@ -360,4 +360,9 @@ export class WishlistService {
 
         return this.wishListRepository.findAll({where: {id: accessibleListIds}, attributes: ['id', 'name', 'accesslevelId', 'description', 'eventDate', 'shareToken'], include: [{model: User, as: 'user', attributes: ['id', 'fullname', 'login', 'image']}]});
     }
+
+    async findByIdBare(wishlistId: number): Promise<WishList | null> {
+        return this.wishListRepository.findByPk(wishlistId, {include: [ { model: AccessLevel, as: 'accesslevel', attributes: ['id', 'name'] },
+            { model: User, as: 'user', attributes: ['id', 'fullname', 'login', 'image'] }]})
+    }
 }
