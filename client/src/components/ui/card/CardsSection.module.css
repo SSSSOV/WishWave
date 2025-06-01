@@ -1,0 +1,9 @@
+.cards_section {
+  display: flex;
+  flex-wrap: wrap;
+  /* margin: auto; */
+  gap: var(--sm);
+
+  border-radius: var(--lg);
+  overflow: hidden;
+}
