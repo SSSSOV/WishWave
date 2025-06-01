@@ -10,6 +10,7 @@ import { FileModule } from 'src/file/file.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { WishlistModule } from 'src/wishlist/wishlist.module';
 import { ProfanityModule } from 'src/profanity/profanity.module';
+import { FriendModule } from 'src/friend/friend.module';
 
 @Module({
   providers: [WishService],
@@ -19,7 +20,8 @@ import { ProfanityModule } from 'src/profanity/profanity.module';
     FileModule,
     AuthModule,
     WishlistModule,
-    ProfanityModule
+    ProfanityModule,
+    FriendModule
   ],
   exports: [WishService]
 })
