@@ -194,7 +194,6 @@ export default function AddFriendPage() {
           {sentRequests && sentRequests.length > 0
             ? sentRequests.map(({ id, recipient }) => {
                 return (
-                  // <Section key={id} items_direction="row" withoutPad align_items="center">
                   <ListItem
                     key={id}
                     condition={2}
@@ -212,8 +211,6 @@ export default function AddFriendPage() {
                       }}
                     />
                   </ListItem>
-
-                  // </Section>
                 )
               })
             : "пусто"}
@@ -227,15 +224,13 @@ export default function AddFriendPage() {
           {recivedRequests.length > 0
             ? recivedRequests.map(({ id, sender }) => {
                 return (
-                  <Section key={id} items_direction="row" withoutPad align_items="center">
-                    <ListItem
-                      condition={2}
-                      url={sender.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + sender.image : ""}
-                      leading_type={sender.image ? "image" : "icon"}
-                      leading="person"
-                      headline={sender.fullname ? sender.fullname : sender.login}
-                      overline={sender.fullname ? sender.login : ""}
-                    />
+                  <ListItem
+                    condition={2}
+                    url={sender.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + sender.image : ""}
+                    leading_type={sender.image ? "image" : "icon"}
+                    leading="person"
+                    headline={sender.fullname ? sender.fullname : sender.login}
+                    overline={sender.fullname ? sender.login : ""}>
                     <Button
                       variant="text"
                       icon="check_circle"
@@ -252,7 +247,7 @@ export default function AddFriendPage() {
                         handleReject(id)
                       }}
                     />
-                  </Section>
+                  </ListItem>
                 )
               })
             : "пусто"}

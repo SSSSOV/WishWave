@@ -1,25 +1,25 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
-import { Op } from 'sequelize';
-import { AccessLevel } from 'src/accesslevel/accesslevel.model';
-import { User } from 'src/users/users.model';
-import { Wish } from 'src/wish/wish.model';
-import { WishList } from 'src/wishlist/wishlist.model';
+import { Injectable } from "@nestjs/common"
+import { InjectModel } from "@nestjs/sequelize"
+import { Op } from "sequelize"
+import { AccessLevel } from "src/accesslevel/accesslevel.model"
+import { User } from "src/users/users.model"
+import { Wish } from "src/wish/wish.model"
+import { WishList } from "src/wishlist/wishlist.model"
 
 @Injectable()
 export class RecommendationService {
-    constructor(
-        @InjectModel(Wish) private readonly wishRepository: typeof Wish,
-        @InjectModel(WishList) private readonly wishListRepository: typeof WishList,
-        @InjectModel(AccessLevel) private readonly lvlRepository: typeof AccessLevel,
-        @InjectModel(User) private readonly userRepository: typeof User
-    ) {}
+  constructor(
+    @InjectModel(Wish) private readonly wishRepository: typeof Wish,
+    @InjectModel(WishList) private readonly wishListRepository: typeof WishList,
+    @InjectModel(AccessLevel) private readonly lvlRepository: typeof AccessLevel,
+    @InjectModel(User) private readonly userRepository: typeof User
+  ) {}
 
-    private computeAge(birthDate: string): number {
-        const [y, m, d] = birthDate.split('-').map(Number);
-        const diff = Date.now() - new Date(y, m-1, d).getTime();
-        return Math.floor(diff/(1000*60*60*24*365.25))
-    }
+  private computeAge(birthDate: string): number {
+    const [y, m, d] = birthDate.split("-").map(Number)
+    const diff = Date.now() - new Date(y, m - 1, d).getTime()
+    return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25))
+  }
 
     async getRecomendation(userId?: number): Promise<Wish[]> {
         const publicLevel = await this.lvlRepository.findOne({where: {name: 'public'}});
@@ -49,4 +49,11 @@ export class RecommendationService {
 
         return this.wishRepository.findAll({include: [{model: WishList, as: 'wishlists', where: {accesslevelId: publicId}, attributes: []}], order: [['createdAt', 'DESC']], limit: 30});
     }
+
+    return this.wishRepository.findAll({
+      include: [{ model: WishList, as: "wishlists", where: { accesslevelId: publicId }, attributes: [] }],
+      order: [["updatedAt", "DESC"]],
+      limit: 30,
+    })
+  }
 }

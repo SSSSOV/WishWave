@@ -21,7 +21,6 @@ type ListItemProps = {
   headline: string
   url?: string
   isLoading?: boolean
-  color?: icon_color
   onClick?: MouseEventHandler<HTMLButtonElement>
   children?: React.ReactNode
 }
@@ -39,7 +38,6 @@ export default function ListItem({
   url,
   headline = " ",
   isLoading = false,
-  color = "primary",
   onClick,
   children,
 }: ListItemProps) {
