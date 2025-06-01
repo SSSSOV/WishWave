@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { Wish } from './wish.model';
 import { InjectModel } from '@nestjs/sequelize';
@@ -11,6 +11,7 @@ import { WishlistService } from 'src/wishlist/wishlist.service';
 import { ProfanityService } from 'src/profanity/profanity.service';
 import { BookedByUserDto, FUllWIshDto, ListInfoDto, OwnerInfoDto } from './dto/full-wish.dto';
 import { AccessLevel } from 'src/accesslevel/accesslevel.model';
+import { FriendService } from 'src/friend/friend.service';
 
 @Injectable()
 export class WishService {
@@ -19,8 +20,10 @@ export class WishService {
     private fileService: FileService, 
     @InjectModel(WishListWish) private wishListWishRepository: typeof WishListWish,
     @InjectModel(WishStatus) private wishStatusRepository: typeof WishStatus,
+    @InjectModel(WishList) private wishListRepositore: typeof WishList,
     private readonly wishlistService: WishlistService,
-    private readonly profanity: ProfanityService) {}
+    private readonly profanity: ProfanityService,
+    private readonly friendService: FriendService) {}
 
     async create(dto: CreateWishDto, image: any, listId: number) {
         let fileName: string | null = null;
@@ -311,22 +314,93 @@ export class WishService {
         return {id: pWish.id, name: pWish.name, price: pWish.price, productLink: pWish.productLink, image: pWish.image, wishStatusId: pWish.wishStatusId, createdAt: pWish.createdAt, updatedAt: pWish.updatedAt, shareToken: realShareToken, owner, list, bookedByUser};
     }
 
-    async getFullWishById(wishId, userId, shareToken?: string): Promise<FUllWIshDto> {
-        const link = await this.wishListWishRepository.findOne({where: {wishId}});
+    async getFullWishById(wishId: number, userId: number | null, shareToken?: string, ): Promise<FUllWIshDto> {
+        const link = await this.wishListWishRepository.findOne({ where: { wishId }, attributes: ['wishlistId']});
         if (!link) {
-            throw new NotFoundException('Желание не найдено в списках')
+            throw new NotFoundException('Желание не найдено в списках');
         }
 
-        const wl = await this.wishlistService.getFullById(userId, link.wishlistId, shareToken);
-        const pWl = wl.get({plain: true}) as any;
-        const owner: OwnerInfoDto = {id: pWl.user.id, fullname: pWl.user.fullname, login: pWl.user.login, image: pWl.user.image};
-        const list: ListInfoDto = {id: pWl.id, name: pWl.name, eventDate: pWl.eventDate, accessLevelId: pWl.accesslevelId};
-        const realShareToken = pWl.shareToken || null;
-        const fullWish = await this.wishRepository.findByPk(wishId, {include: [{model: User, as: 'bookedByUser', attributes: ['id', 'fullname', 'login', 'image']}]});
-        const pWish = fullWish?.get({plain: true}) as any;
-        const bookedByUser: BookedByUserDto | null = pWish.bookedByUser ? {id: pWish.bookedByUser.id, fullname: pWish.bookedByUser.fullname, login: pWish.bookedByUser.login, image: pWish.bookedByUser.image} : null;
+        const wlBare = await this.wishlistService.findByIdBare(link.wishlistId);
+        if (!wlBare) {
+            throw new NotFoundException('Список не найден');
+        }
 
-        return {id: pWish.id, name: pWish.name, price: pWish.price, productLink: pWish.productLink, image: pWish.image, wishStatusId: pWish.wishStatusId, createdAt: pWish.createdAt, updatedAt: pWish.updatedAt, shareToken: realShareToken, owner, list, bookedByUser};
+        console.log('>>> wlBare (без доступа к accesslevel):', JSON.stringify(wlBare?.get({ plain: true }), null, 2));
+        if (!wlBare.accesslevelId) {
+            throw new InternalServerErrorException('У списка отсутствует уровень доступа');
+        }
+
+        if (wlBare.accesslevelId === 1) {
+            const fullWish = await this.wishRepository.findByPk(wishId, { include: [ { model: User,as: 'bookedByUser', attributes: ['id', 'fullname', 'login', 'image']}]});
+        
+            if (!fullWish) {
+                throw new NotFoundException('Желание не найдено');
+            }
+
+            const pWish = (fullWish as any).get({ plain: true });
+            const pWlBare = (wlBare as any).get({ plain: true });
+            const owner: OwnerInfoDto = { id: pWlBare.user.id, fullname: pWlBare.user.fullname, login: pWlBare.user.login, image: pWlBare.user.image};
+            const list: ListInfoDto = { id: pWlBare.id, name: pWlBare.name, eventDate: pWlBare.eventDate, accessLevelId: pWlBare.accesslevelId, };
+            const realShareToken = pWlBare.shareToken || null;
+            const bookedByUser: BookedByUserDto | null = pWish.bookedByUser ? { id: pWish.bookedByUser.id,fullname: pWish.bookedByUser.fullname, login: pWish.bookedByUser.login, image: pWish.bookedByUser.image} : null;
+
+            return { id: pWish.id,name: pWish.name,price: pWish.price, productLink: pWish.productLink, image: pWish.image,wishStatusId: pWish.wishStatusId,createdAt: pWish.createdAt, updatedAt: pWish.updatedAt, shareToken: realShareToken, owner, list, bookedByUser, };
+        }
+
+        return this.getFullWishByIdWithAccessCheck(wishId, userId, shareToken);
+    }
+
+    private async getFullWishByIdWithAccessCheck( wishId: number, userId: number | null, shareToken?: string,): Promise<FUllWIshDto> {
+        const link = await this.wishListWishRepository.findOne({ where: { wishId }, attributes: ['wishlistId'], });
+        if (!link) {
+            throw new NotFoundException('Желание не найдено в списках');
+        }
+
+        const wlBare = await this.wishlistService.findByIdBare(link.wishlistId);
+        if (!wlBare) {
+            throw new NotFoundException('Список не найден');
+        }
+
+        const pWlBare = (wlBare as any).get({ plain: true });
+        const ownerId: number = pWlBare.user.id;
+        const lvlName: string = pWlBare.accesslevel.name;
+
+        switch (lvlName) {
+        case 'private':
+            if (ownerId !== userId) {
+                throw new ForbiddenException('Доступ к списку запрещён');
+            }
+            break;
+
+        case 'linkOnly':
+            if (pWlBare.shareToken !== shareToken && ownerId !== userId) {
+                throw new ForbiddenException('Доступ к списку запрещён');
+            }
+            break;
+
+        case 'friends':
+            if (ownerId !== userId) {
+                const areFriends = await this.friendService.areFriends(ownerId, userId!);
+                if (!areFriends) {
+                    throw new ForbiddenException('Доступ к списку разрешён только друзьям');
+                }
+            }
+            break;
+
+        }
+
+        const fullWish = await this.wishRepository.findByPk(wishId, {include: [ { model: User, as: 'bookedByUser', attributes: ['id', 'fullname', 'login', 'image']}]});
+        if (!fullWish) {
+            throw new NotFoundException('Желание не найдено');
+        }
+
+        const pWish = (fullWish as any).get({ plain: true });
+        const owner: OwnerInfoDto = { id: pWlBare.user.id, fullname: pWlBare.user.fullname, login: pWlBare.user.login, image: pWlBare.user.image};
+        const list: ListInfoDto = { id: pWlBare.id, name: pWlBare.name, eventDate: pWlBare.eventDate, accessLevelId: pWlBare.accesslevelId};
+        const realShareToken = pWlBare.shareToken || null;
+        const bookedByUser: BookedByUserDto | null = pWish.bookedByUser ? { id: pWlBare.user.id, fullname: pWish.bookedByUser.fullname,login: pWish.bookedByUser.login, image: pWish.bookedByUser.image} : null;
+
+        return { id: pWish.id,name: pWish.name, price: pWish.price, productLink: pWish.productLink, image: pWish.image, wishStatusId: pWish.wishStatusId, createdAt: pWish.createdAt, updatedAt: pWish.updatedAt, shareToken: realShareToken, owner,list,bookedByUser};
     }
 
     async findAllFullByListIds(listIds: number[], userId: number): Promise<FUllWIshDto[]> {

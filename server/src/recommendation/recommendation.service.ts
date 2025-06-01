@@ -39,7 +39,7 @@ export class RecommendationService {
                 maxDate.setFullYear(now.getFullYear() - minAge);
 
                 const recs = await this.wishRepository.findAll({include: [{model: WishList, as: 'wishlists', where: {accesslevelId: publicId}, attributes: [], 
-                    include: [{model: User, as: 'user', attributes: [], where: {gender: user.gender, birthDate: {[Op.between]: [minDate, maxDate]}}}]}], order: [['updatedAt', 'DESC']], limit: 30});
+                    include: [{model: User, as: 'user', attributes: [], where: {gender: user.gender, birthDate: {[Op.between]: [minDate, maxDate]}}}]}], order: [['createdAt', 'DESC']], limit: 30});
 
                 if (recs.length) {
                     return recs;
@@ -47,6 +47,6 @@ export class RecommendationService {
             }
         }
 
-        return this.wishRepository.findAll({include: [{model: WishList, as: 'wishlists', where: {accesslevelId: publicId}, attributes: []}], order: [['updatedAt', 'DESC']], limit: 30});
+        return this.wishRepository.findAll({include: [{model: WishList, as: 'wishlists', where: {accesslevelId: publicId}, attributes: []}], order: [['createdAt', 'DESC']], limit: 30});
     }
 }

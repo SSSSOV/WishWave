@@ -65,6 +65,9 @@ export class UsersService {
 
     const updatedData: any = {};
     if ('fullname' in dto) {
+      if (dto.fullname && this.profanity.containsProfanity(dto.fullname)) {
+        throw new BadRequestException('Обнаружены запрещенные слова')
+      }
       updatedData.fullname = dto.fullname;
     }
     if ('birthDate' in dto) {
@@ -77,6 +80,13 @@ export class UsersService {
       updatedData.gender = dto.gender;
     }
     if ('socials' in dto) {
+      if (dto.socials) {
+        for (const value of Object.values(dto.socials)) {
+          if (typeof value === 'string' && this.profanity.containsProfanity(value)) {
+            throw new BadRequestException('Обнаружены запрещенные слова')
+          }
+        }
+      }
       updatedData.socials = dto.socials;
     }
     if (image) {

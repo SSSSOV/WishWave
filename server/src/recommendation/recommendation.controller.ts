@@ -12,6 +12,6 @@ export class RecommendationController {
         const userId = req.user?.id;
         const wishes = await this.recommendationService.getRecomendation(userId);
 
-        return wishes.map(w => ({id: w.id, name: w.name, image: w.image, price: w.price, productLink: w.productLink, UpdatedAt: w.updatedAt.toISOString()}));
+        return wishes.map(w => ({id: w.id, name: w.name, image: w.image, price: w.price, productLink: w.productLink, createdAt: w.createdAt.toISOString()}));
     }
 }

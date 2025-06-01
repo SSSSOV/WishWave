@@ -9,11 +9,13 @@ import { WishListWish } from 'src/wishlist/wishlist-wish.model';
 import { UpdateWishDto } from './dto/update-wish.dto';
 import { WishIdDto } from './dto/wish-id.dto';
 import { FUllWIshDto } from './dto/full-wish.dto';
+import { FriendService } from 'src/friend/friend.service';
+import { OptionalJwtAuthGuard } from 'src/auth/optional-jwt-auth.guard';
 
 @Controller('wish')
 export class WishController {
 
-    constructor(private wishService: WishService, private wishlistService: WishlistService, @InjectModel(WishListWish) private wishListWishRepository: typeof WishListWish) {}
+    constructor(private wishService: WishService, private wishlistService: WishlistService, private readonly friendService: FriendService, @InjectModel(WishListWish) private wishListWishRepository: typeof WishListWish) {}
 
     @UseGuards(JwtAuthGuard)
     @Post()
@@ -44,10 +46,10 @@ export class WishController {
         return this.wishService.getBookedFullByUser(userId);
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(OptionalJwtAuthGuard)
     @Get(':id')
     async getWIshById(@Param('id') wishId: number, @Req() req, @Query('token') shareToken?: string | undefined): Promise<FUllWIshDto> {
-        const userId = req.user.id;
+        const userId: number | null = req.user?.id ?? null;
         return this.wishService.getFullWishById(wishId, userId, shareToken)
     }
     
@@ -92,26 +94,38 @@ export class WishController {
 
     @UseGuards(JwtAuthGuard)
     @Patch('book')
-    async bookWish(@Body() dto: WishIdDto,@Req() req): Promise<FUllWIshDto> {
-        const userId = req.user['id'];
+    async bookWish(@Body() dto: WishIdDto, @Req() req): Promise<FUllWIshDto> {
+        const userId = req.user.id as number;
         const wishId = dto.id;
-        const record = await this.wishListWishRepository.findOne({where: {wishId}});
-        if (!record) {
+
+        const link = await this.wishListWishRepository.findOne({ where: { wishId } });
+        if (!link) {
             throw new NotFoundException('Желание не найдено в списках');
         }
-        
+
         const shareToken = req.query.token as string | undefined;
-        const can = await this.wishlistService.canAccessWishList(userId, record.wishlistId, shareToken);
-        if (!can) {
+        const canSee = await this.wishlistService.canAccessWishList(userId, link.wishlistId, shareToken);
+        if (!canSee) {
             throw new ForbiddenException('Нет доступа к бронироваю этого желания');
         }
 
-        const wl = await this.wishlistService.findByIdWithAccess(record.wishlistId);
+        const wl = await this.wishlistService.findByIdWithAccess(link.wishlistId);
         if (!wl) {
             throw new NotFoundException('Список не найден');
         }
 
-       return this.wishService.bookFullWish(wishId, userId, shareToken);
+        const ownerId = wl.userId;
+        const levelId = wl.accesslevelId;
+        const PUBLIC_ID = 1;
+        const FRIENDS_ID = 4;
+        if (ownerId !== null && ownerId !== userId && (levelId === PUBLIC_ID || levelId === FRIENDS_ID)) {
+            const areFriends = await this.friendService.areFriends(ownerId, userId);
+            if (!areFriends) {
+                throw new ForbiddenException('Бронировать можно только если вы в дружбе с владельцем списка');
+            }
+        }
+
+        return this.wishService.bookFullWish(wishId, userId, shareToken);
     }
 
     @UseGuards(JwtAuthGuard)

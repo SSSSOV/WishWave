@@ -2043,7 +2043,7 @@ Authorization: Bearer <token>
         "image": "",
         "price": null,
         "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
-        "UpdatedAt": "2025-05-30T06:11:23.069Z"
+        "createdAt": "2025-05-30T06:11:23.069Z"
     },
     {
         "id": 25,
@@ -2051,15 +2051,15 @@ Authorization: Bearer <token>
         "image": "",
         "price": null,
         "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
-        "UpdatedAt": "2025-05-30T06:11:11.106Z"
+        "createdAt": "2025-05-30T06:11:11.106Z"
     },
     {
         "id": 24,
-        "name": "приставка",
+        "name": "айфон",
         "image": "",
         "price": null,
         "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
-        "UpdatedAt": "2025-05-30T06:10:51.408Z"
+        "createdAt": "2025-05-30T06:10:51.408Z"
     },
     {
         "id": 23,
@@ -2067,15 +2067,15 @@ Authorization: Bearer <token>
         "image": "",
         "price": null,
         "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
-        "UpdatedAt": "2025-05-30T06:10:47.050Z"
+        "createdAt": "2025-05-30T06:10:47.050Z"
     },
     {
         "id": 22,
-        "name": "айфон",
+        "name": "sony",
         "image": "",
-        "price": null,
-        "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
-        "UpdatedAt": "2025-05-30T06:10:40.698Z"
+        "price": 25000,
+        "productLink": null,
+        "createdAt": "2025-05-30T06:10:40.698Z"
     }
 ]
 ```
