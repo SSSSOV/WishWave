@@ -19,6 +19,7 @@ import { $wishLists, handleFetchWishLists } from "@/context/wish_lists"
 import DropdownMenu from "@/components/ui/menu/Menu"
 import { handleDuplicateWish } from "@/context/wish"
 import { $isAuth } from "@/context/user"
+import Footer from "@/components/shared/footer/footer"
 
 export default function MainPage() {
   usePageTitle("Главная")
@@ -134,7 +135,9 @@ export default function MainPage() {
           </DropdownMenu>
         )}
       </Section>
-      <Section></Section>
+      <Section withoutPad>
+        <Footer></Footer>
+      </Section>
     </>
   )
 }

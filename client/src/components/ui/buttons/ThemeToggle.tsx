@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
-import { useTheme } from "@/context/ThemeContext";
-import Button from "./Button";
-import style from "./ThemeToggle.module.css";
+import { useTheme } from "@/context/ThemeContext"
+import Button from "./Button"
+import style from "./ThemeToggle.module.css"
 
 export function ThemeToggle({ isAbsolute, ...props }: { isAbsolute?: boolean } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "color">) {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme()
 
   return isAbsolute ? (
     <>
@@ -27,5 +27,5 @@ export function ThemeToggle({ isAbsolute, ...props }: { isAbsolute?: boolean } &
         aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
         {...props}></Button>
     </>
-  );
+  )
 }

@@ -67,3 +67,8 @@
 .scrollContainer {
   scroll-behavior: smooth;
 }
+
+.page {
+  background-color: var(--surface-container);
+  position: static;
+}
