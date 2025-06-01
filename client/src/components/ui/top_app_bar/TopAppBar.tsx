@@ -5,10 +5,13 @@ import Button from "../buttons/Button"
 import styles from "./TopAppBar.module.css"
 import { useRouter } from "next/navigation"
 import { $pageTitle } from "@/context/page"
+import { ThemeToggle } from "../buttons/ThemeToggle"
+import { useTheme } from "@/context/ThemeContext"
 
 type top_app_bar_variant = "center" | "small" | "medium" | "large"
 
 export default function TopAppBar({ variant, withRail = false }: { variant?: top_app_bar_variant; withRail?: boolean }) {
+  const { theme, toggleTheme } = useTheme()
   const router = useRouter()
 
   const pageTitle = useUnit($pageTitle)
@@ -28,8 +31,14 @@ export default function TopAppBar({ variant, withRail = false }: { variant?: top
           <span className={styles.title}>{pageTitle || "WishWave"}</span>
         </div>
         <div className={styles.trailing_icon}>
-          {/* <Button variant="text" icon="notifications"></Button> */}
-          <Button variant="text" icon="settings" href="/settings"></Button>
+          <Button variant="text" onClick={toggleTheme} icon={theme === "light" ? "dark_mode" : "light_mode"} />
+          <Button
+            variant="text"
+            icon="bug_report"
+            onClick={() => {
+              router.push("/bugreports/add")
+            }}
+          />
         </div>
       </div>
     </>
@@ -46,8 +55,14 @@ export default function TopAppBar({ variant, withRail = false }: { variant?: top
               }}></Button>
           </div>
           <div className={styles.trailing_icon}>
-            <Button variant="text" icon="notifications"></Button>
-            <Button variant="text" icon="settings" href="/settings"></Button>
+            <Button variant="text" onClick={toggleTheme} icon={theme === "light" ? "dark_mode" : "light_mode"} />
+            <Button
+              variant="text"
+              icon="bug_report"
+              onClick={() => {
+                router.push("/bugreports/add")
+              }}
+            />
           </div>
         </div>
         <div className={styles.title_md_lg}>

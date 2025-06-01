@@ -42,6 +42,8 @@
 .h {
   /* min-height: 70vh; */
   z-index: 1;
+  background-color: var(--surface-container-lowest);
+  border-top-left-radius: var(--lg);
 }
 
 .withPad {

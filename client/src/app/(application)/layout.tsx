@@ -194,12 +194,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               router.push("/add")
             }}
             FAB_size="sm"></NavigationRail>
-          <TopAppBar withRail variant="medium" />
-          <Content navigationType="rail" topBarSize="md" withPad>
-            <Container gap="sm" withPad withoutBg>
-              {children}
-            </Container>
-          </Content>
+          <TopAppBar withRail variant="small" />
+          <div className={styles.page}>
+            <Content navigationType="rail" topBarSize="sm" withPad>
+              <Container gap="sm" withPad withoutBg>
+                {children}
+              </Container>
+            </Content>
+          </div>
         </>
       )}
     </>
