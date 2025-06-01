@@ -178,10 +178,10 @@ export class FriendService {
         }
 
         const friends = await this.userRepository.findAll({ where: { id: friendIds }, include: [{model: WishList, as: 'wishlist', include: [ { model: AccessLevel, as: 'accesslevel', attributes: ['name'] }, { model: Wish, as: 'wishes' }]}]});
-        type PlainWL = { updatedAt: Date; wishes?: Array<{ updatedAt: Date }>; accesslevel?: { name: string }};
+        type PlainWL = { createdAt: Date; wishes?: Array<{ createdAt: Date }>; accesslevel?: { name: string }};
         const plain = friends.map(f => f.get({ plain: true }) as any & { wishlist: PlainWL[] });
         const withActivity = plain.map(u => {const allowed = u.wishlist.filter(wl => wl.accesslevel?.name === 'public' || wl.accesslevel?.name === 'friends');
-            const timestamps = [ ...allowed.map(wl => wl.updatedAt.getTime()), ...allowed.flatMap(wl => (wl.wishes ?? []).map(w => w.updatedAt.getTime()))];
+            const timestamps = [ ...allowed.map(wl => wl.createdAt.getTime()), ...allowed.flatMap(wl => (wl.wishes ?? []).map(w => w.createdAt.getTime()))];
             if (!timestamps.length) {
                 return null;
             }
