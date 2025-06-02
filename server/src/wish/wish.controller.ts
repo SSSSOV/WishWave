@@ -66,15 +66,22 @@ export class WishController {
 
     @UseGuards(OptionalJwtAuthGuard)
     @Get(':id')
-    async getWIshById(@Param('id') wishId: number, @Req() req, @Query('token') shareToken?: string | undefined): Promise<FUllWIshDto> {
+    async getWIshById(@Param('id') wishId: number, @Req() req, @Query('token') shareToken?: string | undefined): Promise<FUllWIshDto & {canBook: boolean}> {
         const viewer = req.user;
         const viewerId: number | null = viewer?.id ?? null
         const isAdmin = viewer?.roles?.value === 'admin';
-        if (isAdmin) {
-            return this.wishService.getFullWishById(wishId, viewerId, shareToken, true);
+        const fullDto = isAdmin ? await this.wishService.getFullWishById(wishId, viewerId, shareToken, true) : await this.wishService.getFullWishById(wishId, viewerId, shareToken);
+        const ownerId = fullDto.owner.id;
+        let canBook = false;
+        if (viewerId) {
+            if (viewerId === ownerId) {
+                canBook = true;
+            } else {
+                canBook = await this.friendService.areFriends(viewerId, ownerId)
+            }
         }
 
-        return this.wishService.getFullWishById(wishId, viewerId, shareToken)
+        return {...fullDto, canBook}
     }
     
 
