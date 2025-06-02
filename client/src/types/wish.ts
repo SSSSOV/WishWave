@@ -23,6 +23,8 @@ export interface IWish {
   list: IWishList
   /**Пользователь который забронировал */
   bookedByUser?: IUser
+
+  canBook?: boolean
 }
 /**Интерфейс создания желания */
 export interface ICreateWish {

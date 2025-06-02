@@ -193,7 +193,7 @@ export default function WishPage() {
           ) : (
             <ListItem condition={2} headline={wish.productLink ? wish.productLink : "Не указано"} overline="ссылка" />
           )}
-          {wish && isAuth ? (
+          {wish && wish.canBook && isAuth ? (
             wish.wishStatusId == 1 ? ( // Если желание не забронировано
               <ListItem
                 nowrap
