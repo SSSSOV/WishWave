@@ -21,7 +21,6 @@ export class AuthService {
     @InjectModel(PendingUser) private readonly pendingRepo: typeof PendingUser,
   ) {}
 
-  // 1) Регистрация: сохраняем в pending_users + отправляем код
   async registration(userDto: createUserDto) {
     const { login, email, password } = userDto;
 
@@ -72,7 +71,6 @@ export class AuthService {
     };
   }
 
-  // 2) Верификация: перенос из pending_users → users + выдача JWT
   async verifyEmail(loginOrEmail: string, code: string) {
     const pending = await this.pendingRepo.findOne({
       where: {
@@ -100,7 +98,6 @@ export class AuthService {
     return this.generateToken(newUser);
   }
 
-  // 3) Обычный логин (после подтверждения e-mail)
   async login(userDto: LoginUserDto) {
     const user = await this.validateUser(userDto);
     return this.generateToken(user);
