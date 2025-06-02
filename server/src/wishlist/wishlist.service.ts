@@ -286,9 +286,11 @@ export class WishlistService {
         return lists;
     }
 
-    async getFullById(userId: number | null, wishlistId: number, shareToken?: string): Promise <WishList> {
-        if (!(await this.canAccessWishList(userId, wishlistId, shareToken))) {
-            throw new ForbiddenException('Доступ к списку запрещен')
+    async getFullById(userId: number | null, wishlistId: number, shareToken?: string, skipAclForAdmin = false): Promise <WishList> {
+        if (!skipAclForAdmin) {
+            if (!(await this.canAccessWishList(userId, wishlistId, shareToken))) {
+                throw new ForbiddenException('Доступ к списку запрещен');
+            }
         }
 
         const wishlist = await this.wishListRepository.findByPk(wishlistId, {include: [

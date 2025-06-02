@@ -142,7 +142,21 @@ export class WishlistController {
     @UseGuards(JwtAuthGuard)
     @Get(':id')
     async getOne(@Param('id') id: number, @Req() req, @Query('token') token?: string) {
+        const viewer = req.user;
         const viewerId = req.user.id as number;
+        const isAdmin = viewer.roles?.value === 'admin';
+        if (isAdmin) {
+            const wl = await this.wishListService.getFullById(viewerId, id, token, true);
+            if (!wl) {
+                throw new NotFoundException('Список не найден');
+            }
+
+            const p = wl.get({ plain: true }) as any;
+            const owner = {id: p.user.id,fullname: p.user.fullname,login: p.user.login,image: p.user.image};
+
+            return {id: p.id,name: p.name,accessLevelId: p.accesslevelId,description: p.description,eventDate: p.eventDate,shareToken: p.shareToken,owner};
+        }
+
         const wl = await this.wishListService.getFullById(viewerId, id, token);
         if (!wl) {
             throw new NotFoundException('Список не найден')
