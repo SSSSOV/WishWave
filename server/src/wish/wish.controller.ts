@@ -67,8 +67,14 @@ export class WishController {
     @UseGuards(OptionalJwtAuthGuard)
     @Get(':id')
     async getWIshById(@Param('id') wishId: number, @Req() req, @Query('token') shareToken?: string | undefined): Promise<FUllWIshDto> {
-        const userId: number | null = req.user?.id ?? null;
-        return this.wishService.getFullWishById(wishId, userId, shareToken)
+        const viewer = req.user;
+        const viewerId: number | null = viewer?.id ?? null
+        const isAdmin = viewer?.roles?.value === 'admin';
+        if (isAdmin) {
+            return this.wishService.getFullWishById(wishId, viewerId, shareToken, true);
+        }
+
+        return this.wishService.getFullWishById(wishId, viewerId, shareToken)
     }
     
 
