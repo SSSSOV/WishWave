@@ -59,8 +59,10 @@ export default function WishListPage() {
   }
 
   useEffect(() => {
-    fetchWishList(Number(id))
-  }, [wish])
+    if (id) {
+      fetchWishList(Number(id))
+    }
+  }, [id])
 
   useEffect(() => {
     if (typeof window !== "undefined" && wishList) {

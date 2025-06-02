@@ -63,6 +63,7 @@ export const createWishFx = createEffect(async (params: ICreateWish) => {
     return null
   }
   try {
+    console.log(params)
     const { data } = await api.post(`/api/wish/`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -71,7 +72,7 @@ export const createWishFx = createEffect(async (params: ICreateWish) => {
       toast.error(data.warningMessage)
       return null
     }
-
+    console.log(data as IWish)
     return data as IWish
   } catch (error) {
     if (error instanceof AxiosError) toast.error(error.response?.data.message)

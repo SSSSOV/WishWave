@@ -70,8 +70,9 @@ export default function AddFriendPage() {
   }, [])
 
   useEffect(() => {
-    if (targetId) {
-      setTargetUserId(targetId)
+    if (Number(targetId)) {
+      sendFriendRequest(Number(targetId))
+      router.replace("/friends/add")
     }
   }, [targetId])
 
