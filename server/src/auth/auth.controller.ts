@@ -28,6 +28,8 @@ export class AuthController {
       path: "/",
       domain: process.env.CLIENT_DOMAIN,
     })
+
+    return { token };
   }
 
     @Post("/registration")
