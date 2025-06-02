@@ -5,11 +5,11 @@ export interface IBugreport {
   title: string
   description: string
   email?: string
-  owner: {
+  owner?: {
     id: number
-    fullname: string
+    fullname?: string
     login: string
-    image: string
+    image?: string
   }
   createdAt: string
 }

@@ -23,9 +23,9 @@ export default function Footer() {
 
         <div className={styles.row}>
           <div className={styles.info_group}>
-            <p>© 2025 ИП Фамилия Имя Отчество</p>
+            {/* <p>© 2025 ИП Фамилия Имя Отчество</p>
             <p>ИНН 000000000000</p>
-            <p>ОГРНИП 000000000000000</p>
+            <p>ОГРНИП 000000000000000</p> */}
             <a className={styles.link} href="/documents#terms" target="_blank" rel="noopener noreferrer">
               Условия обслуживания
             </a>

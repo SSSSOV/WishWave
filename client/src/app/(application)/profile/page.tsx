@@ -66,7 +66,7 @@ export default function ProfilePage() {
                 headline="Нажмите, чтобы перейти"
                 leading="shield_person"
                 leading_type="icon"
-                color="tertiary"
+                leading_color="tertiary"
                 overline="админ панель"
                 trailing_type="icon"
                 onClick={() => {

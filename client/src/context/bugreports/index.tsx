@@ -8,33 +8,9 @@ import toast from "react-hot-toast"
 
 export const $bugreports = createStore<IBugreport[] | null>(null)
 
-export const handleCreateBugreport = createEvent<ICreateBugreport>()
 export const handleFetchBugreports = createEvent()
+export const handleCreateBugreport = createEvent<ICreateBugreport>()
 
-export const createBugreportFx = createEffect(async (params: ICreateBugreport) => {
-  const token = localStorage.getItem("auth")
-
-  if (!token) {
-    toast.error("Отсутствует токен авторизации!")
-    return null
-  }
-  try {
-    const { data } = await api.post(`/api/bugreport`, params, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-
-    if (data.warningMessage) {
-      toast.error(data.warningMessage)
-      return null
-    }
-
-    return data as IBugreport
-  } catch (error) {
-    if (error instanceof AxiosError) toast.error(error.response?.data.message)
-    else toast.error("Произошла непредвиденная ошибка: " + error)
-    throw error
-  }
-})
 export const fetchBugreportsFx = createEffect(async () => {
   const token = localStorage.getItem("auth")
 
@@ -53,6 +29,26 @@ export const fetchBugreportsFx = createEffect(async () => {
     }
 
     return data as IBugreport[]
+  } catch (error) {
+    if (error instanceof AxiosError) toast.error(error.response?.data.message)
+    else toast.error("Произошла непредвиденная ошибка: " + error)
+    throw error
+  }
+})
+export const createBugreportFx = createEffect(async (params: ICreateBugreport) => {
+  const token = localStorage.getItem("auth")
+
+  try {
+    const { data } = await api.post(`/api/bugreport`, params, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+
+    if (data.warningMessage) {
+      toast.error(data.warningMessage)
+      return null
+    }
+
+    return data as IBugreport
   } catch (error) {
     if (error instanceof AxiosError) toast.error(error.response?.data.message)
     else toast.error("Произошла непредвиденная ошибка: " + error)

@@ -85,7 +85,7 @@ export default function AddPage() {
   }, [])
 
   useEffect(() => {
-    if (wishLists.length > 0) {
+    if (wishLists && wishLists.length > 0) {
       setOptions(wishLists.map((list) => ({ value: list.id, label: list.name })))
     } else {
       setOptions([{ value: 0, label: "У вас нет списков!" }]) // Массив с одним элементом
@@ -101,8 +101,10 @@ export default function AddPage() {
   return (
     <>
       <form action="" onSubmit={handleSubmit}>
-        <Section title="" padding_top_size="lg" padding_bot_size="xs" items_direction="row" align_items="right">
-          <Monogram letter="ww" size="sm" monogram_type={image ? "image" : "icon"} icon="image" color="primary" url={image}></Monogram>
+        <Section align_items="center" padding_top_size="lg">
+          <Monogram letter="ww" size="full" isRounded monogram_type={image ? "image" : "icon"} icon="image" color="primary" url={image}></Monogram>
+        </Section>
+        <Section title="" padding_bot_size="xs" items_direction="row" align_items="right">
           <Input
             labelText="Ссылка на изображение"
             isFull

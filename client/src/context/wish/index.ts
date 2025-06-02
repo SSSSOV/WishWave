@@ -10,13 +10,14 @@ import { $wishList, fetchWishListFx, handleFetchWishList } from "../wish_lists"
 
 // СТОРЫ
 
-export const $wish = createStore<IWish>({} as IWish)
+export const $wish = createStore<IWish | null>(null)
 
-export const $bookedWishes = createStore<IWish[]>([] as IWish[])
+export const $bookedWishes = createStore<IWish[] | null>(null)
 
 // СОБЫТИЯ
 
 export const handleSetWish = createEvent<IWish>()
+export const handleResetWish = createEvent()
 
 export const handleFetchWish = createEvent<IFetchWish>()
 export const handleCreateWish = createEvent<ICreateWish>()
@@ -280,11 +281,13 @@ export const fetchBookedWishesFx = createEffect(async () => {
 $wish
   .on(handleSetWish, (_, wish) => wish) //
   .on(fetchWishFx.doneData, (state, result) => (result ? result : state)) //
+  .on(deleteWishFx.doneData, () => null) //
   .on(createWishFx.doneData, (state, result) => (result ? result : state)) //
   .on(updateWishFx.doneData, (state, result) => (result ? result : state)) //
   .on(bookWishFx.doneData, (state, result) => (result ? result : state)) //
   .on(unbookWishFx.doneData, (state, result) => (result ? result : state)) //
   .on(completeWishFx.doneData, (state, result) => (result ? result : state)) //
+  .reset(handleResetWish)
 
 $bookedWishes.on(fetchBookedWishesFx.doneData, (state, result) => (result ? result : state))
 

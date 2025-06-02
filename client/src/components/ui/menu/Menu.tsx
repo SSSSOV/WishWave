@@ -29,24 +29,25 @@ export default function DropdownMenu({
   }, [])
 
   return (
-    <div className={styles.menuContainer} ref={menuRef}>
-      <div onClick={toggleMenu}>{children}</div>
-
-      {isOpen && (
-        <div className={styles.menu}>
-          {items.map((item) => (
-            <div
-              key={item.id}
-              className={styles.menuItem}
-              onClick={() => {
-                onSelect(item.id)
-                setIsOpen(false)
-              }}>
-              {item.name}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+    <>
+      <div className={styles.menuContainer} ref={menuRef}>
+        <div onClick={toggleMenu}>{children}</div>
+        {isOpen && (
+          <div className={styles.menu}>
+            {items.map((item) => (
+              <div
+                key={item.id}
+                className={styles.menuItem}
+                onClick={() => {
+                  onSelect(item.id)
+                  setIsOpen(false)
+                }}>
+                {item.name}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </>
   )
 }

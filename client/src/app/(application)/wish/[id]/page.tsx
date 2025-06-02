@@ -79,16 +79,13 @@ export default function WishPage() {
   const handleOpenProduct = (url: string) => {
     window.open(url, "_blank")?.focus()
   }
-
   const handleEdit = (id: number) => {
     router.push(`/wish/${id}/edit`)
   }
-
   const handleDelete = (id: number) => {
     deleteWish(id)
     router.back()
   }
-
   const handleCopyToClipboard = async (text: string) => {
     if (!text) return
 
@@ -118,11 +115,9 @@ export default function WishPage() {
       console.error("Copy error:", err)
     }
   }
-
   const handleAddToList = (wishId: number, targetListId: number) => {
     duplicateWish({ wishId, targetListId })
   }
-
   const handleBook = async (id: number) => {
     bookWish(id)
     toast.success("Успешно забронировано!")
@@ -335,29 +330,32 @@ export default function WishPage() {
               <Button variant="text" icon="delete" color="error" onClick={() => handleDelete(wish.id)} />
             </>
           )}
-          {/* Меню для добавления в список */}
-          {selectedWish && (
-            <DropdownMenu
-              items={wishLists}
-              onSelect={(listId) => {
-                handleAddToList(selectedWish, listId)
-                setSelectedWish(null)
-              }}>
-              <div
-                className="backdrop"
-                style={{
-                  position: "fixed",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  backgroundColor: "rgba(0,0,0,0.5)",
-                  zIndex: 99,
-                }}
-              />
-            </DropdownMenu>
-          )}
         </Section>
+        {/* Меню для добавления в список */}
+        {selectedWish && (
+          <DropdownMenu
+            items={wishLists ? wishLists : [{ id: 0, name: "Списков нет" }]}
+            onSelect={(listId) => {
+              handleAddToList(selectedWish, listId)
+              setSelectedWish(null)
+            }}>
+            <div
+              className="backdrop"
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: "rgba(0,0,0,0.5)",
+                zIndex: 10,
+              }}
+              onClick={() => {
+                setSelectedWish(null)
+              }}
+            />
+          </DropdownMenu>
+        )}
       </Section>
     </>
   )
