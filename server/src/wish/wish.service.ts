@@ -12,6 +12,7 @@ import { ProfanityService } from 'src/profanity/profanity.service';
 import { BookedByUserDto, FUllWIshDto, ListInfoDto, OwnerInfoDto } from './dto/full-wish.dto';
 import { AccessLevel } from 'src/accesslevel/accesslevel.model';
 import { FriendService } from 'src/friend/friend.service';
+import { FindAndCountOptions } from 'sequelize';
 
 @Injectable()
 export class WishService {
@@ -408,5 +409,12 @@ export class WishService {
         const wishIds = Array.from(new Set(links.map(l => l.wishId)));
 
         return Promise.all(wishIds.map(wid => this.getFullWishById(wid, userId)));
+    }
+
+    async getAllWishesAdm(page: number, perPage: number) {
+        const offset = (page - 1) * perPage;
+        const options: FindAndCountOptions = {attributes: ['id','name','image','price','productLink','wishStatusId','bookedByUserId','createdAt','updatedAt'], limit: perPage, offset, order: [['id', 'ASC']]};
+
+        return this.wishRepository.findAndCountAll(options);
     }
 }
