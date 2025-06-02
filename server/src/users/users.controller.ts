@@ -16,15 +16,22 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Get('all')
-    async getAll(@Req() req): Promise<Omit<UserResponseDto, 'wishlist'>[]> {
+    async getAll(@Req() req, @Query('page') page = '1', @Query('limit') limit = '20'): Promise<{data: Omit<UserResponseDto, 'wishlist'>[]; page: number; perPage: number; total: number; totalPages: number}> {
         if (req.user.roles?.value !== 'admin') {
             throw new ForbiddenException('У вас нет прав, чтобы посмотреть всех пользователей')
         }
-        const users = await this.usersService.getAllUsers();
-        return users.map(u => {const plain = u.get({plain: true}) as any;
-            const {password, wishlist, ...rest} = u.get({plain: true}) as any;
+        
+        const pageNum = Math.max(parseInt(page, 10) || 1, 1);
+        const perPage = Math.min(Math.max(parseInt(limit, 10) || 20, 1), 100);
+        const {rows, count} = await this.usersService.getAllUsers(pageNum, perPage);
+
+        const data = rows.map(u => {
+            const plain = u.get({plain: true}) as any;
+            const {password, wishlist, ...rest} = plain;
             return rest as Omit<UserResponseDto, 'wishlist'>;
         });
+
+        return {data, page: pageNum, perPage, total: count, totalPages: Math.ceil(count/perPage)};
     } 
 
     @UseGuards(JwtAuthGuard)

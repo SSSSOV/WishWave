@@ -12,6 +12,7 @@ import * as bcrypt from "bcryptjs";
 import { UserResponseDto } from "./dto/user-response.dto";
 import { ProfanityService } from "src/profanity/profanity.service";
 import { AccessLevel } from "src/accesslevel/accesslevel.model";
+import { FindAndCountOptions } from "sequelize";
 
 @Injectable()
 export class UsersService {
@@ -111,12 +112,11 @@ export class UsersService {
     return user;
   }
 
-  async getAllUsers() {
-    const users = await this.userRepository.findAll({ include: { all: true } });
-    if (!users) {
-      throw Error("Пользователи не найдены");
-    }
-    return users;
+  async getAllUsers(page: number, perPage: number) {
+    const offset = (page - 1) * perPage;
+    const result = await this.userRepository.findAndCountAll({attributes: ['id', 'login', 'email', 'fullname', 'image', 'birthDate', 'phone', 'gender', 'socials', 'roleId', 'banId', 'createdAt', 'updatedAt'], limit: perPage, offset, order: [['id', 'ASC']]});
+
+    return result;
   }
 
   async getUserById(id: number): Promise<User> {
