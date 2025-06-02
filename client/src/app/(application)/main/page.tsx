@@ -104,7 +104,7 @@ export default function MainPage() {
                   onCardClick={() => {
                     router.push(`/wish/${recommendation.id}`)
                   }}
-                  onButtonClick={wishLists.length > 0 ? () => setSelectedWish(recommendation.id) : undefined}
+                  onButtonClick={wishLists && wishLists.length > 0 ? () => setSelectedWish(recommendation.id) : undefined}
                   imageColor={colors[recommendation.id % 3] as icon_color}
                   imageIcon="featured_seasonal_and_gifts"
                   imageUrl={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + recommendation.image}
@@ -115,7 +115,7 @@ export default function MainPage() {
         {/* Меню для добавления в список */}
         {selectedWish && (
           <DropdownMenu
-            items={wishLists}
+            items={wishLists ? wishLists : [{ id: 0, name: "Списков нет" }]}
             onSelect={(listId) => {
               handleAddToList(selectedWish, listId)
               setSelectedWish(null)
@@ -130,6 +130,9 @@ export default function MainPage() {
                 bottom: 0,
                 backgroundColor: "rgba(0,0,0,0.5)",
                 zIndex: 99,
+              }}
+              onClick={() => {
+                setSelectedWish(null)
               }}
             />
           </DropdownMenu>

@@ -41,7 +41,6 @@ export default function AddBugreportPage() {
 
   return (
     <>
-      <ThemeToggle isAbsolute />
       <TopAppBar variant="small" />
       <Content withPad>
         <Container withRadius>

@@ -3,7 +3,7 @@
   height: auto;
   border-radius: var(--lg);
   overflow: hidden;
-  background-color: var(--surface);
+  background-color: var(--surface-container-low);
   display: flex;
   flex-direction: column;
 }

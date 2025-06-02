@@ -12,6 +12,8 @@
   padding-top: 198px;
   padding-bottom: 56px;
   gap: 64px;
+
+  z-index: 100;
 }
 
 .navs {

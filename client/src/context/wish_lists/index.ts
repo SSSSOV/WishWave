@@ -12,9 +12,9 @@ import { AxiosError } from "axios"
 // СТОРЫ
 
 /** Хранилище со списоком желаний */
-export const $wishList = createStore<IWishList>({} as IWishList, { skipVoid: false })
+export const $wishList = createStore<IWishList | null>(null, { skipVoid: false })
 /** Хранилище со списками желаний */
-export const $wishLists = createStore<IWishList[]>([] as IWishList[], { skipVoid: false })
+export const $wishLists = createStore<IWishList[] | null>(null, { skipVoid: false })
 
 // СОБЫТИЯ
 
@@ -33,6 +33,8 @@ export const handleCreateWishList = createEvent<ICreateWishList>()
 export const handleDeleteWishList = createEvent<number>()
 /** Обработчик события изменения списка желаний */
 export const handleUpdateWishList = createEvent<IUpdateWishList>()
+
+export const handleResetWishList = createEvent()
 
 export const handleAddWishInList = createEvent<IWish>()
 
@@ -177,9 +179,9 @@ export const updateWishListFx = createEffect(async (params: IUpdateWishList) => 
 
 $wishLists
   .on(handleSetWishLists, (_, lists) => lists) // Установка значения для $wishLists
-  .on(handleDeleteWishList, (state, id) => state.filter((list) => list.id != id)) // Удаление списка из стора
-  .on(createWishListFx.doneData, (state, result) => (result ? [...state, result] : state))
-  .on(updateWishListFx.doneData, (state, result) => (result ? state.map((list) => (list.id == result.id ? result : list)) : state))
+  .on(handleDeleteWishList, (state, id) => (state ? state.filter((list) => list.id != id) : state)) // Удаление списка из стора
+  .on(createWishListFx.doneData, (state, result) => (state ? (result ? [...state, result] : state) : state))
+  .on(updateWishListFx.doneData, (state, result) => (state ? (result ? state.map((list) => (list.id == result.id ? result : list)) : state) : state))
   .on(fetchWishListsFx.doneData, (state, result) => (result ? result : state))
 
 $wishList
@@ -187,13 +189,16 @@ $wishList
   .on(createWishListFx.doneData, (state, result) => (result ? result : state))
   .on(updateWishListFx.doneData, (state, result) => (result ? result : state))
   .on(fetchWishListFx.doneData, (state, result) => (result ? result : state))
-  .on(handleDeleteWishList, (state, id) => (state.id == id ? ({} as IWishList) : state))
+  .on(handleDeleteWishList, (state, id) => (state ? (state.id == id ? null : state) : state))
   .on(handleAddWishInList, (state, wish) => {
-    return {
-      ...state,
-      wishes: [...(state.wishes || []), wish],
-    }
+    state
+      ? {
+          ...state,
+          wishes: [...(state.wishes || []), wish],
+        }
+      : state
   })
+  .reset(handleResetWishList)
 
 // ТРИГГЕРЫ
 

@@ -40,12 +40,12 @@ export default function DashboardPage() {
                 leading="report"
                 leading_type="icon"
                 leading_color="error"
-                headline="Жалоб нет"
+                headline="Пока не доступно"
                 overline="жалобы на контент"
-                trailing_type="icon"
-                onClick={() => {
-                  router.push("/admin/reports")
-                }}
+                // trailing_type="icon"
+                // onClick={() => {
+                //   router.push("/admin/reports")
+                // }}
               />
             </List>
           </Section>
@@ -53,7 +53,7 @@ export default function DashboardPage() {
             <hr />
           </Section>
           <Section title="Поиск контента" padding_bot_size="md" padding_top_size="sm">
-            <p>Здесь вы можете найти интересующий вас контент, используя название объекта или ID, а также управлять им.</p>
+            <p>Здесь вы можете найти интересующий вас контент, используя ID, а также управлять им.</p>
             <List withoutPad>
               <ListItem
                 condition={2}
@@ -63,6 +63,7 @@ export default function DashboardPage() {
                 headline="0 желаний"
                 overline="желания"
                 trailing_type="icon"
+                trailing="search"
                 onClick={() => {
                   router.push("/admin/wishes")
                 }}
@@ -75,6 +76,7 @@ export default function DashboardPage() {
                 headline="0 списков"
                 overline="списки"
                 trailing_type="icon"
+                trailing="search"
                 onClick={() => {
                   router.push("/admin/lists")
                 }}
@@ -87,6 +89,7 @@ export default function DashboardPage() {
                 headline="0 пользователей"
                 overline="пользователи"
                 trailing_type="icon"
+                trailing="search"
                 onClick={() => {
                   router.push("/admin/users")
                 }}

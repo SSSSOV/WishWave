@@ -23,6 +23,8 @@ export const handleUpdateInfo = createEvent<IUpdateInfoFx>()
 export const handleUpdatePassword = createEvent<IUpdatePasswordFx>()
 export const handleCheckAuth = createEvent()
 export const handleLogeOut = createEvent()
+export const handleDeleteUser = createEvent<number | null>()
+export const handleResetUser = createEvent()
 
 // Эффекты
 export const signInFx = createEffect(async ({ loginOrEmail, password }: ISignInFx) => {
@@ -54,7 +56,6 @@ export const signInFx = createEffect(async ({ loginOrEmail, password }: ISignInF
     throw error
   }
 })
-
 export const signUpFx = createEffect(async ({ login, email, password }: ISignUpFx) => {
   try {
     const { data } = await api.post("/api/auth/registration", {
@@ -85,7 +86,6 @@ export const signUpFx = createEffect(async ({ login, email, password }: ISignUpF
     throw error
   }
 })
-
 export const fetchUserFx = createEffect(async (id: number | null) => {
   const token = localStorage.getItem("auth")
 
@@ -123,13 +123,11 @@ export const fetchUserFx = createEffect(async (id: number | null) => {
     throw error
   }
 })
-
 export const logOutFx = createEffect(() => {
   localStorage.removeItem("auth")
   handleSetAuth(false)
   handleSetUser(null)
 })
-
 export const updateInfoFx = createEffect(async ({ fullname, birthday, phone, image, gender }: IUpdateInfoFx) => {
   const token = localStorage.getItem("auth")
 
@@ -176,7 +174,6 @@ export const updateInfoFx = createEffect(async ({ fullname, birthday, phone, ima
     throw error
   }
 })
-
 export const updatePasswordFx = createEffect(async (props: IUpdatePasswordFx) => {
   const token = localStorage.getItem("auth")
 
@@ -204,7 +201,6 @@ export const updatePasswordFx = createEffect(async (props: IUpdatePasswordFx) =>
     throw error
   }
 })
-
 export const checkAuthFx = createEffect(async () => {
   const token = localStorage.getItem("auth")
 
@@ -229,6 +225,29 @@ export const checkAuthFx = createEffect(async () => {
     throw error
   }
 })
+export const deleteUserFx = createEffect(async (id: number | null) => {
+  const token = localStorage.getItem("auth")
+
+  if (!token) {
+    return false
+  }
+
+  try {
+    const data = await api.delete(`/api/user/${id}`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
+    })
+
+    if (data.status != 200) {
+      return false
+    }
+
+    return !!data
+  } catch (error) {
+    if (error instanceof AxiosError) toast.error(error.response?.data.message)
+    else toast.error("Ошибка сохранения: " + error)
+    throw error
+  }
+})
 
 // Подписки
 $isAuth
@@ -244,12 +263,10 @@ $user
   .on(updateInfoFx.doneData, (_, value) => value)
   .on(fetchUserFx.doneData, (_, value) => value)
   .reset(handleLogeOut)
+  .reset(handleResetUser)
 
 // Тригеры
-sample({
-  clock: handleSignIn,
-  target: signInFx,
-})
+sample({ clock: handleSignIn, target: signInFx })
 
 // sample({
 //   clock: signInFx.doneData,
@@ -263,27 +280,10 @@ sample({
 //   target: fetchUserFx,
 // })
 
-sample({
-  clock: handleSignUp,
-  target: signUpFx,
-})
-sample({
-  clock: handleUpdateInfo,
-  target: updateInfoFx,
-})
-sample({
-  clock: handleUpdatePassword,
-  target: updatePasswordFx,
-})
-sample({
-  clock: handleFetchUser,
-  target: fetchUserFx,
-})
-sample({
-  clock: handleLogeOut,
-  target: logOutFx,
-})
-sample({
-  clock: handleCheckAuth,
-  target: checkAuthFx,
-})
+sample({ clock: handleSignUp, target: signUpFx })
+sample({ clock: handleUpdateInfo, target: updateInfoFx })
+sample({ clock: handleUpdatePassword, target: updatePasswordFx })
+sample({ clock: handleFetchUser, target: fetchUserFx })
+sample({ clock: handleLogeOut, target: logOutFx })
+sample({ clock: handleCheckAuth, target: checkAuthFx })
+sample({ clock: handleDeleteUser, target: deleteUserFx })

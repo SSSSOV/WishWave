@@ -54,29 +54,93 @@ export default function Home() {
           </Section>
         </Container>
       </Content>
-      <Content bgColor="secondary" topBarSize="none">
-        <Container withPad withoutBg>
-          <Section withoutPad>
-            <List withoutPad>
-              <ListItem condition={3} headline="🔹 Создавайте вишлисты на любой случай: дни рождения, свадьбы, Новый год или просто потому что." />
-              <ListItem condition={3} headline="🔹 Делитесь списками с друзьями и близкими — пусть они точно знают, что вам понравится." />
-              <ListItem condition={3} headline="🔹 Отмечайте подарки, чтобы избежать повторов и неожиданных сюрпризов." />
-              <ListItem condition={3} headline="🔹 Открывайте для себя желания других и вдохновляйтесь!" />
-            </List>
+      <Content bgColor="secondary" topBarSize="none" withPad>
+        <Container withoutBg>
+          <Section padding_bot_size="lg">
+            <p className={styles.title}>
+              «WishWave помогает легко создавать вишлисты, делиться ими с друзьями и получать именно то, что вы хотите. Больше никаких разочарований —
+              только желанные подарки!»
+            </p>
           </Section>
         </Container>
       </Content>
-      <Content bgColor="tertiary" topBarSize="none">
-        <Container withoutBg>
-          <Section title="✨ Почему WishWave?" title_size="lg" padding_top_size="lg" padding_bot_size="lg">
+      <Content topBarSize="none" withPad>
+        <Container padding_top="lg" withRadius withoutBg>
+          <Section title="Преимущества сервиса" title_size="md" padding_top_size="lg" padding_bot_size="lg" align_items="center">
             <List withoutPad>
-              <ListItem condition={1} headline="✅ Простота и удобство — добавляйте желания в пару кликов." />
-              <ListItem condition={1} headline="✅ Гибкие настройки приватности — открытый список или только для избранных." />
-              <ListItem condition={1} headline="✅ Уведомления и напоминания — никогда не пропустите важные даты." />
+              <ListItem
+                condition={3}
+                leading="bookmark"
+                leading_type="icon"
+                leading_color="none"
+                overline="Добавляйте желания за минуту"
+                headline="Ссылки, фото, описания — все в одном месте."
+              />
+              <ListItem
+                condition={3}
+                leading="groups"
+                leading_type="icon"
+                leading_color="none"
+                overline="Делитесь списками легко"
+                headline="Отправьте ссылку или добавьте друзей."
+              />
+              <ListItem
+                condition={3}
+                leading="security"
+                leading_type="icon"
+                leading_color="none"
+                overline="Контролируйте приватность"
+                headline="Открытые, закрытые или частично доступные списки."
+              />
+              <ListItem
+                condition={3}
+                leading="local_fire_department"
+                leading_type="icon"
+                leading_color="none"
+                overline="Лента рекомендаций"
+                headline="Всегда вкурсе что сейчас в тренде."
+              />
             </List>
           </Section>
-
-          <p className={styles.headline}>Присоединяйтесь сейчас и превратите процесс дарения в удовольствие!</p>
+          <Section title="Как это работает?" title_size="md" padding_top_size="lg" align_items="center">
+            <List withoutPad>
+              <ListItem
+                condition={3}
+                leading="looks_one"
+                leading_type="icon"
+                leading_color="none"
+                overline="Создайте список"
+                headline="добавьте товары, впечатления или идеи."
+              />
+              <ListItem
+                condition={3}
+                leading="looks_two"
+                leading_type="icon"
+                leading_color="none"
+                overline="Настройте доступ"
+                headline="выберите, кто увидит ваш вишлист."
+              />
+              <ListItem
+                condition={3}
+                leading="looks_3"
+                leading_type="icon"
+                leading_color="none"
+                overline="Поделитесь с друзьями"
+                headline="чтобы они могли увидеть ваши желания"
+              />
+              <ListItem
+                condition={3}
+                leading="looks_4"
+                leading_type="icon"
+                leading_color="none"
+                overline="Получайте подарки"
+                headline="без дублирования и неожиданностей!"
+              />
+            </List>
+          </Section>
+          <Section align_items="center" padding_top_size="lg">
+            <p className={styles.title}>Присоединяйтесь сейчас и превратите процесс дарения в удовольствие!</p>
+          </Section>
         </Container>
       </Content>
       <Content topBarSize="none">

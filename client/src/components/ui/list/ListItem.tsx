@@ -22,6 +22,7 @@ type ListItemProps = {
   url?: string
   isLoading?: boolean
   onClick?: MouseEventHandler<HTMLButtonElement>
+  withoutBg?: boolean
   children?: React.ReactNode
 }
 
@@ -39,6 +40,7 @@ export default function ListItem({
   headline = " ",
   isLoading = false,
   onClick,
+  withoutBg = false,
   children,
 }: ListItemProps) {
   if (onClick)
@@ -49,7 +51,9 @@ export default function ListItem({
           " " +
           (condition == 1 ? style.condition1 : condition == 2 ? style.condition2 : style.condition3) +
           " " +
-          (onClick != undefined ? "" : style.non_clickable)
+          (onClick != undefined ? "" : style.non_clickable) +
+          " " +
+          (withoutBg ? "" : style.bg)
         }
         onClick={onClick}>
         {leading_type ? (
@@ -116,7 +120,9 @@ export default function ListItem({
         " " +
         (condition == 1 ? style.condition1 : condition == 2 ? style.condition2 : style.condition3) +
         " " +
-        (onClick != undefined ? "" : style.non_clickable)
+        (onClick != undefined ? "" : style.non_clickable) +
+        " " +
+        (withoutBg ? "" : style.bg)
       }
       onClick={onClick}>
       {leading_type ? (
