@@ -1,0 +1,25 @@
+/* Figure.module.css */
+.container {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  pointer-events: none; /* Чтобы клики проходили сквозь фигуры */
+  top: 0;
+  z-index: -10;
+}
+
+.figure1,
+.figure2 {
+  position: absolute;
+}
+
+.figure1 {
+  top: 0;
+  right: 0;
+}
+
+.figure2 {
+  bottom: -300;
+  left: 0;
+}

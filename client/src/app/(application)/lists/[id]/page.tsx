@@ -158,7 +158,7 @@ export default function WishListPage() {
                 leading="featured_seasonal_and_gifts"
                 trailing_type="icon"
                 url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wish.image}
-                color={colors[wish.id % 3] as icon_color}
+                leading_color={colors[wish.id % 3] as icon_color}
                 onClick={() => handleOpen(wish.id)}
               />
             ))

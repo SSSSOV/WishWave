@@ -4,9 +4,12 @@ import Button from "@/components/ui/buttons/Button"
 import List from "@/components/ui/list/List"
 import ListItem, { icon_color } from "@/components/ui/list/ListItem"
 import Loader from "@/components/ui/loader/Loader"
+import DropdownMenu from "@/components/ui/menu/Menu"
 import Monogram from "@/components/ui/monogram/Monogram"
 import Section from "@/components/ui/section/Section"
-import { $wish, handleBookWish, handleCompleteWish, handleDeleteWish, handleFetchWish, handleUnbookWish } from "@/context/wish"
+import { $isAuth } from "@/context/user"
+import { $wish, handleBookWish, handleCompleteWish, handleDeleteWish, handleDuplicateWish, handleFetchWish, handleUnbookWish } from "@/context/wish"
+import { $wishLists, handleFetchWishLists } from "@/context/wish_lists"
 import { usePageTitle } from "@/hooks/usePageTitle"
 import { getInitials } from "@/lib/utils/getInitials"
 import { hasNameContent } from "@/lib/utils/hasNameContent"
@@ -29,14 +32,20 @@ export default function WishPage() {
   const [isCopied, setIsCopied] = useState(false)
 
   // Стор
-  const [wish, fetchWish, deleteWish, bookWish, unbookWish, completeWish] = useUnit([
+  const [wish, wishLists, isAuth, fetchWish, deleteWish, bookWish, unbookWish, completeWish, fetchWishLists, duplicateWish] = useUnit([
     $wish,
+    $wishLists,
+    $isAuth,
     handleFetchWish,
     handleDeleteWish,
     handleBookWish,
     handleUnbookWish,
     handleCompleteWish,
+    handleFetchWishLists,
+    handleDuplicateWish,
   ])
+
+  const [selectedWish, setSelectedWish] = useState<number | null>(null)
 
   usePageTitle(wish ? wish.name : "Желание")
 
@@ -45,6 +54,10 @@ export default function WishPage() {
   useEffect(() => {
     fetchWish({ id: Number(id), shareToken: String(shareToken) })
   }, [])
+
+  useEffect(() => {
+    if (isAuth) fetchWishLists(null)
+  }, [isAuth])
 
   useEffect(() => {
     if (wish) console.log(wish)
@@ -106,6 +119,10 @@ export default function WishPage() {
     }
   }
 
+  const handleAddToList = (wishId: number, targetListId: number) => {
+    duplicateWish({ wishId, targetListId })
+  }
+
   const handleBook = async (id: number) => {
     bookWish(id)
     toast.success("Успешно забронировано!")
@@ -131,14 +148,15 @@ export default function WishPage() {
 
   return (
     <>
-      <Section align_items="center" padding_top_size="md">
-        <Section withoutPad isFit>
+      <Section align_items="center" padding_top_size="lg">
+        <Section withoutPad align_items="center">
           <Monogram
             monogram_type={wish.image ? "image" : "icon"}
             icon="featured_seasonal_and_gifts"
-            size="lg"
+            size="full"
             url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wish.image}
             color={colors[wish.id % 3] as icon_color}
+            isRounded
           />
         </Section>
       </Section>
@@ -146,6 +164,7 @@ export default function WishPage() {
         <List withoutPad>
           {wish && wish.owner && !isOwner ? (
             <ListItem
+              nowrap
               condition={2}
               leading_type={wish.owner.image && wish.owner.image != "" ? "image" : hasNameContent(wish.owner.fullname) ? "monogram" : "icon"}
               leading={hasNameContent(wish.owner.fullname) ? getInitials(wish.owner.fullname) : "person"}
@@ -155,6 +174,7 @@ export default function WishPage() {
             />
           ) : null}
           <ListItem
+            nowrap
             condition={2}
             headline={wish.name}
             onClick={() => {
@@ -168,6 +188,7 @@ export default function WishPage() {
           <ListItem condition={2} headline={wish.price ? String(wish.price) + " руб." : "Не указано"} overline="цена" />
           {wish.productLink ? (
             <ListItem
+              nowrap
               condition={2}
               headline={wish.productLink ? wish.productLink : "Не указано"}
               overline="ссылка"
@@ -179,9 +200,10 @@ export default function WishPage() {
           ) : (
             <ListItem condition={2} headline={wish.productLink ? wish.productLink : "Не указано"} overline="ссылка" />
           )}
-          {wish ? (
+          {wish && isAuth ? (
             wish.wishStatusId == 1 ? ( // Если желание не забронировано
               <ListItem
+                nowrap
                 condition={2}
                 headline={"Нажмите, чтобы забронировать"}
                 overline="бронирование"
@@ -191,6 +213,7 @@ export default function WishPage() {
               />
             ) : wish.wishStatusId == 2 && wish.bookedByUser && !isBooker && !isOwner ? ( // Если желание забронировано но не пользователем
               <ListItem
+                nowrap
                 condition={2}
                 leading_type={
                   wish.bookedByUser.image && wish.bookedByUser.image != ""
@@ -215,6 +238,7 @@ export default function WishPage() {
               />
             ) : wish.wishStatusId == 2 && wish.bookedByUser && isBooker && !isOwner ? ( // Если желание забронировано пользователем
               <ListItem
+                nowrap
                 condition={2}
                 leading_type={
                   wish.bookedByUser.image && wish.bookedByUser.image != ""
@@ -236,6 +260,7 @@ export default function WishPage() {
               />
             ) : wish.wishStatusId == 2 && wish.bookedByUser && isOwner ? ( // Если желание забронировано и смотрит владелец
               <ListItem
+                nowrap
                 condition={2}
                 leading_type={
                   wish.bookedByUser.image && wish.bookedByUser.image != ""
@@ -257,6 +282,7 @@ export default function WishPage() {
               />
             ) : wish.wishStatusId == 3 && wish.bookedByUser ? (
               <ListItem
+                nowrap
                 condition={2}
                 leading_type={
                   wish.bookedByUser.image && wish.bookedByUser.image != ""
@@ -284,13 +310,13 @@ export default function WishPage() {
         </List>
       </Section>
 
-      {isOwner ? (
-        <>
-          <Section>
-            <hr />
-          </Section>
-          <Section align_items="right" padding_bot_size="lg" padding_top_size="md">
-            <Section items_direction="row" withoutPad isFit>
+      <Section>
+        <hr />
+      </Section>
+      <Section align_items="right" padding_bot_size="lg" padding_top_size="md">
+        <Section items_direction="row" withoutPad isFit>
+          {isOwner && (
+            <>
               {wish.wishStatusId == 2 && wish.bookedByUser ? (
                 <Button variant="text" icon="check_circle" onClick={() => handleComplete(wish.id)}>
                   выполнено
@@ -300,13 +326,39 @@ export default function WishPage() {
                   не выполнено
                 </Button>
               ) : null}
-
-              <Button variant="text" icon="edit" onClick={() => handleEdit(wish.id)}></Button>
-              <Button variant="text" icon="delete" color="error" onClick={() => handleDelete(wish.id)}></Button>
-            </Section>
-          </Section>
-        </>
-      ) : null}
+            </>
+          )}
+          {isAuth && <Button variant="text" icon="docs_add_on" onClick={() => setSelectedWish(wish.id)} />}
+          {isOwner && (
+            <>
+              <Button variant="text" icon="edit" onClick={() => handleEdit(wish.id)} />
+              <Button variant="text" icon="delete" color="error" onClick={() => handleDelete(wish.id)} />
+            </>
+          )}
+          {/* Меню для добавления в список */}
+          {selectedWish && (
+            <DropdownMenu
+              items={wishLists}
+              onSelect={(listId) => {
+                handleAddToList(selectedWish, listId)
+                setSelectedWish(null)
+              }}>
+              <div
+                className="backdrop"
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: "rgba(0,0,0,0.5)",
+                  zIndex: 99,
+                }}
+              />
+            </DropdownMenu>
+          )}
+        </Section>
+      </Section>
     </>
   )
 }

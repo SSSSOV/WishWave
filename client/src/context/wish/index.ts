@@ -23,6 +23,8 @@ export const handleCreateWish = createEvent<ICreateWish>()
 export const handleUpdateWish = createEvent<IUpdateWish>()
 export const handleDeleteWish = createEvent<number>()
 
+export const handleDuplicateWish = createEvent<{ wishId: number; targetListId: number }>()
+
 export const handleBookWish = createEvent<number>()
 export const handleUnbookWish = createEvent<number>()
 export const handleCompleteWish = createEvent<number>()
@@ -34,11 +36,6 @@ export const handleFetchBookedWishes = createEvent()
 export const fetchWishFx = createEffect(async (params: IFetchWish) => {
   const token = localStorage.getItem("auth")
 
-  if (!token) {
-    toast.error("Отсутствует токен авторизации!")
-    handleSetAuth(false)
-    return null
-  }
   try {
     const { data } = await api.get(`/api/wish/${params.id + (params.shareToken ? `?token=<${params.shareToken}>` : "")}`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -123,6 +120,38 @@ export const deleteWishFx = createEffect(async (id: number) => {
       toast.error(data.warningMessage)
       return null
     }
+
+    return data
+  } catch (error) {
+    if (error instanceof AxiosError) toast.error(error.response?.data.message)
+    else toast.error("Произошла непредвиденная ошибка: " + error)
+    throw error
+  }
+})
+
+export const duplicateWishFx = createEffect(async ({ wishId, targetListId }: { wishId: number; targetListId: number }) => {
+  const token = localStorage.getItem("auth")
+
+  if (!token) {
+    toast.error("Отсутствует токен авторизации!")
+    handleSetAuth(false)
+    return null
+  }
+  try {
+    const { data } = await api.patch(
+      `/api/wishlist/duplicate`,
+      { wishId, targetListId },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+
+    if (data.warningMessage) {
+      toast.error(data.warningMessage)
+      return null
+    }
+
+    toast.success("Желание добавлено!")
 
     return data
   } catch (error) {
@@ -264,6 +293,8 @@ sample({ clock: handleFetchWish, target: fetchWishFx })
 sample({ clock: handleCreateWish, target: createWishFx })
 sample({ clock: handleUpdateWish, target: updateWishFx })
 sample({ clock: handleDeleteWish, target: deleteWishFx })
+
+sample({ clock: handleDuplicateWish, target: duplicateWishFx })
 
 sample({ clock: handleBookWish, target: bookWishFx })
 sample({ clock: handleUnbookWish, target: unbookWishFx })

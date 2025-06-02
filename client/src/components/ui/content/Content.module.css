@@ -2,13 +2,26 @@
   margin-top: 56px;
 }
 .top_md {
-  margin-top: 56px;
+  margin-top: 100px;
 }
 .top_lg {
   margin-top: 136px;
 }
 .top_none {
   margin-top: 0px;
+}
+
+.primary {
+  background-color: var(--primary-container);
+  color: var(--on-primary-container);
+}
+.secondary {
+  background-color: var(--secondary-container);
+  color: var(--on-secondary-container);
+}
+.tertiary {
+  background-color: var(--tertiary-container);
+  color: var(--on-tertiary-container);
 }
 
 .screen {
@@ -27,8 +40,10 @@
 }
 
 .h {
-  min-height: 70vh;
+  /* min-height: 70vh; */
   z-index: 1;
+  background-color: var(--surface-container-lowest);
+  border-top-left-radius: var(--lg);
 }
 
 .withPad {

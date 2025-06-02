@@ -49,6 +49,28 @@
   line-height: 60px;
 }
 
+.clickable {
+  cursor: pointer;
+}
+
+.container_full {
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  aspect-ratio: 4 / 3;
+
+  font-size: 120px;
+  line-height: 120px;
+}
+
+.rounded {
+  overflow: hidden;
+  border-radius: var(--lg);
+}
+
 /* ICON SIZES */
 .icon_xs {
   font-size: 24px !important;
@@ -66,6 +88,10 @@
   font-size: 60px !important;
   line-height: 60px !important;
 }
+.icon_full {
+  font-size: 60px !important;
+  line-height: 60px !important;
+}
 
 /* COLORS */
 .primary {
@@ -79,6 +105,18 @@
 .tertiary {
   background-color: var(--tertiary-container);
   color: var(--on-tertiary-container);
+}
+.access {
+  background-color: var(--access-container);
+  color: var(--on-access-container);
+}
+.warning {
+  background-color: var(--warning-container);
+  color: var(--on-warning-container);
+}
+.error {
+  background-color: var(--error-container);
+  color: var(--on-error-container);
 }
 .none {
   background-color: transparent;

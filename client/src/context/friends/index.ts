@@ -77,6 +77,7 @@ export const fetchFriendFx = createEffect(async (id: number) => {
       phone: data.phone || undefined,
       birthday: data.birthDate || undefined, // Преобразуем birthDate в birthday
       gender: data.gender || undefined, // Серверные данные не содержат gender
+      roleId: data.roleId,
     }
 
     return userData

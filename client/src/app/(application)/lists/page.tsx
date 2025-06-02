@@ -79,7 +79,7 @@ export default function ListsPage() {
       <Section>
         <List withoutPad>
           <ListItem
-            condition={1}
+            condition={2}
             headline="Нажмите, чтобы посмотреть"
             overline="забронированные вами желания"
             trailing_type="icon"
@@ -101,7 +101,7 @@ export default function ListsPage() {
                   key={list.id}
                   condition={2}
                   headline={list.name}
-                  color={
+                  leading_color={
                     list.accessLevelId == 1 ? "primary" : list.accessLevelId == 2 ? "secondary" : list.accessLevelId == 3 ? "tertiary" : "tertiary"
                   }
                   overline={
