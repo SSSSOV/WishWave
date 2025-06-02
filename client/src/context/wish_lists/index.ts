@@ -89,9 +89,6 @@ export const fetchWishListFx = createEffect(async (id: number) => {
       return null
     }
 
-    // console.log("fetchWishListFx: " + `GET /api/wishlist${id ? `/${id}` : ``}`)
-    // console.log(data as IWishList)
-
     return data as IWishList
   } catch (error) {
     if (error instanceof AxiosError) toast.error(error.response?.data.message)

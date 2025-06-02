@@ -195,13 +195,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             }}
             FAB_size="sm"></NavigationRail>
           <TopAppBar withRail variant="small" />
-          <div className={styles.page}>
-            <Content navigationType="rail" topBarSize="sm" withPad>
-              <Container gap="sm" withPad withoutBg>
-                {children}
-              </Container>
-            </Content>
-          </div>
+          <Content navigationType="rail" topBarSize="sm" withPad>
+            <Container gap="sm" withPad withoutBg>
+              {children}
+            </Container>
+          </Content>
         </>
       )}
     </>

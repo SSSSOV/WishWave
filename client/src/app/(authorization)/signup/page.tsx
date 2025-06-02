@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { AxiosError } from "axios"
 import styles from "@/app/home.module.css"
-import { $isAuth, handleSignUp } from "@/context/user"
+import { $isAuth, handleSignUp, handleVerify } from "@/context/user"
 import { useUnit } from "effector-react"
 import Container from "@/components/ui/container/Container"
 import toast from "react-hot-toast"
@@ -28,9 +28,12 @@ export default function SignupPage() {
   const [login, setLogin] = useState("")
   const [password, setPassword] = useState("")
   const [repeatPassword, setRepeatPassword] = useState("")
+  const [loginOrEmail, setLoginOrEmail] = useState("")
+  const [code, setCode] = useState("")
+  const [isVerification, setIsVerification] = useState(false)
 
   // Контекст
-  const [handle, isAuth] = useUnit([handleSignUp, $isAuth])
+  const [signUp, verify, isAuth] = useUnit([handleSignUp, handleVerify, $isAuth])
 
   // Обработчик авторизации
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,7 +43,19 @@ export default function SignupPage() {
       return
     }
     try {
-      handle({ login, email, password })
+      signUp({ login, email, password })
+      setLoginOrEmail(email)
+      setIsVerification(true)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const verifyUser = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      verify({ loginOrEmail, code })
+      toast.success("Вы успешно вошли!")
     } catch (error) {
       console.log(error)
     }
@@ -60,56 +75,109 @@ export default function SignupPage() {
             <Monogram monogram_type="icon" icon="person_add" size="md" color="secondary"></Monogram>
             <Monogram monogram_type="icon" icon="app_registration" size="md" color="tertiary"></Monogram>
           </Section>
-          <form action="signup" onSubmit={handleSubmit}>
-            <Section title="Нет аккаунта? Создайте!" title_size="md">
-              <Input labelText="Почта" leadingIcon="mail" type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-              <Input
-                labelText="Логин"
-                leadingIcon="person"
-                type="text"
-                id="login"
-                minLength={3}
-                maxLength={10}
-                value={login}
-                onChange={(e) => setLogin(e.target.value)}
-                required
-              />
-              <Input
-                labelText="Пароль"
-                leadingIcon="password_2"
-                type="password"
-                id="password"
-                minLength={5}
-                maxLength={20}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <Input
-                labelText={repeatPassword ? (repeatPassword == password ? "Пароли совпадают" : "Пароли не совпадают") : "Повторите пароль"}
-                leadingIcon={repeatPassword ? (repeatPassword == password ? "password_2" : "password_2_off") : "password_2"}
-                type="password"
-                id="repeat_password"
-                minLength={5}
-                maxLength={20}
-                value={repeatPassword}
-                onChange={(e) => setRepeatPassword(e.target.value)}
-                required
-              />
+          {!isVerification && (
+            <>
+              <form action="signup" onSubmit={handleSubmit}>
+                <Section title="Нет аккаунта? Создайте!" title_size="md">
+                  <Input
+                    labelText="Почта"
+                    leadingIcon="mail"
+                    type="email"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                  <Input
+                    labelText="Логин"
+                    leadingIcon="person"
+                    type="text"
+                    id="login"
+                    minLength={3}
+                    maxLength={10}
+                    value={login}
+                    onChange={(e) => setLogin(e.target.value)}
+                    required
+                  />
+                  <Input
+                    labelText="Пароль"
+                    leadingIcon="password_2"
+                    type="password"
+                    id="password"
+                    minLength={5}
+                    maxLength={20}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                  <Input
+                    labelText={repeatPassword ? (repeatPassword == password ? "Пароли совпадают" : "Пароли не совпадают") : "Повторите пароль"}
+                    leadingIcon={repeatPassword ? (repeatPassword == password ? "password_2" : "password_2_off") : "password_2"}
+                    type="password"
+                    id="repeat_password"
+                    minLength={5}
+                    maxLength={20}
+                    value={repeatPassword}
+                    onChange={(e) => setRepeatPassword(e.target.value)}
+                    required
+                  />
 
-              <Button variant="filled" isFit={false} type="submit">
-                Зарегистрироваться
-              </Button>
-            </Section>
-          </form>
-          <Section align_items="center" padding_top_size="lg">
-            <Section items_direction="row" isFit>
-              Уже есть аккаунт?
-              <Button variant="text" isPadNone onClick={() => router.push("/login")}>
-                Войдите
-              </Button>
-            </Section>
-          </Section>
+                  <Button variant="filled" isFit={false} type="submit">
+                    Зарегистрироваться
+                  </Button>
+                </Section>
+              </form>
+              <Section align_items="center" padding_top_size="lg">
+                <Section items_direction="row" isFit>
+                  Уже есть аккаунт?
+                  <Button variant="text" isPadNone onClick={() => router.push("/login")}>
+                    Войдите
+                  </Button>
+                </Section>
+              </Section>
+            </>
+          )}
+          {isVerification && (
+            <>
+              <form action="signup" onSubmit={verifyUser}>
+                <Section title="Нет аккаунта? Создайте!" title_size="md">
+                  <Input
+                    labelText="Почта или логин"
+                    leadingIcon="mail"
+                    type="text"
+                    id="loginOrEmail"
+                    value={loginOrEmail}
+                    onChange={(e) => setLoginOrEmail(e.target.value)}
+                    required
+                  />
+
+                  <Input
+                    labelText="Код"
+                    leadingIcon="password_2"
+                    type="text"
+                    id="code"
+                    minLength={5}
+                    maxLength={10}
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                    required
+                  />
+
+                  <Button variant="filled" isFit={false} type="submit">
+                    Зарегистрироваться
+                  </Button>
+                </Section>
+              </form>
+              <Section align_items="center" padding_top_size="lg">
+                <Section items_direction="row" isFit>
+                  Уже есть аккаунт?
+                  <Button variant="text" isPadNone onClick={() => router.push("/login")}>
+                    Войдите
+                  </Button>
+                </Section>
+              </Section>
+            </>
+          )}
           <Section align_items="center" padding_bot_size="lg" padding_top_size="lg">
             <span className={styles.text_center + " " + styles.label}>
               Продолжая, вы соглашаетесь с{" "}

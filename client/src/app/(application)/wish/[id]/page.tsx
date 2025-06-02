@@ -120,11 +120,9 @@ export default function WishPage() {
   }
   const handleBook = async (id: number) => {
     bookWish(id)
-    toast.success("Успешно забронировано!")
   }
   const handleUnbook = async (id: number) => {
     unbookWish(id)
-    toast.success("Успешно разбронировано!")
   }
   const handleComplete = async (id: number) => {
     completeWish(id)

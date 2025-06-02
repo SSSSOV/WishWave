@@ -7,12 +7,21 @@ import List from "@/components/ui/list/List"
 import ListItem from "@/components/ui/list/ListItem"
 import Section from "@/components/ui/section/Section"
 import TopAppBar from "@/components/ui/top_app_bar/TopAppBar"
+import { $stats, handleFetchStats } from "@/context/bugreports"
 import { usePageTitle } from "@/hooks/usePageTitle"
+import { useUnit } from "effector-react"
 import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 
 export default function DashboardPage() {
   usePageTitle("Панель администратора")
   const router = useRouter()
+
+  const [stats, fetchStats] = useUnit([$stats, handleFetchStats])
+
+  useEffect(() => {
+    fetchStats()
+  }, [])
 
   return (
     <>
@@ -28,7 +37,7 @@ export default function DashboardPage() {
                 leading="bug_report"
                 leading_type="icon"
                 leading_color="error"
-                headline="Репортов нет"
+                headline={stats?.bugReports ? `Репортов: ${stats?.bugReports}` : "Репортов нет"}
                 overline="багрепорты"
                 trailing_type="icon"
                 onClick={() => {
@@ -60,7 +69,7 @@ export default function DashboardPage() {
                 leading="featured_seasonal_and_gifts"
                 leading_type="icon"
                 leading_color="primary"
-                headline="0 желаний"
+                headline={stats?.wishes ? `Желаний: ${stats?.wishes}` : "Желаний нет"}
                 overline="желания"
                 trailing_type="icon"
                 trailing="search"
@@ -73,7 +82,7 @@ export default function DashboardPage() {
                 leading="list"
                 leading_type="icon"
                 leading_color="secondary"
-                headline="0 списков"
+                headline={stats?.wishLists ? `Списков: ${stats?.wishLists}` : "Списков нет"}
                 overline="списки"
                 trailing_type="icon"
                 trailing="search"
@@ -86,7 +95,7 @@ export default function DashboardPage() {
                 leading="account_circle"
                 leading_type="icon"
                 leading_color="tertiary"
-                headline="0 пользователей"
+                headline={stats?.users ? `Пользователей: ${stats?.users}` : "Пользователей нет"}
                 overline="пользователи"
                 trailing_type="icon"
                 trailing="search"
