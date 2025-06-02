@@ -22,10 +22,10 @@ import { IUser } from "@/types/user"
 import { sample } from "effector"
 import { useUnit } from "effector-react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import toast from "react-hot-toast"
 
-export default function AddFriendPage() {
+function AddFriendPageContent() {
   // Роутер
   const router = useRouter()
 
@@ -255,5 +255,13 @@ export default function AddFriendPage() {
         </List>
       </Section>
     </>
+  )
+}
+
+export default function AddFriendPage() {
+  return (
+    <Suspense fallback={<div>Загрузка...</div>}>
+      <AddFriendPageContent />
+    </Suspense>
   )
 }
