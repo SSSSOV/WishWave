@@ -2284,119 +2284,92 @@ Authorization: Bearer <token>
 
 ### Get All User
 
-`GET /api/user/all`
+`GET /api/user/all?page=<number>&limit=<number>`
 Получить список всех пользователей (только для администратора)
+
+**Query Parametrs:**
+
+```makefile
+  page (number) // по умолчанию 1
+```
+
+```makefile
+  limit (number) // по умолчанию 20, максимум 100
+```
 
 **Responses:**
 
 - 200:
 
 ```json
-[
-    {
-        "id": 2,
-        "fullname": "Вадим",
-        "login": "sanya",
-        "email": "sanya@mail.ru",
-        "image": null,
-        "birthDate": "2003-10-06",
-        "phone": null,
-        "gender": "male",
-        "socials": null,
-        "roleId": 1,
-        "banId": null,
-        "createdAt": "2025-05-26T16:24:56.731Z",
-        "updatedAt": "2025-05-27T11:20:24.520Z",
-        "friend": [
-            {
-                "id": 1,
-                "userid1": 2,
-                "userid2": 3,
-                "friendstatusId": 2,
-                "createdAt": "2025-05-27T09:15:30.293Z",
-                "updatedAt": "2025-05-27T09:15:44.255Z",
-                "FriendUsers": {
-                    "id": 1,
-                    "userId": 2,
-                    "friendId": 1
-                }
-            }
-        ],
-        "ban": null,
-        "role": {
+{
+    "data": [
+        {
             "id": 1,
-            "value": "user",
-            "description": "Пользователь",
-            "createdAt": "2025-05-26T16:18:39.012Z",
-            "updatedAt": "2025-05-26T16:18:39.012Z"
+            "login": "root",
+            "email": "root@mail.ru",
+            "fullname": null,
+            "image": null,
+            "birthDate": null,
+            "phone": null,
+            "gender": null,
+            "socials": null,
+            "roleId": 2,
+            "banId": null,
+            "createdAt": "2025-05-27T14:45:12.491Z",
+            "updatedAt": "2025-05-27T14:45:12.491Z"
         },
-        "wishstatuses": []
-    },
-    {
-        "id": 3,
-        "fullname": null,
-        "login": "dima",
-        "email": "dima@mail.ru",
-        "image": null,
-        "birthDate": null,
-        "phone": null,
-        "gender": null,
-        "socials": null,
-        "roleId": 1,
-        "banId": null,
-        "createdAt": "2025-05-27T06:58:26.671Z",
-        "updatedAt": "2025-05-27T12:01:19.634Z",
-        "friend": [
-            {
-                "id": 1,
-                "userid1": 2,
-                "userid2": 3,
-                "friendstatusId": 2,
-                "createdAt": "2025-05-27T09:15:30.293Z",
-                "updatedAt": "2025-05-27T09:15:44.255Z",
-                "FriendUsers": {
-                    "id": 2,
-                    "userId": 3,
-                    "friendId": 1
-                }
-            }
-        ],
-        "ban": null,
-        "role": {
-            "id": 1,
-            "value": "user",
-            "description": "Пользователь",
-            "createdAt": "2025-05-26T16:18:39.012Z",
-            "updatedAt": "2025-05-26T16:18:39.012Z"
-        },
-        "wishstatuses": []
-    },
-    {
-        "id": 1,
-        "fullname": null,
-        "login": "root",
-        "email": "root@mail.ru",
-        "image": null,
-        "birthDate": null,
-        "phone": null,
-        "gender": null,
-        "socials": null,
-        "roleId": 2,
-        "banId": null,
-        "createdAt": "2025-05-26T16:18:39.123Z",
-        "updatedAt": "2025-05-26T16:18:39.123Z",
-        "friend": [],
-        "ban": null,
-        "role": {
+        {
             "id": 2,
-            "value": "admin",
-            "description": "Администратор",
-            "createdAt": "2025-05-26T16:18:39.015Z",
-            "updatedAt": "2025-05-26T16:18:39.015Z"
+            "login": "dima",
+            "email": "dima@mail.ru",
+            "fullname": "хуй",
+            "image": "d8b12332-505a-40ff-b69e-3e49316846ba.jpg",
+            "birthDate": "2003-06-11",
+            "phone": null,
+            "gender": null,
+            "socials": null,
+            "roleId": 1,
+            "banId": null,
+            "createdAt": "2025-05-27T14:45:24.141Z",
+            "updatedAt": "2025-06-01T09:02:50.659Z"
         },
-        "wishstatuses": []
-    }
-]
+        {
+            "id": 3,
+            "login": "shaka",
+            "email": "shaka@mail.ru",
+            "fullname": "Вадим",
+            "image": "224aa3f9-9a6b-40a4-b30a-6426015be5f9.jpg",
+            "birthDate": null,
+            "phone": null,
+            "gender": null,
+            "socials": null,
+            "roleId": 1,
+            "banId": null,
+            "createdAt": "2025-05-27T14:45:52.526Z",
+            "updatedAt": "2025-05-28T12:11:50.586Z"
+        },
+        {
+            "id": 4,
+            "login": "rusya",
+            "email": "rusya@mail.ru",
+            "fullname": null,
+            "image": null,
+            "birthDate": null,
+            "phone": null,
+            "gender": null,
+            "socials": null,
+            "roleId": 1,
+            "banId": null,
+            "createdAt": "2025-06-01T05:54:40.598Z",
+            "updatedAt": "2025-06-01T05:54:40.598Z"
+        }
+    ],
+    "page": 1,
+    "perPage": 20,
+    "total": 4,
+    "totalPages": 1
+}
 ```
 
 - 403:
@@ -3008,6 +2981,101 @@ Authorization: Bearer <token>
   "statusCode": 404,
   "message": "Желание не найдено ни в списках",
   "error": "Not Found"
+}
+```
+
+### Get All Wish
+
+`GET /api/wish/all?page=<number>&limit=<number>`
+Получить список всех желаний (только для администратора)
+
+**Query Parametrs:**
+
+```makefile
+  page (number) // по умолчанию 1
+```
+
+```makefile
+  limit (number) // по умолчанию 20, максимум 100
+```
+
+**Responses:**
+
+- 200:
+
+```json
+{
+    "data": [
+        {
+            "id": 21,
+            "name": "айфон",
+            "image": "",
+            "price": null,
+            "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+            "wishStatusId": 1,
+            "bookedByUserId": null,
+            "createdAt": "2025-05-28T11:24:07.858Z",
+            "updatedAt": "2025-05-28T11:24:07.858Z"
+        },
+        {
+            "id": 22,
+            "name": "sony",
+            "image": "",
+            "price": 25000,
+            "productLink": null,
+            "wishStatusId": 1,
+            "bookedByUserId": null,
+            "createdAt": "2025-05-30T06:10:40.698Z",
+            "updatedAt": "2025-06-01T05:06:09.045Z"
+        },
+        {
+            "id": 23,
+            "name": "самсунг",
+            "image": "",
+            "price": null,
+            "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+            "wishStatusId": 1,
+            "bookedByUserId": null,
+            "createdAt": "2025-05-30T06:10:47.050Z",
+            "updatedAt": "2025-05-30T06:10:47.050Z"
+        },
+        {
+            "id": 24,
+            "name": "говно",
+            "image": "",
+            "price": null,
+            "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+            "wishStatusId": 1,
+            "bookedByUserId": null,
+            "createdAt": "2025-05-30T06:10:51.408Z",
+            "updatedAt": "2025-05-30T06:10:51.408Z"
+        },
+        {
+            "id": 25,
+            "name": "сони",
+            "image": "",
+            "price": null,
+            "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+            "wishStatusId": 1,
+            "bookedByUserId": null,
+            "createdAt": "2025-05-30T06:11:11.106Z",
+            "updatedAt": "2025-05-30T06:11:11.106Z"
+        }
+    ],
+    "page": 2,
+    "perPage": 20,
+    "total": 36,
+    "totalPages": 2
+}
+```
+
+- 403:
+
+```json
+{
+  "statusCode": 403,
+  "message": "У вас нет прав, чтобы посмотреть все желания",
+  "error": "Forbidden"
 }
 ```
 
@@ -3624,6 +3692,57 @@ Authorization: Bearer <token>
             }
         }
     ]
+}
+```
+
+### Get All Wishlists
+
+`GET /api/wishlist/all?page=<number>&limit=<number>`
+Получить все спики желаний (только для администратора)
+
+**Query Parametrs:**
+
+```makefile
+  page (number) // по умолчанию 1
+```
+
+```makefile
+  limit (number) // по умолчанию 20, максимум 100
+```
+
+**Responses:**
+
+- 200:
+
+```json
+{
+    "data": [
+        {
+            "id": 25,
+            "name": "Для друзей",
+            "description": null,
+            "eventDate": "2003-06-10",
+            "shareToken": "ea055f95-70e8-4bf0-a576-e1df09f5c5ad",
+            "userId": 2,
+            "accesslevelId": 3,
+            "createdAt": "2025-06-01T11:37:13.464Z",
+            "updatedAt": "2025-06-01T11:37:13.464Z"
+        }
+    ],
+    "page": 2,
+    "perPage": 20,
+    "total": 21,
+    "totalPages": 2
+}
+```
+
+- 403:
+
+```json
+{
+  "statusCode": 403,
+  "message": "У вас нет прав, чтобы посмотреть все списки",
+  "error": "Forbidden"
 }
 ```
 
