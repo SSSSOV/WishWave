@@ -1,20 +1,4 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Delete,
-  ForbiddenException,
-  Get,
-  Param,
-  ParseIntPipe,
-  Patch,
-  Post,
-  Query,
-  Req,
-  UploadedFile,
-  UseGuards,
-  UseInterceptors,
-} from "@nestjs/common"
+import {BadRequestException, Body, Controller, Delete, ForbiddenException, Get, Param,ParseIntPipe,Patch, Post, Query, Req, UploadedFile, UseGuards, UseInterceptors} from "@nestjs/common"
 import { UsersService } from "./users.service"
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard"
 import { UserResponseDto } from "./dto/user-response.dto"
@@ -33,9 +17,6 @@ export class UsersController {
     private readonly friendService: FriendService,
     private readonly authService: AuthService
   ) {}
-
-
-    constructor(private readonly usersService: UsersService, private fileService: FileService, private readonly friendService: FriendService, private readonly authService: AuthService) { }
 
     @UseGuards(JwtAuthGuard)
     @Get('all')
@@ -63,35 +44,13 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Get()
-    async getSelf(@Req() req): Promise<Omit<UserResponseDto, 'wishlist'>> {
+    async getSelf(@Req() req): Promise<Omit<UserResponseDto, "wishlist">> {
         const me = req.user.id;
         const user = await this.usersService.getUserById(me);
-        const {password, wishlist, ...rest} = user.get({plain: true}) as any;
-     
+        const { password, wishlist, ...rest } = user.get({ plain: true }) as any;
         return rest;
-
     }
-    const users = await this.usersService.getAllUsers()
-    return users.map((u) => {
-      const plain = u.get({ plain: true }) as any
-      const { password, wishlist, ...rest } = u.get({ plain: true }) as any
-      return rest as Omit<UserResponseDto, "wishlist">
-    })
-  }
 
-  @UseGuards(JwtAuthGuard)
-  @Get("checkAuth")
-  checkAuth(): void {}
-
-  @UseGuards(JwtAuthGuard)
-  @Get()
-  async getSelf(@Req() req): Promise<Omit<UserResponseDto, "wishlist">> {
-    const me = req.user.id
-    const user = await this.usersService.getUserById(me)
-    const { password, wishlist, ...rest } = user.get({ plain: true }) as any
-
-    return rest
-  }
 
   @UseGuards(JwtAuthGuard)
   @Get(":id")
