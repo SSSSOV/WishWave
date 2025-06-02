@@ -45,7 +45,21 @@ export class AuthController {
         maxAge: 24 * 60 * 60 * 1000, // 1 день
         path: "/",
         domain: process.env.CLIENT_DOMAIN,
-    })  
-       return { token }
+      })  
+
+      return { token }
+    }
+
+    @Post("/logout")
+    logout(@Res({ passthrough: true }) res: Response) {
+      res.clearCookie("authToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+        domain: process.env.CLIENT_DOMAIN,
+      });
+      
+      return { message: "Вы вышли из системы" };
     }
 }
