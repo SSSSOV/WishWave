@@ -3027,28 +3027,29 @@ Authorization: Bearer <token>
 
 ```json
 {
-    "id": 18,
-    "name": "айфон",
+    "id": 1,
+    "name": "плей",
     "price": null,
     "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
     "image": "",
     "wishStatusId": 1,
-    "createdAt": "2025-05-28T11:15:32.050Z",
-    "updatedAt": "2025-05-28T11:15:32.050Z",
-    "shareToken": "e06a5842-e88d-445f-96c8-c2421f9e07ac",
+    "createdAt": "2025-06-02T09:26:43.365Z",
+    "updatedAt": "2025-06-02T09:26:43.365Z",
+    "shareToken": null,
     "owner": {
         "id": 2,
         "fullname": null,
-        "login": "dima",
+        "login": "rusya",
         "image": null
     },
     "list": {
-        "id": 11,
+        "id": 1,
         "name": "Для друзей",
         "eventDate": "2003-06-10",
-        "accessLevelId": 3
+        "accessLevelId": 1
     },
-    "bookedByUser": null
+    "bookedByUser": null,
+    "canBook": false
 }
 ```
 
