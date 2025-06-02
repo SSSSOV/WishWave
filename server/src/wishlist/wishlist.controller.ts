@@ -153,8 +153,10 @@ export class WishlistController {
 
             const p = wl.get({ plain: true }) as any;
             const owner = {id: p.user.id,fullname: p.user.fullname,login: p.user.login,image: p.user.image};
+            const wishes = (p.wishes || []).map((w: any) => ({id: w.id, name: w.name, price: w.price, productLink: w.productLink, image: w.image, wishStatusId: w.wishstatus?.id ?? w.wishStatusId, bookedByUser: w.bookedByUser ? {
+            id: w.bookedByUser.id, fullname: w.bookedByUser.fullname, login: w.bookedByUser.login, image: w.bookedByUser.image}: null}));
 
-            return {id: p.id,name: p.name,accessLevelId: p.accesslevelId,description: p.description,eventDate: p.eventDate,shareToken: p.shareToken,owner};
+            return {id: p.id,name: p.name,accessLevelId: p.accesslevelId,description: p.description,eventDate: p.eventDate,shareToken: p.shareToken,owner, wishes};
         }
 
         const wl = await this.wishListService.getFullById(viewerId, id, token);
@@ -165,8 +167,7 @@ export class WishlistController {
         const p = wl.get({plain: true}) as any;
         const owner = {id: p.user.id, fullname: p.user.fullname, login: p.user.login, image: p.user.image};
         const wishes = (p.wishes || []).map((w: any) => ({id: w.id, name: w.name, price: w.price, productLink: w.productLink, image: w.image, wishStatusId: w.wishstatus?.id ?? w.wishStatusId, bookedByUser: w.bookedByUser ? {
-            id: w.bookedByUser.id, fullname: w.bookedByUser.fullname, login: w.bookedByUser.login, image: w.bookedByUser.image
-        }: null}));
+            id: w.bookedByUser.id, fullname: w.bookedByUser.fullname, login: w.bookedByUser.login, image: w.bookedByUser.image}: null}));
 
         return {id: p.id, name: p.name, accessLevelId: p.accesslevelId, description: p.description, eventDate: p.eventDate, shareToken: p.shareToken, owner, wishes};
     }
