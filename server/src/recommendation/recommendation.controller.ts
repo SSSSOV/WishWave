@@ -12,6 +12,11 @@ export class RecommendationController {
         const userId = req.user?.id;
         const wishes = await this.recommendationService.getRecomendation(userId);
 
+        for (let i = wishes.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [wishes[i], wishes[j]] = [wishes[j], wishes[i]];
+        }
+
         return wishes.map(w => ({id: w.id, name: w.name, image: w.image, price: w.price, productLink: w.productLink, createdAt: w.createdAt.toISOString()}));
     }
 }
