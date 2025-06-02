@@ -575,6 +575,21 @@ Authorization: Bearer <token>
 }
 ```
 
+### Login
+
+`POST /api/auth/logout`
+Выход пользователя с очисткой куки и токена
+
+**Responses:**
+
+- 200:
+
+```json
+{
+  "message": "Вы вышли из системы"
+}
+```
+
 ---
 
 ## Ban
