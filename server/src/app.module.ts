@@ -32,6 +32,7 @@ import * as path from 'path';
 import { BugReport } from "./bugreport/bugreport.model";
 import { RecommendationController } from './recommendation/recommendation.controller';
 import { RecommendationModule } from './recommendation/recommendation.module';
+import { StatsModule } from './stats/stats.module';
 
 @Module({
     controllers: [RecommendationController],
@@ -74,6 +75,7 @@ import { RecommendationModule } from './recommendation/recommendation.module';
         PublicwishlistModule,
         BugreportModule,
         RecommendationModule,
+        StatsModule,
       ]
 })
 export class AppModule {}
