@@ -1,0 +1,75 @@
+.container {
+  max-width: 864px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.bg {
+  background-color: var(--surface);
+}
+
+.with_pad {
+  padding: var(--md);
+  border-radius: var(--md);
+}
+
+.border_radius {
+  border-radius: var(--md);
+}
+
+.gap_sm {
+  gap: var(--sm);
+}
+.gap_md {
+  gap: var(--md);
+}
+.gap_lg {
+  gap: var(--lg);
+}
+.gap_xl {
+  gap: var(--xl);
+}
+
+.pt_sm {
+  padding-top: var(--sm);
+}
+.pt_md {
+  padding-top: var(--md);
+}
+.pt_lg {
+  padding-top: var(--lg);
+}
+.pt_xl {
+  padding-top: var(--xl);
+}
+
+.px_sm {
+  padding-left: var(--sm);
+  padding-right: var(--sm);
+}
+.px_md {
+  padding-left: var(--md);
+  padding-right: var(--md);
+}
+.px_lg {
+  padding-left: var(--lg);
+  padding-right: var(--lg);
+}
+.px_xl {
+  padding-left: var(--xl);
+  padding-right: var(--xl);
+}
+
+.mt_sm {
+  margin-top: var(--sm);
+}
+.mt_md {
+  margin-top: var(--md);
+}
+.mt_lg {
+  margin-top: var(--lg);
+}
+.mt_xl {
+  margin-top: var(--xl);
+}

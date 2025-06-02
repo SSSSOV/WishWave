@@ -1,0 +1,21 @@
+.container {
+  background-color: var(--surface-container);
+
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 12px 16px 12px;
+
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+
+  z-index: 100;
+}
+
+.FAB_place {
+  position: fixed;
+  bottom: 100;
+  right: 16;
+}

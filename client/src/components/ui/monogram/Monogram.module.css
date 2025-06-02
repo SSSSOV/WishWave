@@ -1,0 +1,144 @@
+.container_sm,
+.container_md,
+.container_lg,
+.container_xs {
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  border-radius: var(--full);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 16px;
+  line-height: 16px;
+  letter-spacing: 0.1px;
+  text-align: center;
+  font-weight: 500;
+  text-wrap: nowrap;
+  overflow: hidden;
+}
+
+.img {
+  object-fit: cover;
+}
+
+.container_sm {
+  width: 56px;
+  min-width: 56px;
+  height: 56px;
+
+  font-size: 20px;
+  line-height: 20px;
+}
+
+.container_md {
+  width: 80px;
+  min-width: 80px;
+  height: 80px;
+
+  font-size: 40px;
+  line-height: 40px;
+}
+.container_lg {
+  width: 120px;
+  min-width: 120px;
+  height: 120px;
+
+  font-size: 60px;
+  line-height: 60px;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.container_full {
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  aspect-ratio: 4 / 3;
+
+  font-size: 120px;
+  line-height: 120px;
+}
+
+.rounded {
+  overflow: hidden;
+  border-radius: var(--lg);
+}
+
+/* ICON SIZES */
+.icon_xs {
+  font-size: 24px !important;
+  line-height: 24px !important;
+}
+.icon_sm {
+  font-size: 28px !important;
+  line-height: 28px !important;
+}
+.icon_md {
+  font-size: 48px !important;
+  line-height: 48px !important;
+}
+.icon_lg {
+  font-size: 60px !important;
+  line-height: 60px !important;
+}
+.icon_full {
+  font-size: 60px !important;
+  line-height: 60px !important;
+}
+
+/* COLORS */
+.primary {
+  background-color: var(--primary-container);
+  color: var(--on-primary-container);
+}
+.secondary {
+  background-color: var(--secondary-container);
+  color: var(--on-secondary-container);
+}
+.tertiary {
+  background-color: var(--tertiary-container);
+  color: var(--on-tertiary-container);
+}
+.access {
+  background-color: var(--access-container);
+  color: var(--on-access-container);
+}
+.warning {
+  background-color: var(--warning-container);
+  color: var(--on-warning-container);
+}
+.error {
+  background-color: var(--error-container);
+  color: var(--on-error-container);
+}
+.none {
+  background-color: transparent;
+  color: var(--on-primary-container);
+}
+
+.load_div {
+  border-radius: var(--full);
+  background: linear-gradient(90deg, var(--primary-container), var(--secondary-container), var(--tertiary-container));
+  background-size: 400% 400%;
+  animation: gradient 2s ease infinite;
+  transform: translate3d(0, 0);
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

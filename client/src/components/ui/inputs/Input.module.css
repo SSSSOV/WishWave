@@ -1,0 +1,87 @@
+.text_field,
+.textarea_field {
+  --icon-size: 24px;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0px 0px 0px 8px;
+  border: 1px solid var(--outline);
+  border-radius: 4px;
+  /* background: var(--surface); */
+  background: transparent;
+  transition: all 0.2s;
+  height: 56px;
+}
+
+.textarea_field {
+  height: 112px;
+  align-items: center;
+}
+
+.text_field:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.input_container {
+  position: relative;
+  flex-grow: 1;
+  /* padding: 8px 0; */
+  height: 60%;
+}
+
+.input {
+  height: 100%;
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  background: transparent;
+}
+
+.input::placeholder {
+  color: transparent;
+}
+
+.label {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--outline);
+  font-size: 16px;
+  transition: all 0.2s;
+  pointer-events: none;
+  border-radius: var(--sm);
+  line-height: 10px;
+}
+
+.input:focus + .label,
+.input:not(:placeholder-shown) + .label {
+  top: 0;
+  transform: translateY(-16px);
+  font-size: 12px;
+  background: var(--surface);
+  padding: 0 4px;
+  color: var(--primary);
+}
+
+.icon {
+  font-size: 24px !important;
+  color: var(--on-surface);
+}
+
+/* Для ошибки */
+.text_field.error {
+  border-color: var(--error-color);
+}
+
+.text_field.error label {
+  color: var(--error-color);
+}
+
+.w_full {
+  width: 100%;
+}

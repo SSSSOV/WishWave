@@ -1,0 +1,26 @@
+.menuContainer {
+  position: relative;
+  display: inline-block;
+  z-index: 0;
+}
+
+.menu {
+  position: fixed;
+  top: 50%;
+  right: 30%;
+  background-color: var(--surface-container);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  min-width: 180px;
+  padding: 8px 0;
+}
+
+.menuItem {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.menuItem:hover {
+  background-color: var(--surface-container-highest);
+}

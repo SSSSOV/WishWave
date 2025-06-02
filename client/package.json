@@ -1,0 +1,34 @@
+{
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@effector/next": "^0.7.1",
+    "axios": "^1.9.0",
+    "cookie": "^1.0.2",
+    "effector": "^23.3.0",
+    "effector-react": "^23.3.0",
+    "jwt-decode": "^4.0.0",
+    "mobx": "^6.13.7",
+    "next": "^15.3.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-hot-toast": "^2.5.2",
+    "react-select": "^5.10.1",
+    "react-toastify": "^11.0.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}

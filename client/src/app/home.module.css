@@ -1,0 +1,74 @@
+.headline {
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 700;
+  text-align: justify;
+}
+.title {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 500;
+  text-align: justify;
+}
+.body {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  text-align: justify;
+}
+.label {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 700;
+  text-align: justify;
+}
+.link {
+  text-decoration: underline;
+}
+.text_center {
+  text-align: center;
+}
+.ul {
+  /* border: 1px solid var(--outline); */
+  border-radius: var(--md);
+  padding: var(--sm);
+  margin-bottom: var(--md);
+  transition: 0.5s all;
+  border: 1px solid var(--outline);
+}
+.ul:hover {
+  border-radius: var(--sm);
+  background-color: var(--surface);
+  color: var(--on-surface);
+  box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--surface);
+}
+
+.row {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  border-radius: var(--lg);
+}
+
+.scrollContainer {
+  display: flex;
+  gap: var(--sm);
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE и Edge */
+}
+
+.scrollContainer::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Опционально: плавный скролл */
+.scrollContainer {
+  scroll-behavior: smooth;
+}
+
+.page {
+  background-color: var(--surface-container);
+  position: static;
+}
