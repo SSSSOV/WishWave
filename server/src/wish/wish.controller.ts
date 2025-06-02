@@ -35,7 +35,7 @@ export class WishController {
     @Get('all')
     async getAllWishesAdm(@Req() req, @Query('page') page = '1', @Query('limit') limit = '20') {
         if (req.user.roles?.value !== 'admin') {
-            throw new ForbiddenException('У вас нет прав, чтобы посмотреть всех пользователей')
+            throw new ForbiddenException('У вас нет прав, чтобы посмотреть все желания')
         }
             
         const pageNum = Math.max(parseInt(page, 10) || 1, 1);

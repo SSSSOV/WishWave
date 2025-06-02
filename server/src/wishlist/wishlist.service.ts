@@ -5,7 +5,7 @@ import { CreateWishlistDto } from './dto/create-wishlist.dto';
 import { Wish } from 'src/wish/wish.model';
 import { AccessLevel } from 'src/accesslevel/accesslevel.model';
 import { User } from 'src/users/users.model';
-import { WhereOptions, Op as SqOp} from 'sequelize';
+import { WhereOptions, Op as SqOp, FindAndCountOptions} from 'sequelize';
 import { Friend } from 'src/friend/friend.model';
 import { FriendStatus } from 'src/friendstatus/friendstatus.model';
 import { v4 as uuidv4 } from 'uuid';
@@ -364,5 +364,12 @@ export class WishlistService {
     async findByIdBare(wishlistId: number): Promise<WishList | null> {
         return this.wishListRepository.findByPk(wishlistId, {include: [ { model: AccessLevel, as: 'accesslevel', attributes: ['id', 'name'] },
             { model: User, as: 'user', attributes: ['id', 'fullname', 'login', 'image'] }]})
+    }
+
+    async getAllWishlistAdm(page: number, perPage: number) {
+        const offset = (page - 1) * perPage;
+        const options: FindAndCountOptions = {attributes: ['id','name','description','eventDate','shareToken','userId','accesslevelId','createdAt','updatedAt'], limit: perPage, offset, order: [['id', 'ASC']]};
+
+        return this.wishListRepository.findAndCountAll(options);
     }
 }
