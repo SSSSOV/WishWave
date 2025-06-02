@@ -32,6 +32,9 @@ import * as path from 'path';
 import { BugReport } from "./bugreport/bugreport.model";
 import { RecommendationController } from './recommendation/recommendation.controller';
 import { RecommendationModule } from './recommendation/recommendation.module';
+import { StatsModule } from './stats/stats.module';
+import { MailerModule } from './mailer/mailer.module';
+import { PendingUser } from "./auth/pending-user.model";
 
 @Module({
     controllers: [RecommendationController],
@@ -54,7 +57,7 @@ import { RecommendationModule } from './recommendation/recommendation.module';
           username: process.env.POSTGRES_USER,
           password: process.env.POSTGRES_PASSWORD,
           database:  process.env.POSTGRES_DB,
-          models: [WishStatus, Wish, WishListWish, WishList, AccessLevel, User, Friend, Ban, Role, FriendStatus, BugReport],
+          models: [WishStatus, Wish, WishListWish, WishList, AccessLevel, User, Friend, Ban, Role, FriendStatus, BugReport, PendingUser],
           autoLoadModels: true,
           logging: console.log
         }),
@@ -74,6 +77,8 @@ import { RecommendationModule } from './recommendation/recommendation.module';
         PublicwishlistModule,
         BugreportModule,
         RecommendationModule,
+        StatsModule,
+        MailerModule,
       ]
 })
 export class AppModule {}

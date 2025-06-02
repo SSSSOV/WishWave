@@ -9,6 +9,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Wish } from 'src/wish/wish.model';
 import { WishListWish } from './wishlist-wish.model';
 import { User } from 'src/users/users.model';
+import { WishList } from './wishlist.model';
 
 @Controller('wishlist')
 export class WishlistController {
@@ -26,6 +27,22 @@ export class WishlistController {
         }};
 
         return response;
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('all')
+    async getAllWishlistAdm(@Req() req, @Query('page') page = '1', @Query('limit') limit = '20'): Promise<{data: Partial<WishList>[]; page: number; perPage: number; total: number; totalPages: number}>  {
+        if (req.user.roles?.value !== 'admin') {
+            throw new ForbiddenException('У вас нет прав, чтобы посмотреть все списки')
+        }
+            
+        const pageNum = Math.max(parseInt(page, 10) || 1, 1);
+        const perPage = Math.min(Math.max(parseInt(limit, 10) || 20, 1), 100);
+        const {rows, count} = await this.wishListService.getAllWishlistAdm(pageNum, perPage);
+    
+        const data = rows.map((wl) => {return(wl.get({plain: true}) as any) as Partial<WishList>});
+    
+        return {data, page: pageNum, perPage, total: count, totalPages: Math.ceil(count/perPage)};
     }
 
     @UseGuards(JwtAuthGuard)
@@ -125,7 +142,21 @@ export class WishlistController {
     @UseGuards(JwtAuthGuard)
     @Get(':id')
     async getOne(@Param('id') id: number, @Req() req, @Query('token') token?: string) {
+        const viewer = req.user;
         const viewerId = req.user.id as number;
+        const isAdmin = viewer.roles?.value === 'admin';
+        if (isAdmin) {
+            const wl = await this.wishListService.getFullById(viewerId, id, token, true);
+            if (!wl) {
+                throw new NotFoundException('Список не найден');
+            }
+
+            const p = wl.get({ plain: true }) as any;
+            const owner = {id: p.user.id,fullname: p.user.fullname,login: p.user.login,image: p.user.image};
+
+            return {id: p.id,name: p.name,accessLevelId: p.accesslevelId,description: p.description,eventDate: p.eventDate,shareToken: p.shareToken,owner};
+        }
+
         const wl = await this.wishListService.getFullById(viewerId, id, token);
         if (!wl) {
             throw new NotFoundException('Список не найден')

@@ -10,13 +10,13 @@
 
 Это позволяет быстро понять, что все маршруты начинаются с этого пути и гарантируют одинаковый базовый URL на разных окружениях. 
 
-При запуске сервера в точке входа (main.ts) вызывается 
+При запуске сервера в точке входа (main.ts) вызывается:
 
 ```ts
   app.setGlobalPrefix("api") 
 ```
 
-Поэтому, будь то запрос на авторизацию, на получение списка пользователей или на управление желаниями, адрес всегда выглядит как 
+Поэтому, будь то запрос на авторизацию, на получение списка пользователей или на управление желаниями, адрес всегда выглядит как:
 
 ```makefile
   http://<host>:<port>/api/....
@@ -30,8 +30,10 @@
 
 Ему возвращается токен, вида:
 
-```makefile
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImRpbWEiLCJpZCI6MiwiZW1haWwiOiJkaW1hQG1haWwucnUiLCJmdWxsbmFtZSI6bnVsbCwicm9sZXMiOnsiaWQiOjEsInZhbHVlIjoidXNlciIsImRlc2NyaXB0aW9uIjoi0J_QvtC70YzQt9C-0LLQsNGC0LXQu9GMIiwiY3JlYXRlZEF0IjoiMjAyNS0wNS0yN1QxNDo0NToxMi4zNDJaIiwidXBkYXRlZEF0IjoiMjAyNS0wNS0yN1QxNDo0NToxMi4zNDJaIn0sImlhdCI6MTc0ODQxNTQzMCwiZXhwIjoxNzQ4NTAxODMwfQ.MsE_NRgn9sFVkhGEbQ6dqgIKu78ILv8_QOeucTECm3s
+```json
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6InNoYWthIiwiaWQiOjMsImVtYWlsIjoic2hha2FAbWFpbC5ydSIsImZ1bGxuYW1lIjoi0JLQsNC00LjQvCIsInJvbGVzIjp7ImlkIjoxLCJ2YWx1ZSI6InVzZXIiLCJkZXNjcmlwdGlvbiI6ItCf0L7Qu9GM0LfQvtCy0LDRgtC10LvRjCIsImNyZWF0ZWRBdCI6IjIwMjUtMDUtMjdUMTQ6NDU6MTIuMzQyWiIsInVwZGF0ZWRBdCI6IjIwMjUtMDUtMjdUMTQ6NDU6MTIuMzQyWiJ9LCJpYXQiOjE3NDg4NDQ2NTgsImV4cCI6MTc0ODkzMTA1OH0.zDSMhdyZYCddLRlUOE5SjCNbSilS2ArXPde0FVrJS4Q"
+}
 ```
 
 Который подписан секретным ключом, описанным в переменном окружении:
@@ -86,6 +88,22 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImRpbWEiLCJpZCI6MiwiZW1haWwiOiJ
 
 Реализуются все проверки доступа: от ограничения создания и удаления сущностей до возможности просматривать чужие профили.
 
+## User Registration
+
+Шаг 1 – регистрация и отправка кода.
+Когда новый пользователь отправляет на сервер свои данные (логин, электронную почту и пароль), система сначала проверяет, не заняты ли указанные логин или email. Если всё в порядке, пароль сразу превращается в хэш, а сам пользователь ещё не создаётся в основной таблице. Вместо этого сохраняются данные о кандидате в отдельную «временную» таблицу (pending users): логин, email, уже захэшированный пароль, сгенерированный шестизначный код подтверждения и время, до которого этот код действителен (один час). После этого система отправляет на указанный адрес email письмо с текстом, в котором указан именно этот код. Самому пользователю возвращается ответ с сообщением о том, что код отправлен, и предложение ввести его для завершения регистрации.
+
+Шаг 2 – проверка кода и создание реального аккаунта.
+Когда пользователь вводит полученный в письме код, он обращается ко второму endpoint­ (verify-email). В этом запросе необходимо передать либо тот же логин, который использовали при регистрации, либо email, и сам шестизначный код. Система ищет запись о временном пользователе по совпадению логина или email и по указанному коду.
+
+Если не нашлось подходящей записи или код уже не совпадает, возвращается ошибка «Неверный логин/email или код подтверждения».
+
+Если запись обнаружена, но срок действия кода истёк (то есть текущее время позже указанного времени окончания жизни кода), временная запись удаляется, и пользователю возвращается сообщение о том, что срок действия кода истек, с указанием «Срок действия кода истёк. Зарегистрируйтесь заново.».
+В случае успешного совпадения и если код ещё не просрочен, система перенесёт данные временного пользователя в основную таблицу пользователей: создаётся запись с логином, email и уже захэшированным паролем. После этого временная запись удаляется, и сразу же выдаётся JWT-токен, который пользователь получает в ответе и может использовать для доступа к защищённым ресурсам.
+
+Шаг 3 – вход.
+После того как пользователь прошёл верификацию кода и запись появилась в главной таблице, он может авторизоваться обычным способом. Для этого он отправляет логин (или email) и пароль. Система находит строку в таблице пользователей по переданному логину или email, сравнивает указанный пароль с тем, что хранится в базе (через сравнение с хэшем). Если оба параметра совпадают, генерируется новый JWT-токен и возвращается в ответе. В противном случае возвращается ошибка «Некорректный email, логин или пароль» с кодом 401.
+
 ## Password Hashing
 
 Пароли пользователей никогда не сохраняются в открытом виде. Хэширование паролей организовано библиотекой bcryptjs. При регистрации или изменении пароля метод сервиса делает хеширование, после чего в базе хранится уже не исходная строка, а её криптографическая производная. При последующих попытках входа сравнение осуществляется также через bcrypt, и только если хеши совпадают, пользователь считается аутентифицированным. Такой подход защищает от простых атак по словарю и затрудняет получение оригинального пароля даже при утечке базы данных.
@@ -105,6 +123,23 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImRpbWEiLCJpZCI6MiwiZW1haWwiOiJ
 ```
 
 Реализована логика сохранения картинок в папку static: уникальное имя генерируется через uuid.v4(), создаётся нужная директория при её отсутствии, а затем файл пишется на диск. При замене уже существующего изображения старая копия удаляется для экономии пространства. Папка static раздаётся самим приложением через ServeStaticModule на маршруте /static, что позволяет фронтенду обращаться к сохранённым файлам по прямым URL.
+
+## Recommendation
+
+Рекомендации строятся на основе публичных желаний (то есть тех, которые выставлены в списках с уровнем доступа public). Любой пользователь (включая неавторизованных) может видеть эти желания. Если пользователь передаёт JWT-токен и у его профиля заполнены пол (gender) и дата рождения (birthDate), система вычисляет текущий возраст и формирует диапазон ± 5 лет (например, для мужчины 25 лет будут подбираться желания от мужчин 20–30 лет). Затем из таблицы желаний выбираются только те записи, которые:
+
+ - принадлежат спискам с уровнем доступа public,
+
+ - у которых владелец (автор списка) совпадает по полу и попадает в возрастной диапазон пользователя.
+
+Результат сортируется по дате создания (createdAt) — от новых к старым — и берутся первые 30 записей. Если пользователь не вошёл в систему, либо для его демографической группы не нашлось желаний, возвращаются просто последние 30 публичных желаний.
+
+Также для авторизованного пользователя собирает список его друзей (тех, у кого статус «accepted»), затем для каждого друга вычисляет, когда в последний раз обновлялся любой из его достоупных списков («public» или «friends») или любое желание внутри них.
+Отдаёт до 15 друзей, отсортированных от самых «свежих» (больше createdAt у списка/желаний) к менее активным.
+
+## Stats
+
+Эндпоинт /stats позволяет администраторам получить сводную информацию о системе: общее число пользователей, списков желаний, самих желаний и баг-репортов. При запросе проверяется роль из JWT-токена (доступен только пользователям с ролью admin); если проверка пройдена, возвращается JSON с четырьмя полями – users, wishLists, wishes и bugReports – соответствующими количественными показателями.
 
 ## Database Seeding
 
@@ -160,11 +195,7 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImRpbWEiLCJpZCI6MiwiZW1haWwiOiJ
 
 ![Концептуальная модель](Conceptual.png)
 
-Она строится вокруг пользователей, каждый из которых имеет логин, почту, хеш пароля, профильные поля (ФИО, фото, дату рождения, телефон, пол и соцсети), связан с ролью и с записью о бане. Заявки в друзья хранятся в отдельной таблице с отправителем, получателем и статусом из справочника FriendStatus, что позволяет отслеживать «pending», «accepted» или «rejected». Списки желаний содержат название, описание, при желании дату события, уровень доступа (public, private, linkOnly или friends) и опциональный UUID-токен для режима linkOnly, а сами желания связаны со списками через таблицу многие-ко-многим и имеют собственный статус (active, reserved, completed), цену, ссылку и изображение. При бронировании желания меняется его статус на «reserved» и фиксируется пользователь-бронирующий (bookedByUserId), а при завершении бронь снимается и статус переводится в «completed». Такая схема с явными внешними ключами и справочниками позволяет легко проверять права доступа и строить гибкую бизнес-логику на стороне сервера. Кроме того, введена сущность BugReport, которая позволяет любому пользователю — авторизованному (по JWT) или гостю — создавать отчёты об ошибках.
-
-## Additional Functionality
-
-Дополнительные возможности включают публичный контроллер publicwishlist, позволяющий просматривать и редактировать списки без авторизации, если у пользователя есть правильный shareToken. Механизмы дублирования и копирования желаний позволяют быстро перенести или скопировать элемент из одного списка в другой. Кроме того, существует отдельный эндпоинт для получения всех забронированных желаний текущего пользователя, который возвращает не только базовую информацию, но и подробные данные о самом списке, о владельце списка и о бронирующем пользователе. Также пользователям добавлена создавать багрепорты для отслеживания ошибок приложения.
+Она строится вокруг пользователей, каждый из которых имеет логин, почту, хеш пароля, профильные поля (ФИО, фото, дату рождения, телефон, пол и соцсети) и связан с ролью. Заявки в друзья хранятся в отдельной таблице с отправителем, получателем и статусом из справочника FriendStatus, что позволяет отслеживать «pending», «accepted» или «rejected». Списки желаний содержат название, описание, при желании дату события, уровень доступа (public, private, linkOnly или friends) и опциональный UUID-токен для режима linkOnly, а сами желания связаны со списками через таблицу многие-ко-многим и имеют собственный статус (active, reserved, completed), цену, ссылку и изображение. При бронировании желания меняется его статус на «reserved» и фиксируется пользователь-бронирующий (bookedByUserId), а при завершении бронь снимается и статус переводится в «completed». Такая схема с явными внешними ключами и справочниками позволяет легко проверять права доступа и строить гибкую бизнес-логику на стороне сервера. Кроме того, введена сущность BugReport, которая позволяет любому пользователю — авторизованному (по JWT) или гостю — создавать отчёты об ошибках.
 
 ## Errors
 
@@ -455,7 +486,30 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "token": "string"
+  "message": "Код подтверждения отправлен на ваш email. Введите код для завершения регистрации."
+}
+```
+
+### Verify Email
+
+`POST /api/auth/verify-email`
+Подтверждение кода, полученного на e-mail
+
+**Request Body:**
+```json
+{
+  "loginOrEmail": "string",
+  "code": "string"
+}
+```
+
+**Responses:**
+
+- 201: 
+
+```json
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6InJ1c3lhIiwiaWQiOjIsImVtYWlsIjoiZnV3ZWd1NTBAZ21haWwuY29tIiwiZnVsbG5hbWUiOm51bGwsInJvbGVzIjp7ImlkIjoxLCJ2YWx1ZSI6InVzZXIiLCJkZXNjcmlwdGlvbiI6ItCf0L7Qu9GM0LfQvtCy0LDRgtC10LvRjCIsImNyZWF0ZWRBdCI6IjIwMjUtMDYtMDJUMDk6MTk6MzIuNjQ3WiIsInVwZGF0ZWRBdCI6IjIwMjUtMDYtMDJUMDk6MTk6MzIuNjQ3WiJ9LCJpYXQiOjE3NDg4NTYxNDcsImV4cCI6MTc0ODk0MjU0N30.SpDWY2und9j2V2E2gkt-gL5spqiNGFC18Z3qpdXyKzw"
 }
 ```
 
@@ -464,7 +518,7 @@ Authorization: Bearer <token>
 ```json
 {
   "statusCode": 400,
-  "message": "Пользователь с таким email существует",
+  "message": "Неверный логин/email или код подтверждения",
   "error": "Bad Request"
 }
 ```
@@ -472,19 +526,10 @@ Authorization: Bearer <token>
 ```json
 {
   "statusCode": 400,
-  "message": "Пользователь с таким login существует",
+  "message": "Срок действия кода истёк. Зарегистрируйтесь заново.",
   "error": "Bad Request"
 }
 ```
-
-```json
-{
-  "statusCode": 400,
-  "message": "Validation error",
-  "error": "Bad Request"
-}
-```
-
 
 ### Login
 
@@ -2020,7 +2065,7 @@ Authorization: Bearer <token>
 
 ## Recommendation
 
-Для всех маршрутов требуется не заголовок, но он возможен как
+Для всех маршрутов заголовок не обязателен, но при наличии JWT-токена выдаёт персонализированные рекомендации.
 
 ```makefile
 Authorization: Bearer <token>
@@ -2274,6 +2319,34 @@ Authorization: Bearer <token>
 
 ---
 
+## Stats
+
+Для всех защищенных маршрутов требуется заголовок
+
+```makefile
+Authorization: Bearer <token>
+```
+
+### Get All Stats
+
+`GET /api/stats`
+Получить статистику сервиса (только администратор)
+
+**Responses:**
+
+- 201:
+
+```json
+{
+    "bugReports": 0,
+    "wishes": 39,
+    "wishLists": 26,
+    "users": 4
+}
+```
+
+---
+
 ## User
 
 Для всех защищенных маршрутов требуется заголовок
@@ -2284,119 +2357,92 @@ Authorization: Bearer <token>
 
 ### Get All User
 
-`GET /api/user/all`
+`GET /api/user/all?page=<number>&limit=<number>`
 Получить список всех пользователей (только для администратора)
+
+**Query Parametrs:**
+
+```makefile
+  page (number) // по умолчанию 1
+```
+
+```makefile
+  limit (number) // по умолчанию 20, максимум 100
+```
 
 **Responses:**
 
 - 200:
 
 ```json
-[
-    {
-        "id": 2,
-        "fullname": "Вадим",
-        "login": "sanya",
-        "email": "sanya@mail.ru",
-        "image": null,
-        "birthDate": "2003-10-06",
-        "phone": null,
-        "gender": "male",
-        "socials": null,
-        "roleId": 1,
-        "banId": null,
-        "createdAt": "2025-05-26T16:24:56.731Z",
-        "updatedAt": "2025-05-27T11:20:24.520Z",
-        "friend": [
-            {
-                "id": 1,
-                "userid1": 2,
-                "userid2": 3,
-                "friendstatusId": 2,
-                "createdAt": "2025-05-27T09:15:30.293Z",
-                "updatedAt": "2025-05-27T09:15:44.255Z",
-                "FriendUsers": {
-                    "id": 1,
-                    "userId": 2,
-                    "friendId": 1
-                }
-            }
-        ],
-        "ban": null,
-        "role": {
+{
+    "data": [
+        {
             "id": 1,
-            "value": "user",
-            "description": "Пользователь",
-            "createdAt": "2025-05-26T16:18:39.012Z",
-            "updatedAt": "2025-05-26T16:18:39.012Z"
+            "login": "root",
+            "email": "root@mail.ru",
+            "fullname": null,
+            "image": null,
+            "birthDate": null,
+            "phone": null,
+            "gender": null,
+            "socials": null,
+            "roleId": 2,
+            "banId": null,
+            "createdAt": "2025-05-27T14:45:12.491Z",
+            "updatedAt": "2025-05-27T14:45:12.491Z"
         },
-        "wishstatuses": []
-    },
-    {
-        "id": 3,
-        "fullname": null,
-        "login": "dima",
-        "email": "dima@mail.ru",
-        "image": null,
-        "birthDate": null,
-        "phone": null,
-        "gender": null,
-        "socials": null,
-        "roleId": 1,
-        "banId": null,
-        "createdAt": "2025-05-27T06:58:26.671Z",
-        "updatedAt": "2025-05-27T12:01:19.634Z",
-        "friend": [
-            {
-                "id": 1,
-                "userid1": 2,
-                "userid2": 3,
-                "friendstatusId": 2,
-                "createdAt": "2025-05-27T09:15:30.293Z",
-                "updatedAt": "2025-05-27T09:15:44.255Z",
-                "FriendUsers": {
-                    "id": 2,
-                    "userId": 3,
-                    "friendId": 1
-                }
-            }
-        ],
-        "ban": null,
-        "role": {
-            "id": 1,
-            "value": "user",
-            "description": "Пользователь",
-            "createdAt": "2025-05-26T16:18:39.012Z",
-            "updatedAt": "2025-05-26T16:18:39.012Z"
-        },
-        "wishstatuses": []
-    },
-    {
-        "id": 1,
-        "fullname": null,
-        "login": "root",
-        "email": "root@mail.ru",
-        "image": null,
-        "birthDate": null,
-        "phone": null,
-        "gender": null,
-        "socials": null,
-        "roleId": 2,
-        "banId": null,
-        "createdAt": "2025-05-26T16:18:39.123Z",
-        "updatedAt": "2025-05-26T16:18:39.123Z",
-        "friend": [],
-        "ban": null,
-        "role": {
+        {
             "id": 2,
-            "value": "admin",
-            "description": "Администратор",
-            "createdAt": "2025-05-26T16:18:39.015Z",
-            "updatedAt": "2025-05-26T16:18:39.015Z"
+            "login": "dima",
+            "email": "dima@mail.ru",
+            "fullname": "хуй",
+            "image": "d8b12332-505a-40ff-b69e-3e49316846ba.jpg",
+            "birthDate": "2003-06-11",
+            "phone": null,
+            "gender": null,
+            "socials": null,
+            "roleId": 1,
+            "banId": null,
+            "createdAt": "2025-05-27T14:45:24.141Z",
+            "updatedAt": "2025-06-01T09:02:50.659Z"
         },
-        "wishstatuses": []
-    }
-]
+        {
+            "id": 3,
+            "login": "shaka",
+            "email": "shaka@mail.ru",
+            "fullname": "Вадим",
+            "image": "224aa3f9-9a6b-40a4-b30a-6426015be5f9.jpg",
+            "birthDate": null,
+            "phone": null,
+            "gender": null,
+            "socials": null,
+            "roleId": 1,
+            "banId": null,
+            "createdAt": "2025-05-27T14:45:52.526Z",
+            "updatedAt": "2025-05-28T12:11:50.586Z"
+        },
+        {
+            "id": 4,
+            "login": "rusya",
+            "email": "rusya@mail.ru",
+            "fullname": null,
+            "image": null,
+            "birthDate": null,
+            "phone": null,
+            "gender": null,
+            "socials": null,
+            "roleId": 1,
+            "banId": null,
+            "createdAt": "2025-06-01T05:54:40.598Z",
+            "updatedAt": "2025-06-01T05:54:40.598Z"
+        }
+    ],
+    "page": 1,
+    "perPage": 20,
+    "total": 4,
+    "totalPages": 1
+}
 ```
 
 - 403:
@@ -3008,6 +3054,101 @@ Authorization: Bearer <token>
   "statusCode": 404,
   "message": "Желание не найдено ни в списках",
   "error": "Not Found"
+}
+```
+
+### Get All Wish
+
+`GET /api/wish/all?page=<number>&limit=<number>`
+Получить список всех желаний (только для администратора)
+
+**Query Parametrs:**
+
+```makefile
+  page (number) // по умолчанию 1
+```
+
+```makefile
+  limit (number) // по умолчанию 20, максимум 100
+```
+
+**Responses:**
+
+- 200:
+
+```json
+{
+    "data": [
+        {
+            "id": 21,
+            "name": "айфон",
+            "image": "",
+            "price": null,
+            "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+            "wishStatusId": 1,
+            "bookedByUserId": null,
+            "createdAt": "2025-05-28T11:24:07.858Z",
+            "updatedAt": "2025-05-28T11:24:07.858Z"
+        },
+        {
+            "id": 22,
+            "name": "sony",
+            "image": "",
+            "price": 25000,
+            "productLink": null,
+            "wishStatusId": 1,
+            "bookedByUserId": null,
+            "createdAt": "2025-05-30T06:10:40.698Z",
+            "updatedAt": "2025-06-01T05:06:09.045Z"
+        },
+        {
+            "id": 23,
+            "name": "самсунг",
+            "image": "",
+            "price": null,
+            "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+            "wishStatusId": 1,
+            "bookedByUserId": null,
+            "createdAt": "2025-05-30T06:10:47.050Z",
+            "updatedAt": "2025-05-30T06:10:47.050Z"
+        },
+        {
+            "id": 24,
+            "name": "говно",
+            "image": "",
+            "price": null,
+            "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+            "wishStatusId": 1,
+            "bookedByUserId": null,
+            "createdAt": "2025-05-30T06:10:51.408Z",
+            "updatedAt": "2025-05-30T06:10:51.408Z"
+        },
+        {
+            "id": 25,
+            "name": "сони",
+            "image": "",
+            "price": null,
+            "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
+            "wishStatusId": 1,
+            "bookedByUserId": null,
+            "createdAt": "2025-05-30T06:11:11.106Z",
+            "updatedAt": "2025-05-30T06:11:11.106Z"
+        }
+    ],
+    "page": 2,
+    "perPage": 20,
+    "total": 36,
+    "totalPages": 2
+}
+```
+
+- 403:
+
+```json
+{
+  "statusCode": 403,
+  "message": "У вас нет прав, чтобы посмотреть все желания",
+  "error": "Forbidden"
 }
 ```
 
@@ -3627,6 +3768,57 @@ Authorization: Bearer <token>
 }
 ```
 
+### Get All Wishlists
+
+`GET /api/wishlist/all?page=<number>&limit=<number>`
+Получить все спики желаний (только для администратора)
+
+**Query Parametrs:**
+
+```makefile
+  page (number) // по умолчанию 1
+```
+
+```makefile
+  limit (number) // по умолчанию 20, максимум 100
+```
+
+**Responses:**
+
+- 200:
+
+```json
+{
+    "data": [
+        {
+            "id": 25,
+            "name": "Для друзей",
+            "description": null,
+            "eventDate": "2003-06-10",
+            "shareToken": "ea055f95-70e8-4bf0-a576-e1df09f5c5ad",
+            "userId": 2,
+            "accesslevelId": 3,
+            "createdAt": "2025-06-01T11:37:13.464Z",
+            "updatedAt": "2025-06-01T11:37:13.464Z"
+        }
+    ],
+    "page": 2,
+    "perPage": 20,
+    "total": 21,
+    "totalPages": 2
+}
+```
+
+- 403:
+
+```json
+{
+  "statusCode": 403,
+  "message": "У вас нет прав, чтобы посмотреть все списки",
+  "error": "Forbidden"
+}
+```
+
 - 403: 
 
 ```json
@@ -3816,86 +4008,6 @@ Authorization: Bearer <token>
   "statusCode": 404,
   "message": "Желание не найдено ни в одном списке",
   "error": "Not Found"
-}
-```
-
-### Copy an Existing Wish into Another List
-
-`PACTH /api/wishlist/copy`
-Добавить то же самое желание (с таким же id) в другой список
-
-**Request Body:**
-
-```json
-{
-  "wishId": "number",
-  "targetListId": "number"
-}
-```
-
-**Responses:**
-
-- 200:
-
-```json
-{
-    "id": 2,
-    "name": "айфон",
-    "price": null,
-    "productLink": "https://www.ozon.ru/product/shapka-1823110217/?__rr=1",
-    "image": "",
-    "wishStatusId": 2,
-    "bookedByUser": {
-        "id": 3,
-        "fullname": null,
-        "login": "shaka",
-        "image": null
-    },
-    "createdAt": "2025-05-28T07:22:01.157Z",
-    "updatedAt": "2025-05-28T08:24:55.441Z",
-    "shareToken": null,
-    "owner": {
-        "id": 2,
-        "fullname": null,
-        "login": "dima",
-        "image": null
-    },
-    "list": {
-        "id": 10,
-        "name": "Для друзей",
-        "eventDate": "2003-06-10",
-        "accessLevelId": 4
-    }
-}
-```
-
-- 403:
-
-```json
-{
-  "statusCode": 403,
-  "message": "Копировать можно только свои желания",
-  "error": "Forbidden"
-}
-```
-
-- 404:
-
-```json
-{
-  "statusCode": 404,
-  "message": "Оригинальное желание не найдено ни в одном списке",
-  "error": "Not Found"
-}
-```
-
-- 409:
-
-```json
-{
-  "statusCode": 409,
-  "message": "Желание уже есть в целевом списке",
-  "error": "Conflict"
 }
 ```
 

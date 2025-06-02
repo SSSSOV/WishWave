@@ -11,6 +11,7 @@ import { WishIdDto } from './dto/wish-id.dto';
 import { FUllWIshDto } from './dto/full-wish.dto';
 import { FriendService } from 'src/friend/friend.service';
 import { OptionalJwtAuthGuard } from 'src/auth/optional-jwt-auth.guard';
+import { Wish } from './wish.model';
 
 @Controller('wish')
 export class WishController {
@@ -28,6 +29,23 @@ export class WishController {
 
         return this.wishService.createFullWish(dto, image, dto.listId, userId);
     }
+
+
+    @UseGuards(JwtAuthGuard)
+    @Get('all')
+    async getAllWishesAdm(@Req() req, @Query('page') page = '1', @Query('limit') limit = '20') {
+        if (req.user.roles?.value !== 'admin') {
+            throw new ForbiddenException('У вас нет прав, чтобы посмотреть все желания')
+        }
+            
+        const pageNum = Math.max(parseInt(page, 10) || 1, 1);
+        const perPage = Math.min(Math.max(parseInt(limit, 10) || 20, 1), 100);
+        const {rows, count} = await this.wishService.getAllWishesAdm(pageNum, perPage);
+    
+        const data = rows.map((w) => {return(w.get({plain: true}) as any) as Partial<Wish>});
+    
+        return {data, page: pageNum, perPage, total: count, totalPages: Math.ceil(count/perPage)};
+    } 
 
     @UseGuards(JwtAuthGuard)
     @Get()
@@ -49,8 +67,14 @@ export class WishController {
     @UseGuards(OptionalJwtAuthGuard)
     @Get(':id')
     async getWIshById(@Param('id') wishId: number, @Req() req, @Query('token') shareToken?: string | undefined): Promise<FUllWIshDto> {
-        const userId: number | null = req.user?.id ?? null;
-        return this.wishService.getFullWishById(wishId, userId, shareToken)
+        const viewer = req.user;
+        const viewerId: number | null = viewer?.id ?? null
+        const isAdmin = viewer?.roles?.value === 'admin';
+        if (isAdmin) {
+            return this.wishService.getFullWishById(wishId, viewerId, shareToken, true);
+        }
+
+        return this.wishService.getFullWishById(wishId, viewerId, shareToken)
     }
     
 
