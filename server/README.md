@@ -575,7 +575,7 @@ Authorization: Bearer <token>
 }
 ```
 
-### Login
+### Logout
 
 `POST /api/auth/logout`
 Выход пользователя с очисткой куки и токена
