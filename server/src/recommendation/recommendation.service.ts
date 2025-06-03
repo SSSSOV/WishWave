@@ -22,14 +22,12 @@ export class RecommendationService {
   }
 
   async getRecomendation(userId?: number): Promise<Wish[]> {
-    // 1) Сначала забираем ID уровня “public”
     const publicLevel = await this.lvlRepository.findOne({ where: { name: "public" } });
     const publicId = publicLevel?.id;
     if (!publicId) {
       return [];
     }
 
-    // 2) Если пользователь залогинен и у него есть birthDate+gender, рассчитываем диапазон
     if (userId) {
       const user = await this.userRepository.findByPk(userId, {
         attributes: ["birthDate", "gender"],
@@ -45,21 +43,17 @@ export class RecommendationService {
         minDate.setFullYear(now.getFullYear() - maxAge);
         maxDate.setFullYear(now.getFullYear() - minAge);
 
-        // 3) Делаем запрос с отключённым subQuery
         const recs = await this.wishRepository.findAll({
-          subQuery: false, // ← важный флаг: убираем вложенный SELECT
+          subQuery: false,
           include: [
             {
               model: WishList,
               as: "wishlists",
               through: { attributes: [] },
               attributes: [],
-              // Здесь — сразу фильтруем по уровню доступа И полю/дате владельца
               where: {
                 accesslevelId: publicId,
 
-                // ниже — две “скалярные” проверки: мы говорим “из таблицы
-                // wishlists надо подтянуть поле user.gender и user.birthDate”
                 '$wishlists.user.gender$': user.gender,
                 '$wishlists.user.birthDate$': { [Op.between]: [minDate, maxDate] },
               },
@@ -72,12 +66,9 @@ export class RecommendationService {
         if (recs.length) {
           return recs;
         }
-        // Если для демогруппы ничего не нашлось, “упадём” дальше на общий public
       }
     }
 
-    // 4) Просто выдаём последние 30 public-желаний, если не было залогиненного
-    // или если не нашли в демогруппе:
     return this.wishRepository.findAll({
       subQuery: false,
       include: [
