@@ -23,10 +23,10 @@ export class RecommendationService {
 
   async getRecomendation(userId?: number): Promise<Wish[]> {
     const publicLevel = await this.lvlRepository.findOne({ where: { name: "public" } });
-    const publicId = publicLevel?.id;
-    if (!publicId) {
+    if (!publicLevel) {
       return [];
     }
+    const publicId = publicLevel.id;
 
     if (userId) {
       const user = await this.userRepository.findByPk(userId, {
@@ -49,14 +49,24 @@ export class RecommendationService {
             {
               model: WishList,
               as: "wishlists",
-              through: { attributes: [] },
-              attributes: [],
+              through: { attributes: [] },   
+              attributes: [],                
               where: {
-                accesslevelId: publicId,
-
-                '$wishlists.user.gender$': user.gender,
-                '$wishlists.user.birthDate$': { [Op.between]: [minDate, maxDate] },
+                accesslevelId: publicId,     
               },
+              required: true,                
+              include: [
+                {
+                  model: User,
+                  as: "user",
+                  attributes: [],             
+                  where: {
+                    gender: user.gender,
+                    birthDate: { [Op.between]: [minDate, maxDate] },
+                  },
+                  required: true,             
+                },
+              ],
             },
           ],
           order: [["createdAt", "DESC"]],
@@ -78,6 +88,7 @@ export class RecommendationService {
           through: { attributes: [] },
           attributes: [],
           where: { accesslevelId: publicId },
+          required: true,
         },
       ],
       order: [["createdAt", "DESC"]],
