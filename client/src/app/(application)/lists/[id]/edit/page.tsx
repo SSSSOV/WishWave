@@ -34,13 +34,12 @@ export default function EditWishListPage() {
   // Обработчики
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (wishList) {
-      try {
-        updateWishList({ id: wishList.id, name: name, accesslevelId: access, description: description, eventDate: date })
-        router.back()
-      } catch (error) {
-        console.log(error)
-      }
+    if (!wishList) return
+    try {
+      updateWishList({ id: wishList.id, name: name, accesslevelId: access, description: description, eventDate: date })
+      router.back()
+    } catch (error) {
+      console.log(error)
     }
   }
 

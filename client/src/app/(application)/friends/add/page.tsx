@@ -142,10 +142,6 @@ function AddFriendPageContent() {
     }
   }
 
-  useEffect(() => {
-    console.log(recivedRequests, sentRequests, user)
-  }, [recivedRequests, sentRequests, user])
-
   const handleCancel = (id: number) => {
     cancelFriendRequest(id)
   }
@@ -198,7 +194,7 @@ function AddFriendPageContent() {
                   <ListItem
                     key={id}
                     condition={2}
-                    url={recipient.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + recipient.image : ""}
+                    url={recipient.image ? process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + recipient.image : ""}
                     leading_type={recipient.image ? "image" : "icon"}
                     leading="person"
                     headline={recipient ? (recipient.fullname ? recipient.fullname : recipient.login) : ""}
@@ -227,7 +223,7 @@ function AddFriendPageContent() {
                 return (
                   <ListItem
                     condition={2}
-                    url={sender.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + sender.image : ""}
+                    url={sender.image ? process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + sender.image : ""}
                     leading_type={sender.image ? "image" : "icon"}
                     leading="person"
                     headline={sender.fullname ? sender.fullname : sender.login}

@@ -48,10 +48,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     return () => window.removeEventListener("resize", checkIfMobile)
   }, [])
 
-  useEffect(() => {
-    console.log(isAuth)
-  }, [isAuth])
-
   const PAGES: PageConfig[] = [
     {
       title: "Главная",

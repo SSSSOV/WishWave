@@ -55,10 +55,10 @@ export default function EditWishPage() {
         <Section align_items="center">
           <Section withoutPad isFit>
             <Monogram
-              monogram_type={wish && wish.image ? "image" : "icon"}
+              monogram_type={wish?.image ? "image" : "icon"}
               icon="featured_seasonal_and_gifts"
               size="md"
-              url={image ? image : wish ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wish.image : ""}
+              url={image ? image : process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + wish?.image}
             />
           </Section>
         </Section>

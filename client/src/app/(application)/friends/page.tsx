@@ -90,7 +90,7 @@ export default function FriendsPage() {
             shownFriends.map((friend) => (
               <ListItem
                 key={friend.id}
-                url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + friend.image}
+                url={process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + friend.image}
                 leading_type={friend.image ? "image" : "icon"}
                 leading="person"
                 condition={2}

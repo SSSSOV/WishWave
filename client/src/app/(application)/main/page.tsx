@@ -80,7 +80,7 @@ export default function MainPage() {
                       size="md"
                       icon="person"
                       monogram_type={activity.image ? "image" : hasNameContent(activity.fullname) ? "monogram" : "icon"}
-                      url={activity.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + activity.image : ""}
+                      url={activity.image ? process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + activity.image : ""}
                       onClick={() => {
                         router.push(`/users/${activity.id}`)
                       }}
@@ -107,7 +107,7 @@ export default function MainPage() {
                   onButtonClick={wishLists && wishLists.length > 0 ? () => setSelectedWish(recommendation.id) : undefined}
                   imageColor={colors[recommendation.id % 3] as icon_color}
                   imageIcon="featured_seasonal_and_gifts"
-                  imageUrl={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + recommendation.image}
+                  imageUrl={process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + recommendation.image}
                 />
               ))
             : "пусто"}

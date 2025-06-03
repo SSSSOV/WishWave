@@ -68,7 +68,7 @@ export default function BookedPage() {
                 leading_type={wish.image ? "image" : "icon"}
                 leading="featured_seasonal_and_gifts"
                 trailing_type="icon"
-                url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wish.image}
+                url={process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + wish.image}
                 leading_color={colors[wish.id % 3] as icon_color}
                 onClick={() => handleOpen(wish.id)}
               />

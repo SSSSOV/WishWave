@@ -37,10 +37,9 @@ export default function ListsPage() {
 
   // Обработчики событий
   const handleOpen = (id: number) => {
-    if (wishLists) {
-      setWishList(wishLists.find((list) => list.id == id) as IWishList)
-      router.push(`/lists/${id}`)
-    }
+    if (!wishLists) return
+    setWishList(wishLists.find((list) => list.id == id) as IWishList)
+    router.push(`/lists/${id}`)
   }
 
   useEffect(() => {

@@ -54,7 +54,6 @@ export default function UserPage() {
 
   useEffect(() => {
     if (wishLists) setShownLists(wishLists)
-    console.log(wishLists)
   }, [wishLists])
 
   const handleOpen = (listId: number) => {
@@ -83,7 +82,7 @@ export default function UserPage() {
             letter={hasNameContent(friend.fullname) ? getInitials(friend.fullname) : "person"}
             icon="person"
             size="lg"
-            url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + friend.image}
+            url={process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + friend.image}
           />
         </Section>
         <List withoutPad>
