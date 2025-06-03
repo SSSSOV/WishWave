@@ -8,6 +8,7 @@ sample/**/package-lock.json
 # dependencies
 node_modules/
 dist/
+.development.env
 
 # IDE
 /.idea
