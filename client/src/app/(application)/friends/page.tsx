@@ -4,7 +4,7 @@ import NonAuthPage from "@/components/shared/nonAuthPage/NonAuthPage"
 import Button from "@/components/ui/buttons/Button"
 import Input from "@/components/ui/inputs/Input"
 import List from "@/components/ui/list/List"
-import ListItem from "@/components/ui/list/ListItem"
+import ListItem, { icon_color } from "@/components/ui/list/ListItem"
 import NavigationBar from "@/components/ui/navigation_bar/NavigationBar"
 import Section from "@/components/ui/section/Section"
 import TopAppBar from "@/components/ui/top_app_bar/TopAppBar"
@@ -55,6 +55,8 @@ export default function FriendsPage() {
     router.push(`/users/${id}`)
   }
 
+  const colors = ["primary", "secondary", "tertiary"]
+
   if (!isAuth) {
     return <NonAuthPage text="Для того чтобы добавлять и просматривать друзей, пожалуйста, авторизуйтесь" />
   }
@@ -92,6 +94,7 @@ export default function FriendsPage() {
                 key={friend.id}
                 url={process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + friend.image}
                 leading_type={friend.image ? "image" : "icon"}
+                leading_color={colors[friend.id % 3] as icon_color}
                 leading="person"
                 condition={2}
                 headline={friend.fullname ? friend.fullname : friend.login}

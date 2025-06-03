@@ -114,7 +114,7 @@ function AddFriendPageContent() {
   }
 
   const handleCopyFriendLink = async () => {
-    const link = `Добавь меня в друзья на WishWave!\n${process.env.NEXT_PUBLIC_CLIENT_URL}friends/add?addFriend=${user?.id}`
+    const link = `Добавь меня в друзья на WishWave!\n${process.env.NEXT_PUBLIC_CLIENT_URL}/friends/add?addFriend=${user?.id}`
 
     try {
       // Modern API

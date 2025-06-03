@@ -42,7 +42,7 @@ export default function BookedPage() {
 
   useEffect(() => {
     fetchBookedWishes()
-  }, [bookedWishes])
+  }, [])
 
   const handleOpen = (wishId: number) => {
     router.push(`/wish/${wishId}`)
