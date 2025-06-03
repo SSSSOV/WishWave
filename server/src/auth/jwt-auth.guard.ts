@@ -17,16 +17,12 @@ export class JwtAuthGuard implements CanActivate {
       // 1. Пробуем получить токен из cookies (для браузерных запросов)
       const tokenFromCookies = req.cookies?.authToken
 
-      console.log(tokenFromCookies)
-
       // 2. Пробуем получить токен из заголовка Authorization (для API запросов)
       const authHeader = req.headers.authorization
       const tokenFromHeader = authHeader?.split(" ")[1]
 
       // 3. Определяем, какой токен использовать
       const token = tokenFromCookies || tokenFromHeader
-
-      // console.log(token)
 
       if (!token) {
         throw new UnauthorizedException({ message: "Пользователь не авторизован" })

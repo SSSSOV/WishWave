@@ -35,6 +35,7 @@ export default function EditWishPage() {
   // Обработчики
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!wish) return
     try {
       updateWish({
         id: wish.id,
@@ -54,10 +55,10 @@ export default function EditWishPage() {
         <Section align_items="center">
           <Section withoutPad isFit>
             <Monogram
-              monogram_type={wish.image ? "image" : "icon"}
+              monogram_type={wish?.image ? "image" : "icon"}
               icon="featured_seasonal_and_gifts"
               size="md"
-              url={image ? image : process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wish.image}
+              url={image ? image : process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + wish?.image}
             />
           </Section>
         </Section>

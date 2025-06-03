@@ -51,7 +51,7 @@ export default function ImagePage() {
             letter={hasNameContent(user.fullname) ? getInitials(user.fullname) : "person"}
             icon="person"
             size="lg"
-            url={image ? image : process.env.NEXT_PUBLIC_SERVER_URL + "static/" + user.image}></Monogram>
+            url={image ? image : process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + user.image}></Monogram>
         </Section>
         <Section padding_top_size="lg" title="Вставьте ссылку на новое изображение:">
           <Input labelText="Ссылка" value={image} onChange={(e) => setImage(e.target.value)} type="url" />

@@ -22,10 +22,10 @@ import { IUser } from "@/types/user"
 import { sample } from "effector"
 import { useUnit } from "effector-react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import toast from "react-hot-toast"
 
-export default function AddFriendPage() {
+function AddFriendPageContent() {
   // Роутер
   const router = useRouter()
 
@@ -142,10 +142,6 @@ export default function AddFriendPage() {
     }
   }
 
-  useEffect(() => {
-    console.log(recivedRequests, sentRequests, user)
-  }, [recivedRequests, sentRequests, user])
-
   const handleCancel = (id: number) => {
     cancelFriendRequest(id)
   }
@@ -198,7 +194,7 @@ export default function AddFriendPage() {
                   <ListItem
                     key={id}
                     condition={2}
-                    url={recipient.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + recipient.image : ""}
+                    url={recipient.image ? process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + recipient.image : ""}
                     leading_type={recipient.image ? "image" : "icon"}
                     leading="person"
                     headline={recipient ? (recipient.fullname ? recipient.fullname : recipient.login) : ""}
@@ -227,7 +223,7 @@ export default function AddFriendPage() {
                 return (
                   <ListItem
                     condition={2}
-                    url={sender.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + sender.image : ""}
+                    url={sender.image ? process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + sender.image : ""}
                     leading_type={sender.image ? "image" : "icon"}
                     leading="person"
                     headline={sender.fullname ? sender.fullname : sender.login}
@@ -255,5 +251,13 @@ export default function AddFriendPage() {
         </List>
       </Section>
     </>
+  )
+}
+
+export default function AddFriendPage() {
+  return (
+    <Suspense fallback={<div>Загрузка...</div>}>
+      <AddFriendPageContent />
+    </Suspense>
   )
 }

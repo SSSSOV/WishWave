@@ -21,7 +21,7 @@ export const fetchBugreportsFx = createEffect(async () => {
     return null
   }
   try {
-    const { data } = await api.get(`/api/bugreport`, {
+    const { data } = await api.get(`/api/bugreport/all`, {
       headers: { Authorization: `Bearer ${token}` },
     })
 

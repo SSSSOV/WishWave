@@ -158,8 +158,6 @@ export const updateInfoFx = createEffect(async ({ fullname, birthday, phone, ima
   }
 
   try {
-    console.log({ fullname, birthDate: birthday, phone, image, gender })
-
     const { data } = await api.patch(
       "/api/user/",
       { fullname, birthDate: birthday, phone, image, gender },
@@ -167,8 +165,6 @@ export const updateInfoFx = createEffect(async ({ fullname, birthday, phone, ima
         headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
       }
     )
-
-    console.log(data)
 
     if (data.warningMessage) {
       toast.error(data.warningMessage)
@@ -208,8 +204,6 @@ export const updatePasswordFx = createEffect(async (props: IUpdatePasswordFx) =>
       headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
     })
 
-    console.log(data)
-
     if (data.warningMessage) {
       toast.error(data.warningMessage)
       return null
@@ -238,7 +232,6 @@ export const checkAuthFx = createEffect(async () => {
       return false
     }
 
-    console.log(data, !!data)
     return !!data
   } catch (error) {
     if (error instanceof AxiosError) toast.error(error.response?.data.message)

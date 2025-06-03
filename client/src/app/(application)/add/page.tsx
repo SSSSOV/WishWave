@@ -1,30 +1,23 @@
 "use client"
+import { Suspense } from "react"
 import Button from "@/components/ui/buttons/Button"
 import Input from "@/components/ui/inputs/Input"
 import Monogram from "@/components/ui/monogram/Monogram"
 import Section from "@/components/ui/section/Section"
-import { handleSetPageTitle } from "@/context/page"
 import { $isAuth } from "@/context/user"
 import { $wish, handleCreateWish } from "@/context/wish"
 import { $wishLists, handleFetchWishLists } from "@/context/wish_lists"
+import { usePageTitle } from "@/hooks/usePageTitle"
 import { customStyles, OptionType } from "@/types/select"
 import { useUnit } from "effector-react"
 import { useRouter, useSearchParams } from "next/navigation"
-import React, { useEffect, useLayoutEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import toast from "react-hot-toast"
-import ReactSelect, { SingleValue, StylesConfig } from "react-select"
+import ReactSelect from "react-select"
 
-export default function AddPage() {
+function AddPageContent() {
   // Роутер
   const router = useRouter()
-
-  // Контекст
-  const [setPageTitle] = useUnit([handleSetPageTitle])
-
-  // Эффекты
-  useLayoutEffect(() => {
-    setPageTitle("Добавить желание")
-  }, [])
 
   // Параметры
   const params = useSearchParams() // Получаем ID из URL
@@ -32,7 +25,6 @@ export default function AddPage() {
 
   // Состояния
   const [image, setImage] = useState("")
-  const [list, setList] = useState<number>(0)
   const [name, setName] = useState("")
   const [price, setPrice] = useState<string>("")
   const [link, setLink] = useState("")
@@ -40,7 +32,7 @@ export default function AddPage() {
   const [options, setOptions] = useState<OptionType[]>([])
 
   // Стор
-  const [isAuth, wish, wishLists, createWish, fetchWishLists] = useUnit([$isAuth, $wish, $wishLists, handleCreateWish, handleFetchWishLists])
+  const [isAuth, wishLists, createWish, fetchWishLists] = useUnit([$isAuth, $wishLists, handleCreateWish, handleFetchWishLists])
 
   // Обработчики
   const handleSubmit = (e: React.FormEvent) => {
@@ -156,5 +148,15 @@ export default function AddPage() {
         </Section>
       </form>
     </>
+  )
+}
+
+export default function AddPage() {
+  usePageTitle("Добавить желание")
+
+  return (
+    <Suspense fallback={<div>Загрузка...</div>}>
+      <AddPageContent />
+    </Suspense>
   )
 }
