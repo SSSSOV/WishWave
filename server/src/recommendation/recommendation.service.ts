@@ -22,46 +22,66 @@ export class RecommendationService {
   }
 
   async getRecomendation(userId?: number): Promise<Wish[]> {
-    const publicLevel = await this.lvlRepository.findOne({ where: { name: "public" } })
-    const publicId = publicLevel?.id
+    const publicLevel = await this.lvlRepository.findOne({ where: { name: "public" } });
+    const publicId = publicLevel?.id;
+    if (!publicId) {
+      return [];
+    }
+
     if (userId) {
-      const user = await this.userRepository.findByPk(userId, { attributes: ["birthDate", "gender"] })
-
+      const user = await this.userRepository.findByPk(userId, {
+        attributes: ["birthDate", "gender"],
+      });
       if (user?.birthDate && user.gender) {
-        const age = this.computeAge(user.birthDate)
-        const minAge = age - 5
-        const maxAge = age + 5
+        const age = this.computeAge(user.birthDate);
+        const minAge = age - 5;
+        const maxAge = age + 5;
 
-        const now = new Date()
-        const minDate = new Date(now)
-        const maxDate = new Date(now)
-        minDate.setFullYear(now.getFullYear() - maxAge)
-        maxDate.setFullYear(now.getFullYear() - minAge)
+        const now = new Date();
+        const minDate = new Date(now);
+        const maxDate = new Date(now);
+        minDate.setFullYear(now.getFullYear() - maxAge);
+        maxDate.setFullYear(now.getFullYear() - minAge);
 
         const recs = await this.wishRepository.findAll({
+          subQuery: false,
           include: [
             {
               model: WishList,
               as: "wishlists",
-              where: { accesslevelId: publicId },
+              through: { attributes: [] },
               attributes: [],
-              include: [{ model: User, as: "user", attributes: [], where: { gender: user.gender, birthDate: { [Op.between]: [minDate, maxDate] } } }],
+              where: {
+                accesslevelId: publicId,
+
+                '$wishlists.user.gender$': user.gender,
+                '$wishlists.user.birthDate$': { [Op.between]: [minDate, maxDate] },
+              },
             },
           ],
           order: [["createdAt", "DESC"]],
           limit: 30,
-        })
+        });
 
         if (recs.length) {
-          return recs
+          return recs;
         }
       }
     }
 
     return this.wishRepository.findAll({
-      include: [{ model: WishList, as: "wishlists", where: { accesslevelId: publicId }, attributes: [] }],
+      subQuery: false,
+      include: [
+        {
+          model: WishList,
+          as: "wishlists",
+          through: { attributes: [] },
+          attributes: [],
+          where: { accesslevelId: publicId },
+        },
+      ],
       order: [["createdAt", "DESC"]],
       limit: 30,
-    })
+    });
   }
 }

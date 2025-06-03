@@ -4,6 +4,7 @@
 packages/*/package-lock.json
 sample/**/package-lock.json
 
+.development.env 
 
 # dependencies
 node_modules/
