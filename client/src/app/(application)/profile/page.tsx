@@ -42,7 +42,7 @@ export default function ProfilePage() {
           letter={hasNameContent(user.data!.fullname) ? getInitials(user.data!.fullname) : "person"}
           icon="person"
           size="lg"
-          url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + user.data!.image}
+          url={process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + user.data!.image}
         />
       </Section>
       <Section align_items="center">
@@ -93,7 +93,7 @@ export default function ProfilePage() {
             overline="фото профиля"
             leading_type={user.data!.image && user.data!.image != "" ? "image" : hasNameContent(user.data!.fullname) ? "monogram" : "icon"}
             leading={hasNameContent(user.data!.fullname) ? getInitials(user.data!.fullname) : "person"}
-            url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + user.data!.image}
+            url={process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + user.data!.image}
             headline="Персонализирует аккаунт"
             trailing_type="icon"
             onClick={() => {

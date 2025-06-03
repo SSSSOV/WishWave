@@ -60,10 +60,6 @@ export default function WishPage() {
   }, [isAuth])
 
   useEffect(() => {
-    if (wish) console.log(wish)
-  }, [wish])
-
-  useEffect(() => {
     if (typeof window !== "undefined" && wish) {
       const authToken = localStorage.getItem("auth")
       if (authToken && wish.owner) {
@@ -147,7 +143,7 @@ export default function WishPage() {
             monogram_type={wish.image ? "image" : "icon"}
             icon="featured_seasonal_and_gifts"
             size="full"
-            url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wish.image}
+            url={process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + wish.image}
             color={colors[wish.id % 3] as icon_color}
             isRounded
           />
@@ -161,7 +157,7 @@ export default function WishPage() {
               condition={2}
               leading_type={wish.owner.image && wish.owner.image != "" ? "image" : hasNameContent(wish.owner.fullname) ? "monogram" : "icon"}
               leading={hasNameContent(wish.owner.fullname) ? getInitials(wish.owner.fullname) : "person"}
-              url={wish.owner.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wish.owner.image : ""}
+              url={wish.owner.image ? process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + wish.owner.image : ""}
               headline={wish.owner.fullname ? (hasNameContent(wish.owner.fullname) ? wish.owner.fullname : wish.owner.login) : wish.owner.login}
               overline="владелец желания"
             />
@@ -216,7 +212,7 @@ export default function WishPage() {
                     : "icon"
                 }
                 leading={hasNameContent(wish.bookedByUser.fullname) ? getInitials(wish.bookedByUser.fullname) : "person"}
-                url={wish.bookedByUser.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wish.bookedByUser!.image : ""}
+                url={wish.bookedByUser.image ? process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + wish.bookedByUser!.image : ""}
                 headline={
                   (wish.bookedByUser.fullname
                     ? hasNameContent(wish.bookedByUser.fullname)
@@ -241,7 +237,7 @@ export default function WishPage() {
                     : "icon"
                 }
                 leading={hasNameContent(wish.bookedByUser.fullname) ? getInitials(wish.bookedByUser.fullname) : "person"}
-                url={wish.bookedByUser.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wish.bookedByUser.image : ""}
+                url={wish.bookedByUser.image ? process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + wish.bookedByUser.image : ""}
                 headline={"Вы забронировали"}
                 onClick={() => {
                   handleUnbook(wish.id)
@@ -263,7 +259,7 @@ export default function WishPage() {
                     : "icon"
                 }
                 leading={hasNameContent(wish.bookedByUser.fullname) ? getInitials(wish.bookedByUser.fullname) : "person"}
-                url={wish.bookedByUser.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wish.bookedByUser.image : ""}
+                url={wish.bookedByUser.image ? process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + wish.bookedByUser.image : ""}
                 headline={"Вы забронировали"}
                 onClick={() => {
                   handleUnbook(wish.id)
@@ -285,7 +281,7 @@ export default function WishPage() {
                     : "icon"
                 }
                 leading={hasNameContent(wish.bookedByUser.fullname) ? getInitials(wish.bookedByUser.fullname) : "person"}
-                url={wish.bookedByUser.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wish.bookedByUser.image : ""}
+                url={wish.bookedByUser.image ? process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + wish.bookedByUser.image : ""}
                 headline={
                   (wish.bookedByUser.fullname
                     ? hasNameContent(wish.bookedByUser.fullname)

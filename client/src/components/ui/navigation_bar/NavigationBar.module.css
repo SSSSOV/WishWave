@@ -16,6 +16,6 @@
 
 .FAB_place {
   position: fixed;
-  bottom: 100;
-  right: 16;
+  bottom: 100px;
+  right: 16px;
 }

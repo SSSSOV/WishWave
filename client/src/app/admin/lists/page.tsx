@@ -81,7 +81,7 @@ export default function ListsPage() {
                         wishList.owner.image && wishList.owner.image != "" ? "image" : hasNameContent(wishList.owner.fullname) ? "monogram" : "icon"
                       }
                       leading={hasNameContent(wishList.owner.fullname) ? getInitials(wishList.owner.fullname) : "person"}
-                      url={wishList.owner.image ? process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wishList.owner.image : ""}
+                      url={wishList.owner.image ? process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + wishList.owner.image : ""}
                       headline={wishList.owner.fullname ? wishList.owner.fullname : wishList.owner.login}
                       overline="владелец списка"
                     />
@@ -128,7 +128,7 @@ export default function ListsPage() {
                         leading_type={wish.image ? "image" : "icon"}
                         leading="featured_seasonal_and_gifts"
                         trailing_type="icon"
-                        url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + wish.image}
+                        url={process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + wish.image}
                         leading_color={colors[wish.id % 3] as icon_color}
                         onClick={() => handleOpen(wish.id)}
                       />

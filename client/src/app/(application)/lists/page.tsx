@@ -37,6 +37,7 @@ export default function ListsPage() {
 
   // Обработчики событий
   const handleOpen = (id: number) => {
+    if (!wishLists) return
     setWishList(wishLists.find((list) => list.id == id) as IWishList)
     router.push(`/lists/${id}`)
   }
@@ -46,7 +47,7 @@ export default function ListsPage() {
       setShownLists(wishLists)
     } else {
       const searchTerm = search.toLowerCase()
-      setShownLists(wishLists.filter((list) => list.name.toLowerCase().includes(searchTerm)))
+      if (wishLists) setShownLists(wishLists.filter((list) => list.name.toLowerCase().includes(searchTerm)))
     }
   }, [search, wishLists])
 
