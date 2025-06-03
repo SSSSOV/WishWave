@@ -29,7 +29,7 @@ export default function EditWishListPage() {
       setDescription(wishList.description ? wishList.description : "")
       setAccess(wishList.accessLevelId ? wishList.accessLevelId : 0)
     }
-  }, [])
+  }, [wishList])
 
   // Обработчики
   const handleSubmit = async (e: React.FormEvent) => {
