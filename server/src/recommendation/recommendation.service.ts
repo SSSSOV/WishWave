@@ -43,6 +43,7 @@ export class RecommendationService {
             {
               model: WishList,
               as: "wishlists",
+              through: {attributes: []},
               where: { accesslevelId: publicId },
               attributes: [],
               include: [{ model: User, as: "user", attributes: [], where: { gender: user.gender, birthDate: { [Op.between]: [minDate, maxDate] } } }],
@@ -59,7 +60,7 @@ export class RecommendationService {
     }
 
     return this.wishRepository.findAll({
-      include: [{ model: WishList, as: "wishlists", where: { accesslevelId: publicId }, attributes: [] }],
+      include: [{ model: WishList, as: "wishlists", through: {attributes: []}, where: { accesslevelId: publicId }, attributes: [] }],
       order: [["createdAt", "DESC"]],
       limit: 30,
     })
