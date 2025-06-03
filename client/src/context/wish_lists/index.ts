@@ -60,9 +60,6 @@ export const fetchWishListsFx = createEffect(async (id: number | null) => {
       return null
     }
 
-    // console.log("fetchWishListsFx: " + `GET /api/wishlist${id ? `?userId=${id}` : ``}`)
-    // console.log(data)
-
     return data as IWishList[]
   } catch (error) {
     toast.error("Ошибка получения списка желаний: " + error)
@@ -88,9 +85,6 @@ export const fetchWishListFx = createEffect(async (id: number) => {
       toast.error(data.warningMessage)
       return null
     }
-
-    // console.log("fetchWishListFx: " + `GET /api/wishlist${id ? `/${id}` : ``}`)
-    // console.log(data as IWishList)
 
     return data as IWishList
   } catch (error) {

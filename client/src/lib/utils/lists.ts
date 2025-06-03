@@ -1,4 +1,4 @@
-import { IWishList } from "@/types/wish_list";
+import { IWishList } from "@/types/wish_list"
 
 /**
  * Сортирует списки желаний по дате события (eventDate)
@@ -9,9 +9,9 @@ import { IWishList } from "@/types/wish_list";
 export const sortWishListsByDate = (wishLists: IWishList[], order: "asc" | "desc" = "asc") => {
   // Создаем копию массива, чтобы не мутировать исходный
   return [...wishLists].sort((a, b) => {
-    const dateA = new Date(a.eventDate).getTime();
-    const dateB = new Date(b.eventDate).getTime();
+    const dateA = new Date(a.eventDate!).getTime()
+    const dateB = new Date(b.eventDate!).getTime()
 
-    return order === "asc" ? dateA - dateB : dateB - dateA;
-  });
-};
+    return order === "asc" ? dateA - dateB : dateB - dateA
+  })
+}

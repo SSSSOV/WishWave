@@ -40,7 +40,6 @@ export default function LoginPage() {
   }, [])
 
   useEffect(() => {
-    console.log(isAuth)
     if (isAuth) router.replace("main/")
   }, [isAuth])
 

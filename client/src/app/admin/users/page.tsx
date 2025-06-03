@@ -70,7 +70,7 @@ export default function UsersPage() {
                   icon="person"
                   size="full"
                   isRounded
-                  url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + user.image}
+                  url={process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + user.image}
                 />
               </Section>
               <Section>
@@ -83,13 +83,13 @@ export default function UsersPage() {
                     overline="фото профиля"
                     leading_type={user.image && user.image != "" ? "image" : hasNameContent(user.fullname) ? "monogram" : "icon"}
                     leading={hasNameContent(user.fullname) ? getInitials(user.fullname) : "person"}
-                    url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + user.image}
+                    url={process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + user.image}
                     headline="Персонализирует аккаунт"
                     trailing_type={user.image ? "icon" : undefined}
                     onClick={
                       user.image
                         ? () => {
-                            router.push(process.env.NEXT_PUBLIC_SERVER_URL + "static/" + user.image)
+                            router.push(process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + user.image)
                           }
                         : undefined
                     }

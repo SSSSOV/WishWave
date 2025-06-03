@@ -18,29 +18,35 @@ export class UsersController {
     private readonly authService: AuthService
   ) {}
 
-    @UseGuards(JwtAuthGuard)
-    @Get('all')
-    async getAll(@Req() req, @Query('page') page = '1', @Query('limit') limit = '20'): Promise<{data: Omit<UserResponseDto, 'wishlist'>[]; page: number; perPage: number; total: number; totalPages: number}> {
-        if (req.user.roles?.value !== 'admin') {
-            throw new ForbiddenException('У вас нет прав, чтобы посмотреть всех пользователей')
-        }
-        
-        const pageNum = Math.max(parseInt(page, 10) || 1, 1);
-        const perPage = Math.min(Math.max(parseInt(limit, 10) || 20, 1), 100);
-        const {rows, count} = await this.usersService.getAllUsers(pageNum, perPage);
 
-        const data = rows.map(u => {
-            const plain = u.get({plain: true}) as any;
-            const {password, wishlist, ...rest} = plain;
-            return rest as Omit<UserResponseDto, 'wishlist'>;
-        });
+  @UseGuards(JwtAuthGuard)
+  @Get("all")
+  async getAll(
+    @Req() req,
+    @Query("page") page = "1",
+    @Query("limit") limit = "20"
+  ): Promise<{ data: Omit<UserResponseDto, "wishlist">[]; page: number; perPage: number; total: number; totalPages: number }> {
+    if (req.user.roles?.value !== "admin") {
+      throw new ForbiddenException("У вас нет прав, чтобы посмотреть всех пользователей")
+    }
 
-        return {data, page: pageNum, perPage, total: count, totalPages: Math.ceil(count/perPage)};
-    } 
+    const pageNum = Math.max(parseInt(page, 10) || 1, 1)
+    const perPage = Math.min(Math.max(parseInt(limit, 10) || 20, 1), 100)
+    const { rows, count } = await this.usersService.getAllUsers(pageNum, perPage)
 
-    @UseGuards(JwtAuthGuard)
-    @Get('checkAuth')
-    checkAuth(): void {}
+    const data = rows.map((u) => {
+      const plain = u.get({ plain: true }) as any
+      const { password, wishlist, ...rest } = plain
+      return rest as Omit<UserResponseDto, "wishlist">
+    })
+
+    return { data, page: pageNum, perPage, total: count, totalPages: Math.ceil(count / perPage) }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get("checkAuth")
+  checkAuth(): void {}
+
 
     @UseGuards(JwtAuthGuard)
     @Get()
@@ -50,6 +56,7 @@ export class UsersController {
         const { password, wishlist, ...rest } = user.get({ plain: true }) as any;
         return rest;
     }
+
 
 
   @UseGuards(JwtAuthGuard)

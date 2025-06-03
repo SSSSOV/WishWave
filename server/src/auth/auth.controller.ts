@@ -6,13 +6,12 @@ import { LoginUserDto } from "src/users/dto/login-user.dto"
 import { Response } from "express"
 
 class VerifyDto {
-  loginOrEmail: string;
-  code: string;
+  loginOrEmail: string
+  code: string
 }
 
-@ApiTags('Авторизация')
-@Controller('auth')
-
+@ApiTags("Авторизация")
+@Controller("auth")
 export class AuthController {
   constructor(private authService: AuthService) {}
 
@@ -28,6 +27,7 @@ export class AuthController {
       path: "/",
       domain: process.env.CLIENT_DOMAIN,
     })
+
 
     return { token };
   }

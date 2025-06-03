@@ -14,6 +14,13 @@ export interface IBugreport {
   createdAt: string
 }
 
+export interface IStats {
+  bugReports: number
+  wishes: number
+  wishLists: number
+  users: number
+}
+
 export interface ICreateBugreport {
   title: string
   description: string

@@ -57,7 +57,7 @@ export default function BugreportPage() {
                         headline={shownReport.owner.login}
                         overline={`пользователь #${shownReport.owner.id}`}
                         leading="person"
-                        url={process.env.NEXT_PUBLIC_SERVER_URL + "static/" + shownReport.owner.image}
+                        url={process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + shownReport.owner.image}
                         leading_type={shownReport.owner.image ? "image" : "icon"}
                       />
                     )}

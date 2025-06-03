@@ -7,6 +7,13 @@ export interface ISignUpFx {
   /**Пароль пользователя */
   password: string
 }
+/**Интерфейс выерификации email */
+export interface IVerifyFx {
+  /**Логин или почта */
+  loginOrEmail: string
+  /**Пароль пользователя */
+  code: string
+}
 /**Интерфейс авторизации */
 export interface ISignInFx {
   /**Логин или почта */

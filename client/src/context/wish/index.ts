@@ -71,7 +71,6 @@ export const createWishFx = createEffect(async (params: ICreateWish) => {
       toast.error(data.warningMessage)
       return null
     }
-
     return data as IWish
   } catch (error) {
     if (error instanceof AxiosError) toast.error(error.response?.data.message)

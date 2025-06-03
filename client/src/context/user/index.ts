@@ -1,7 +1,7 @@
 "use client"
 
 import api from "@/api"
-import { ISignInFx, ISignUpFx } from "@/types/auth"
+import { ISignInFx, ISignUpFx, IVerifyFx } from "@/types/auth"
 import { IUpdateInfoFx, IUpdatePasswordFx, IUser } from "@/types/user"
 import { AxiosError } from "axios"
 import { createDomain, createEffect, createEvent, createStore, sample } from "effector"
@@ -18,6 +18,7 @@ export const handleSetUser = createEvent<IUser | null>()
 
 export const handleSignIn = createEvent<ISignInFx>()
 export const handleSignUp = createEvent<ISignUpFx>()
+export const handleVerify = createEvent<IVerifyFx>()
 export const handleFetchUser = createEvent<number | null>()
 export const handleUpdateInfo = createEvent<IUpdateInfoFx>()
 export const handleUpdatePassword = createEvent<IUpdatePasswordFx>()
@@ -62,6 +63,26 @@ export const signUpFx = createEffect(async ({ login, email, password }: ISignUpF
       login,
       email,
       password,
+    })
+
+    if (data.warningMessage) {
+      toast.error(data.warningMessage)
+      return
+    }
+
+    toast.success("Код для подтверждения отправлен!")
+    return data
+  } catch (error) {
+    if (error instanceof AxiosError) toast.error(error.response?.data.message + " (" + error.status + ")")
+    else toast.error("Ошибка регистрации: " + error)
+    throw error
+  }
+})
+export const verifyFx = createEffect(async ({ loginOrEmail, code }: IVerifyFx) => {
+  try {
+    const { data } = await api.post("/api/auth/verify-email", {
+      loginOrEmail,
+      code,
     })
 
     if (data.warningMessage) {
@@ -137,8 +158,6 @@ export const updateInfoFx = createEffect(async ({ fullname, birthday, phone, ima
   }
 
   try {
-    console.log({ fullname, birthDate: birthday, phone, image, gender })
-
     const { data } = await api.patch(
       "/api/user/",
       { fullname, birthDate: birthday, phone, image, gender },
@@ -146,8 +165,6 @@ export const updateInfoFx = createEffect(async ({ fullname, birthday, phone, ima
         headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
       }
     )
-
-    console.log(data)
 
     if (data.warningMessage) {
       toast.error(data.warningMessage)
@@ -187,8 +204,6 @@ export const updatePasswordFx = createEffect(async (props: IUpdatePasswordFx) =>
       headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
     })
 
-    console.log(data)
-
     if (data.warningMessage) {
       toast.error(data.warningMessage)
       return null
@@ -217,7 +232,6 @@ export const checkAuthFx = createEffect(async () => {
       return false
     }
 
-    console.log(data, !!data)
     return !!data
   } catch (error) {
     if (error instanceof AxiosError) toast.error(error.response?.data.message)
@@ -253,7 +267,7 @@ export const deleteUserFx = createEffect(async (id: number | null) => {
 $isAuth
   .on(handleSetAuth, (_, value) => value) // Установка значения
   .on(signInFx.doneData, (_, result) => !!result)
-  .on(signUpFx.doneData, (_, result) => !!result)
+  .on(verifyFx.doneData, (_, result) => !!result)
   .on(checkAuthFx.doneData, (_, result) => !!result)
   .on(checkAuthFx.fail, () => false)
   .reset(handleLogeOut)
@@ -268,19 +282,8 @@ $user
 // Тригеры
 sample({ clock: handleSignIn, target: signInFx })
 
-// sample({
-//   clock: signInFx.doneData,
-//   filter: (user) => !!user,
-//   target: fetchUserFx,
-// })
-
-// sample({
-//   clock: signUpFx.doneData,
-//   filter: (user) => !!user,
-//   target: fetchUserFx,
-// })
-
 sample({ clock: handleSignUp, target: signUpFx })
+sample({ clock: handleVerify, target: verifyFx })
 sample({ clock: handleUpdateInfo, target: updateInfoFx })
 sample({ clock: handleUpdatePassword, target: updatePasswordFx })
 sample({ clock: handleFetchUser, target: fetchUserFx })

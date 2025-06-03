@@ -23,15 +23,18 @@ export default function EditWishListPage() {
 
   // Эффекты
   useEffect(() => {
-    setName(wishList.name ? wishList.name : "")
-    setDate(wishList.eventDate ? wishList.eventDate : "")
-    setDescription(wishList.description ? wishList.description : "")
-    setAccess(wishList.accessLevelId ? wishList.accessLevelId : 0)
-  }, [])
+    if (wishList) {
+      setName(wishList.name ? wishList.name : "")
+      setDate(wishList.eventDate ? wishList.eventDate : "")
+      setDescription(wishList.description ? wishList.description : "")
+      setAccess(wishList.accessLevelId ? wishList.accessLevelId : 0)
+    }
+  }, [wishList])
 
   // Обработчики
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!wishList) return
     try {
       updateWishList({ id: wishList.id, name: name, accesslevelId: access, description: description, eventDate: date })
       router.back()
