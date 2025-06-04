@@ -55,7 +55,6 @@ export default function SignupPage() {
     e.preventDefault()
     try {
       verify({ loginOrEmail, code })
-      toast.success("Вы успешно вошли!")
     } catch (error) {
       console.log(error)
     }
