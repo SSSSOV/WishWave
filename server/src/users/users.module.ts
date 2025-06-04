@@ -14,18 +14,20 @@ import { FileModule } from 'src/file/file.module';
 import { FriendModule } from 'src/friend/friend.module';
 import { ProfanityModule } from 'src/profanity/profanity.module';
 import { BugReport } from 'src/bugreport/bugreport.model';
+import { WishListWish } from 'src/wishlist/wishlist-wish.model';
 
 @Module({
   controllers: [UsersController],
   providers: [UsersService],
   imports: [
-    SequelizeModule.forFeature([User, Friend, Ban, Role, WishList, Wish]),
+    SequelizeModule.forFeature([User, Friend, Ban, Role, WishList, Wish, WishListWish]),
     RolesModule,
     FileModule,
     ProfanityModule,
     BugReport,
     forwardRef(() => AuthModule),
     forwardRef(() => FriendModule),
+    FriendModule,
   ],
   exports: [
     UsersService

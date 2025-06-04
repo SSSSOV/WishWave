@@ -1,4 +1,4 @@
-import {BadRequestException, Body, Controller, Delete, ForbiddenException, Get, Param,ParseIntPipe,Patch, Post, Query, Req, UploadedFile, UseGuards, UseInterceptors} from "@nestjs/common"
+import {BadRequestException, Body, Controller, Delete, ForbiddenException, Get, Param,ParseIntPipe,Patch, Post, Query, Req, Res, UploadedFile, UseGuards, UseInterceptors} from "@nestjs/common"
 import { UsersService } from "./users.service"
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard"
 import { UserResponseDto } from "./dto/user-response.dto"
@@ -8,6 +8,7 @@ import { UpdateUserDto } from "./dto/update-user.dto"
 import { ChangePasswordDto } from "./dto/change-password.dto"
 import { FriendService } from "src/friend/friend.service"
 import { AuthService } from "src/auth/auth.service"
+import { Response } from 'express';
 
 @Controller("user")
 export class UsersController {
@@ -83,17 +84,35 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Delete()
-  async removeSelf(@Req() req): Promise<{ message: string }> {
-    const id = req.user.id
+  async removeSelf(@Req() req, @Res({ passthrough: true }) res: Response): Promise<{ message: string }> {
+    const id = req.user.id;
+
+    res.clearCookie('authToken', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      domain: process.env.CLIENT_DOMAIN,
+    });
+  
     return this.usersService.deleteUserById(id)
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(":id")
-  async removeUser(@Param("id", ParseIntPipe) id: number, @Req() req): Promise<{ message: string }> {
+  async removeUser(@Param("id", ParseIntPipe) id: number, @Req() req, @Res({ passthrough: true }) res: Response): Promise<{ message: string }> {
     if (req.user.roles?.value !== "admin") {
       throw new ForbiddenException("У вас нет прав для удаления других пользователей")
     }
+
+    res.clearCookie('authToken', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      domain: process.env.CLIENT_DOMAIN,
+    });
+
     return this.usersService.deleteUserById(id)
   }
 

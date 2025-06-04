@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Friend } from './friend.model';
 import { FriendStatus } from 'src/friendstatus/friendstatus.model';
 import { User } from 'src/users/users.model';
-import { Model, Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 import { WishList } from 'src/wishlist/wishlist.model';
 import { Wish } from 'src/wish/wish.model';
 import { AccessLevel } from 'src/accesslevel/accesslevel.model';
@@ -190,5 +190,17 @@ export class FriendService {
         }).filter((x): x is { user: typeof plain[0]; lastActivity: Date } => x != null).sort((a,b) => b.lastActivity.getTime() - a.lastActivity.getTime());
 
         return withActivity;
+    }
+
+    async removeAllForUser(userId: number, options: { transaction: any }) {
+        await this.friendRepository.destroy({
+        where: {
+            [Op.or]: [
+            { sender: userId },
+            { recipient: userId },
+            ],
+        } as WhereOptions<Friend>,
+        transaction: options.transaction,
+        })
     }
 }

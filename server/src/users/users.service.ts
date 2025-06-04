@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common"
+import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common"
 import { User } from "./users.model"
 import { InjectModel } from "@nestjs/sequelize"
 import { createUserDto } from "./dto/create-user.dto"
@@ -12,7 +12,10 @@ import * as bcrypt from "bcryptjs"
 import { UserResponseDto } from "./dto/user-response.dto"
 import { ProfanityService } from "src/profanity/profanity.service"
 import { AccessLevel } from "src/accesslevel/accesslevel.model"
-import { FindAndCountOptions } from "sequelize"
+import { Sequelize } from 'sequelize-typescript';
+import { FriendService } from "src/friend/friend.service"
+import { WishListWish } from "src/wishlist/wishlist-wish.model"
+import { Op } from 'sequelize';
 
 @Injectable()
 export class UsersService {
@@ -20,7 +23,12 @@ export class UsersService {
     @InjectModel(User) private userRepository: typeof User,
     private roleService: RolesService,
     private fileService: FileService,
-    private readonly profanity: ProfanityService
+    private readonly profanity: ProfanityService,
+    private readonly sequelize: Sequelize,
+    private readonly friendService: FriendService,
+    @InjectModel(WishList) private readonly wishListRepository: typeof WishList,
+    @InjectModel(WishListWish) private readonly wishListWishRepository: typeof WishListWish,
+    @InjectModel(Wish) private readonly wishRepository: typeof Wish,
   ) {}
 
   async createUser(dto: createUserDto) {
@@ -181,20 +189,68 @@ export class UsersService {
     return user
   }
 
-  async deleteUserById(userId: number) {
-    const user = await this.userRepository.findByPk(userId)
-    if (!user) throw new Error("Пользователь не найден")
+  async deleteUserById(userId: number): Promise<{ message: string }> {
+    const transaction = await this.sequelize.transaction();
+    try {
+      const user = await this.userRepository.findByPk(userId, { transaction });
+      if (!user) {
+        throw new NotFoundException('Пользователь не найден');
+      }
 
-    const oldImage = user.image
-    const login = user.login
+      const oldImage = user.image;
 
-    await user.destroy()
+      await this.friendService.removeAllForUser(userId, { transaction });
 
-    if (oldImage) {
-      await this.fileService.deleteFile(oldImage)
+      const wishlists = await this.wishListRepository.findAll({
+        where: { userId },
+        transaction,
+      });
+
+      for (const wl of wishlists) {
+        const links = await this.wishListWishRepository.findAll({
+          where: { wishlistId: wl.id },
+          transaction,
+        });
+
+        await this.wishListWishRepository.destroy({
+          where: { wishlistId: wl.id },
+          transaction,
+        });
+
+        for (const link of links) {
+          const otherLinks = await this.wishListWishRepository.count({
+            where: { wishId: link.wishId, wishlistId: { [Op.ne]: wl.id } },
+            transaction,
+          });
+
+          if (!otherLinks) {
+            await this.wishRepository.destroy({
+              where: { id: link.wishId },
+              transaction,
+            });
+          }
+        }
+
+        await this.wishListRepository.destroy({
+          where: { id: wl.id },
+          transaction,
+        });
+      }
+
+      await user.destroy({ transaction });
+
+      if (oldImage) {
+        await this.fileService.deleteFile(oldImage);
+      }
+
+      await transaction.commit();
+      return { message: 'Пользователь и все связанные данные успешно удалены' };
+    } catch (err) {
+      await transaction.rollback();
+      if (err instanceof NotFoundException) throw err;
+      console.error('deleteUserById failed:', err);
+      throw new HttpException('Ошибка при удалении пользователя', HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    return { message: `Пользователь удалён` }
   }
 
   async updatePassword(userId: number, oldPassword: string, newPassword: string): Promise<void> {
