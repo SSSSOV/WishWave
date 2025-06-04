@@ -150,9 +150,16 @@ export class WishService {
         return {id: pWish.id, name: pWish.name, price: pWish.price, productLink: pWish.productLink, image: pWish.image, wishStatusId: pWish.wishStatusId, createdAt: pWish.createdAt, updatedAt: pWish.updatedAt, shareToken, owner, list, bookedByUser};
     }
 
-    async delete(id: number): Promise<void> {
-        const wish = await this.findById(id);
+
+     async delete(id: number): Promise<void> {
+        await this.wishListWishRepository.destroy({where: { wishId: id }});
+
+        const wish = await this.wishRepository.findByPk(id);
+        if (!wish) {
+            throw new NotFoundException(`Желание с id ${id} не найдено`);
+        }
         const imageToDelete = wish.image;
+
         await wish.destroy();
 
         if (imageToDelete) {
