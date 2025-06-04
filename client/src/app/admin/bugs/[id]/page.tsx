@@ -7,19 +7,21 @@ import List from "@/components/ui/list/List"
 import ListItem from "@/components/ui/list/ListItem"
 import Section from "@/components/ui/section/Section"
 import TopAppBar from "@/components/ui/top_app_bar/TopAppBar"
-import { $bugreports, handleFetchBugreports } from "@/context/bugreports"
+import { $bugreports, handleDeleteBugreport, handleFetchBugreports } from "@/context/bugreports"
 import { usePageTitle } from "@/hooks/usePageTitle"
 import { IBugreport } from "@/types/bugreport"
 import { useUnit } from "effector-react"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import style from "@/app/home.module.css"
+import Button from "@/components/ui/buttons/Button"
+import Loader from "@/components/ui/loader/Loader"
 
 export default function BugreportPage() {
   const router = useRouter()
 
   const { id } = useParams() // Получаем ID из URL
-  const [bugreports, fetchBugreports] = useUnit([$bugreports, handleFetchBugreports])
+  const [bugreports, fetchBugreports, deleteBugreport] = useUnit([$bugreports, handleFetchBugreports, handleDeleteBugreport])
   const [shownReport, setShownReport] = useState<IBugreport | undefined>(undefined)
   usePageTitle(shownReport ? `Багрепорт #${shownReport.id}` : "Багрепорт")
 
@@ -62,6 +64,18 @@ export default function BugreportPage() {
                       />
                     )}
                   </List>
+                  <Section align_items="right" withoutPad>
+                    <Button
+                      variant="text"
+                      color="error"
+                      icon="delete"
+                      onClick={() => {
+                        deleteBugreport(shownReport.id)
+                        router.back()
+                      }}>
+                      Удалить репорт
+                    </Button>
+                  </Section>
                 </Section>
                 <hr />
 
@@ -74,7 +88,7 @@ export default function BugreportPage() {
                 </Section>
               </>
             ) : (
-              "Пусто"
+              <Loader></Loader>
             )}
           </Section>
         </Container>

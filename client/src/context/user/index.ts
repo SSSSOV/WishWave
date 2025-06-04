@@ -258,7 +258,7 @@ export const deleteUserFx = createEffect(async (id: number | null) => {
     return !!data
   } catch (error) {
     if (error instanceof AxiosError) toast.error(error.response?.data.message)
-    else toast.error("Ошибка сохранения: " + error)
+    else toast.error("Ошибка удаления: " + error)
     throw error
   }
 })
@@ -270,7 +270,7 @@ $isAuth
   .on(verifyFx.doneData, (_, result) => !!result)
   .on(checkAuthFx.doneData, (_, result) => !!result)
   .on(checkAuthFx.fail, () => false)
-  .reset(handleLogeOut)
+  .reset(logOutFx.done)
 
 $user
   .on(handleSetUser, (_, value) => value)

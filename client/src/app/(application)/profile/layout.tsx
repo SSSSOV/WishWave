@@ -19,7 +19,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
   const [isLoading, startLoad, stopLoad, user, isAuth, fetchUser] = useUnit([$isLoading, startLoading, stopLoading, $user, $isAuth, handleFetchUser])
 
   useEffect(() => {
-    if (!user && isAuth) {
+    if (isAuth) {
       fetchUser(null)
     }
   }, [user, isAuth, fetchUser])

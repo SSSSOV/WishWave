@@ -29,14 +29,19 @@ export default function UsersPage() {
 
   // Состояние
   const [search, setSearch] = useState("")
+  const [confirm, setConfirm] = useState(false)
 
   // Обработчики
   const handleSearch = () => {
     if (Number(search)) fetchUser(Number(search))
   }
   const handleDelete = (id: number) => {
-    deleteUser(id)
-    router.back()
+    if (confirm) {
+      deleteUser(id)
+      router.back()
+    } else {
+      setConfirm(true), setTimeout(() => setConfirm(false), 2000)
+    }
   }
 
   // Эффекты
@@ -122,8 +127,8 @@ export default function UsersPage() {
               </Section>
               <Section padding_bot_size="sm" align_items="right">
                 <Section items_direction="row" isFit withoutPad>
-                  <Button variant="text" color="error" icon="delete">
-                    Удалить аккаунт
+                  <Button variant="text" color="error" icon={confirm ? "warning" : "delete"} onClick={() => handleDelete(user.id)}>
+                    {confirm ? "Подтвердить удаление" : "Удалить аккаунт"}
                   </Button>
                 </Section>
               </Section>
