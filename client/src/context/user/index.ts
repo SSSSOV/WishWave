@@ -267,13 +267,16 @@ export const deleteUserFx = createEffect(async (id: number | null) => {
   }
 
   try {
-    const data = await api.delete(`/api/user/${id}`, {
+    console.log("deleteUserFx")
+    const data = await api.delete(`/api/user${id ? "/" + id : ""}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
     })
-
+    console.log(data)
     if (data.status != 200) {
       return false
     }
+
+    localStorage.removeItem("auth")
 
     return !!data
   } catch (error) {

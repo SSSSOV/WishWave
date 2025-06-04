@@ -35,7 +35,6 @@ export default function ProfilePage() {
   const handleDelete = () => {
     if (confirm) {
       user.deleteUser(null)
-      user.logOut()
     } else {
       setConfirm(true), setTimeout(() => setConfirm(false), 2000)
     }
