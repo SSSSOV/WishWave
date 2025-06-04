@@ -4,8 +4,7 @@ import api from "@/api"
 import { ISignInFx, ISignUpFx, IVerifyFx } from "@/types/auth"
 import { IUpdateInfoFx, IUpdatePasswordFx, IUser } from "@/types/user"
 import { AxiosError } from "axios"
-import { createDomain, createEffect, createEvent, createStore, sample } from "effector"
-import { jwtDecode } from "jwt-decode"
+import { createEffect, createEvent, createStore, sample } from "effector"
 import toast from "react-hot-toast"
 
 // Сторы
@@ -144,10 +143,31 @@ export const fetchUserFx = createEffect(async (id: number | null) => {
     throw error
   }
 })
-export const logOutFx = createEffect(() => {
-  localStorage.removeItem("auth")
-  handleSetAuth(false)
-  handleSetUser(null)
+export const logOutFx = createEffect(async () => {
+  const token = localStorage.getItem("auth")
+
+  if (!token) {
+    handleSetAuth(false)
+    return null
+  }
+
+  try {
+    const { data } = await api.post(`/api/auth/logout`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+
+    if (data.warningMessage) {
+      toast.error(data.warningMessage)
+      handleSetAuth(false)
+      return null
+    }
+
+    localStorage.removeItem("auth")
+  } catch (error) {
+    if (error instanceof AxiosError) toast.error(error.response?.data.message)
+    else toast.error("Ошибка выхода: " + error)
+    throw error
+  }
 })
 export const updateInfoFx = createEffect(async ({ fullname, birthday, phone, image, gender }: IUpdateInfoFx) => {
   const token = localStorage.getItem("auth")
@@ -235,7 +255,7 @@ export const checkAuthFx = createEffect(async () => {
     return !!data
   } catch (error) {
     if (error instanceof AxiosError) toast.error(error.response?.data.message)
-    else toast.error("Ошибка сохранения: " + error)
+    else toast.error("Ошибка авторизации: " + error)
     throw error
   }
 })
@@ -278,6 +298,7 @@ $user
   .on(fetchUserFx.doneData, (_, value) => value)
   .reset(handleLogeOut)
   .reset(handleResetUser)
+  .reset(logOutFx.done)
 
 // Тригеры
 sample({ clock: handleSignIn, target: signInFx })

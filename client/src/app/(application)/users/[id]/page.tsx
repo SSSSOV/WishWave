@@ -1,7 +1,7 @@
 "use client"
 
 import List from "@/components/ui/list/List"
-import ListItem from "@/components/ui/list/ListItem"
+import ListItem, { icon_color } from "@/components/ui/list/ListItem"
 import Monogram from "@/components/ui/monogram/Monogram"
 import Section from "@/components/ui/section/Section"
 import { $friend, handleFetchFriend, handleUnfriend } from "@/context/friends"
@@ -71,6 +71,8 @@ export default function UserPage() {
     router.back()
   }
 
+  const colors = ["primary", "secondary", "tertiary"]
+
   if (!friend || friend.id != Number(id)) return <Loader />
 
   return (
@@ -80,6 +82,7 @@ export default function UserPage() {
           <Monogram
             monogram_type={friend.image ? "image" : hasNameContent(friend.fullname) ? "monogram" : "icon"}
             letter={hasNameContent(friend.fullname) ? getInitials(friend.fullname) : "person"}
+            color={colors[friend.id % 3] as icon_color}
             icon="person"
             size="lg"
             url={process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + friend.image}
@@ -134,6 +137,9 @@ export default function UserPage() {
                       : ""
                   }
                   leading_type="icon"
+                  leading_color={
+                    list.accessLevelId == 1 ? "primary" : list.accessLevelId == 2 ? "secondary" : list.accessLevelId == 3 ? "tertiary" : "tertiary"
+                  }
                   leading={
                     list.accessLevelId == 1 ? "visibility" : list.accessLevelId == 2 ? "visibility_off" : list.accessLevelId == 3 ? "link" : "group"
                   }
