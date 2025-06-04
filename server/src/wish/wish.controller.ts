@@ -125,7 +125,7 @@ export class WishController {
 
     @UseGuards(JwtAuthGuard)
     @Patch('book')
-    async bookWish(@Body() dto: WishIdDto, @Req() req): Promise<FUllWIshDto> {
+    async bookWish(@Body() dto: WishIdDto, @Req() req): Promise<FUllWIshDto & { canBook: boolean }> {
         const userId = req.user.id as number;
         const wishId = dto.id;
 
@@ -156,12 +156,27 @@ export class WishController {
             }
         }
 
-        return this.wishService.bookFullWish(wishId, userId, shareToken);
+        const fullDto = await this.wishService.bookFullWish(wishId, userId, shareToken);
+
+        let canBook = false;
+        if (req.user) {
+        if (ownerId === userId) {
+            canBook = true;
+        }
+        else if (ownerId !== null && await this.friendService.areFriends(userId, ownerId)) {
+            canBook = true;
+        }
+        else if (fullDto.bookedByUser?.id === userId) {
+            canBook = true;
+        }
+        }
+
+        return { ...fullDto, canBook };
     }
 
     @UseGuards(JwtAuthGuard)
     @Patch('unbook')
-    async unbookWish(@Body() dto: WishIdDto, @Req() req): Promise<FUllWIshDto> {
+    async unbookWish(@Body() dto: WishIdDto, @Req() req): Promise<FUllWIshDto & { canBook: boolean }> {
         const userId = req.user?.id ?? null;
         const wishId = dto.id;
         const record = await this.wishListWishRepository.findOne({where: {wishId}});
@@ -175,12 +190,22 @@ export class WishController {
             throw new ForbiddenException('Нет доступа к бронироваю этого желания');
         } 
 
-        return this.wishService.unbookFullWish(wishId, userId, shareToken);
+        const fullDto = await this.wishService.unbookFullWish(wishId, userId, shareToken);
+        const ownerId = fullDto.owner.id;
+        let canBook = false;
+        if (ownerId === userId) {
+            canBook = true;
+        }
+        else if (ownerId !== null && await this.friendService.areFriends(userId, ownerId)) {
+            canBook = true;
+        }
+
+        return {...fullDto, canBook}
     }
 
     @UseGuards(JwtAuthGuard)
     @Patch('complete')
-    async  complete(@Body() dto: WishIdDto, @Req() req) {
+    async  complete(@Body() dto: WishIdDto, @Req() req): Promise<FUllWIshDto & { canBook: boolean }> {
         const userId = req.user.id;
         const wishId = dto.id;
         const record = await this.wishListWishRepository.findOne({where: {wishId}});
@@ -198,6 +223,16 @@ export class WishController {
             throw new NotFoundException('Список не найден');
         }
 
-        return this.wishService.completeFullWish(wishId, userId);
+        const fullDto = await this.wishService.completeFullWish(wishId, userId);
+        const ownerId = fullDto.owner.id;
+        let canBook = false;
+        if (ownerId === userId) {
+            canBook = true;
+        }
+        else if (ownerId !== null && await this.friendService.areFriends(userId, ownerId)) {
+            canBook = true;
+        }
+
+        return {...fullDto, canBook}
     }
 }
