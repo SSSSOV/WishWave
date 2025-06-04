@@ -290,7 +290,6 @@ $isAuth
   .on(verifyFx.doneData, (_, result) => !!result)
   .on(checkAuthFx.doneData, (_, result) => !!result)
   .on(checkAuthFx.fail, () => false)
-  .reset(handleLogeOut)
   .reset(logOutFx.done)
 
 $user

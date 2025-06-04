@@ -15,7 +15,7 @@ import { usePageTitle } from "@/hooks/usePageTitle"
 import NonAuthPage from "@/components/shared/nonAuthPage/NonAuthPage"
 import { startLoading } from "@/context/loading"
 import { useUser } from "@/hooks/useUser"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 export default function ProfilePage() {
   usePageTitle("Ваш профиль")
@@ -25,11 +25,20 @@ export default function ProfilePage() {
   const user = useUser()
 
   // Переменные
+  const [confirm, setConfirm] = useState(false)
 
   // Обработчики
   const handleExit = () => {
     user.logOut()
     window.location.href = "/login"
+  }
+  const handleDelete = () => {
+    if (confirm) {
+      user.deleteUser(null)
+      user.logOut()
+    } else {
+      setConfirm(true), setTimeout(() => setConfirm(false), 2000)
+    }
   }
 
   // Хуки
@@ -176,8 +185,8 @@ export default function ProfilePage() {
       </Section>
       <Section padding_bot_size="sm" align_items="right">
         <Section items_direction="row" isFit withoutPad>
-          <Button variant="text" color="error" icon="delete">
-            Удалить аккаунт
+          <Button variant="text" color="error" icon={confirm ? "warning" : "delete"} onClick={handleDelete}>
+            {confirm ? "Подтвердить удаление" : "Удалить аккаунт"}
           </Button>
           <Button variant="text" color="error" onClick={handleExit} icon="logout">
             Выйти

@@ -50,8 +50,8 @@ export default function MainPage() {
   }
 
   useEffect(() => {
-    fetchRecomendations()
-  }, [])
+    if (!recommendations || recommendations.length == 0) fetchRecomendations()
+  }, [recommendations])
 
   useEffect(() => {
     if (isAuth) {
