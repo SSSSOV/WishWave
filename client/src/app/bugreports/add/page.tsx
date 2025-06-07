@@ -15,6 +15,7 @@ import { IJWT } from "@/types/user"
 import { useUnit } from "effector-react"
 import { handleCreateBugreport } from "@/context/bugreports"
 import { useRouter } from "next/navigation"
+import { Toaster } from "react-hot-toast"
 
 export default function AddBugreportPage() {
   usePageTitle("Новый багрепорт")
@@ -82,6 +83,16 @@ export default function AddBugreportPage() {
           </Section>
         </Container>
       </Content>
+      <Toaster
+        position="bottom-center"
+        toastOptions={{
+          // Define default options
+          icon: null,
+          className: "toast",
+          duration: 2000,
+          removeDelay: 1000,
+        }}
+      />
     </>
   )
 }

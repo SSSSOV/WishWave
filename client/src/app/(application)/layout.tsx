@@ -11,6 +11,7 @@ import Container from "@/components/ui/container/Container"
 import { useUnit } from "effector-react"
 import { $isAuth, $user, handleCheckAuth, handleFetchUser } from "@/context/user"
 import { $pageTitle } from "@/context/page"
+import { Toaster } from "react-hot-toast"
 
 export type PageConfig = {
   title: string
@@ -167,6 +168,29 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <Content navigationType="bar" topBarSize="sm">
             <Container withoutBg>{children}</Container>
           </Content>
+          <div>
+            <Toaster
+              position="bottom-center"
+              containerStyle={{
+                marginBottom: 150,
+              }}
+              toastOptions={{
+                // Define default options
+                icon: null,
+                className: "toast",
+                duration: 20000,
+                removeDelay: 1000,
+
+                // Default options for specific types
+                // success: {
+                //   className: "toast success",
+                // },
+                // error: {
+                //   className: "toast error",
+                // },
+              }}
+            />
+          </div>
           <NavigationBar
             pages={PAGES}
             FAB
@@ -195,6 +219,29 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <Container gap="sm" withPad withoutBg>
               {children}
             </Container>
+            <div>
+              <Toaster
+                position="bottom-center"
+                containerStyle={{
+                  marginLeft: 72,
+                }}
+                toastOptions={{
+                  // Define default options
+                  icon: null,
+                  className: "toast",
+                  duration: 2000,
+                  removeDelay: 1000,
+
+                  // Default options for specific types
+                  // success: {
+                  //   className: "toast success",
+                  // },
+                  // error: {
+                  //   className: "toast error",
+                  // },
+                }}
+              />
+            </div>
           </Content>
         </>
       )}
