@@ -28,7 +28,6 @@ export class AuthController {
       domain: process.env.CLIENT_DOMAIN,
     })
 
-
     return { token };
   }
 
