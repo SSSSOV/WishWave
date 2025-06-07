@@ -41,25 +41,27 @@ export default function RootLayout({
         <meta name="theme-color" color="#1a211f" />
       </head>
       <body className={`${comfortaa.className} ${comfortaa.className} antialiased`}>
-        <ToastContainer className="p-1 gap-1" />
-        <div>
+        {/* <ToastContainer className="p-1 gap-1" /> */}
+        {/* <div>
           <Toaster
+            position="bottom-center"
             toastOptions={{
               // Define default options
+              icon: null,
               className: "toast",
               duration: 2000,
               removeDelay: 1000,
 
               // Default options for specific types
-              success: {
-                className: "toast success",
-              },
-              error: {
-                className: "toast error",
-              },
+              // success: {
+              //   className: "toast success",
+              // },
+              // error: {
+              //   className: "toast error",
+              // },
             }}
           />
-        </div>
+        </div> */}
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

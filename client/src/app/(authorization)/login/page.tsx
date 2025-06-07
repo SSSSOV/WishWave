@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useUnit } from "effector-react"
 import { $isAuth, $user, handleCheckAuth, handleSignIn } from "@/context/user"
-import toast from "react-hot-toast"
+import toast, { Toaster } from "react-hot-toast"
 import Container from "@/components/ui/container/Container"
 import Loader from "@/components/ui/loader/Loader"
 
@@ -106,6 +106,16 @@ export default function LoginPage() {
           </Section>
         </Container>
       </Content>
+      <Toaster
+        position="bottom-center"
+        toastOptions={{
+          // Define default options
+          icon: null,
+          className: "toast",
+          duration: 2000,
+          removeDelay: 1000,
+        }}
+      />
     </>
   )
 }

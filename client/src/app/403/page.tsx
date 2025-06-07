@@ -6,6 +6,7 @@ import Content from "@/components/ui/content/Content"
 import Figure from "@/components/ui/figure/Figure"
 import Section from "@/components/ui/section/Section"
 import { useRouter } from "next/navigation"
+import { Toaster } from "react-hot-toast"
 
 export default function UnPage() {
   const router = useRouter()
@@ -27,6 +28,16 @@ export default function UnPage() {
           </Section>
         </Container>
       </Content>
+      <Toaster
+        position="bottom-center"
+        toastOptions={{
+          // Define default options
+          icon: null,
+          className: "toast",
+          duration: 2000,
+          removeDelay: 1000,
+        }}
+      />
     </>
   )
 }
