@@ -13,6 +13,9 @@ import { $isAuth, handleSignUp, handleVerify } from "@/context/user"
 import { useUnit } from "effector-react"
 import Container from "@/components/ui/container/Container"
 import toast from "react-hot-toast"
+import Loader from "@/components/ui/loader/Loader"
+import ListItem from "@/components/ui/list/ListItem"
+import List from "@/components/ui/list/List"
 
 // export const metadata: Metadata = {
 //   title: "Регистрация - WishWave",
@@ -31,6 +34,7 @@ export default function SignupPage() {
   const [loginOrEmail, setLoginOrEmail] = useState("")
   const [code, setCode] = useState("")
   const [isVerification, setIsVerification] = useState(false)
+  const [isAgree, setIsAgree] = useState(false)
 
   // Контекст
   const [signUp, verify, isAuth] = useUnit([handleSignUp, handleVerify, $isAuth])
@@ -38,6 +42,10 @@ export default function SignupPage() {
   // Обработчик авторизации
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!isAgree) {
+      toast.error("Пожалуйста, ознакомьтесь с документами!")
+      return
+    }
     if (password != repeatPassword) {
       toast.error("Пароли не совпадают!")
       return
@@ -67,13 +75,14 @@ export default function SignupPage() {
   return (
     <>
       <ThemeToggle isAbsolute></ThemeToggle>
-      <ContentContainer topBarSize="none" navigationType="none">
-        <Container>
-          <Section align_items="center" items_direction="row" padding_bot_size="lg" padding_top_size="lg">
+      <ContentContainer topBarSize="none" navigationType="none" withPad isScreen>
+        <Container withRadius>
+          <Loader fit></Loader>
+          {/* <Section align_items="center" items_direction="row" padding_bot_size="lg" padding_top_size="lg">
             <Monogram monogram_type="monogram" letter="ww" size="md" color="primary"></Monogram>
             <Monogram monogram_type="icon" icon="person_add" size="md" color="secondary"></Monogram>
             <Monogram monogram_type="icon" icon="app_registration" size="md" color="tertiary"></Monogram>
-          </Section>
+          </Section> */}
           {!isVerification && (
             <>
               <form action="signup" onSubmit={handleSubmit}>
@@ -120,13 +129,33 @@ export default function SignupPage() {
                     onChange={(e) => setRepeatPassword(e.target.value)}
                     required
                   />
+                  <Section items_direction="row" withoutPad align_items="center">
+                    <Button
+                      icon={isAgree ? "check_box" : "check_box_outline_blank"}
+                      variant="text"
+                      type="button"
+                      onClick={() => {
+                        setIsAgree(!isAgree)
+                      }}></Button>
+                    <span className={styles.label}>
+                      Продолжая, вы соглашаетесь с{" "}
+                      <a className={styles.link} href="/documents#terms" target="_blank" rel="noopener noreferrer">
+                        Условиями обслуживания WishWave
+                      </a>{" "}
+                      и подтверждаете, что ознакомились с нашей{" "}
+                      <a className={styles.link} href="/documents#policy" target="_blank" rel="noopener noreferrer">
+                        Политикой конфиденциальности
+                      </a>
+                      .
+                    </span>
+                  </Section>
 
-                  <Button variant="filled" isFit={false} type="submit">
-                    Зарегистрироваться
+                  <Button variant={isAgree ? "filled" : "outlined"} isFit={false} type="submit">
+                    {isAgree ? "Зарегистрироваться" : "Ознакомьтесь с документами"}
                   </Button>
                 </Section>
               </form>
-              <Section align_items="center" padding_top_size="lg">
+              <Section align_items="center" padding_top_size="md" padding_bot_size="md">
                 <Section items_direction="row" isFit>
                   Уже есть аккаунт?
                   <Button variant="text" isPadNone onClick={() => router.push("/login")}>
@@ -139,7 +168,7 @@ export default function SignupPage() {
           {isVerification && (
             <>
               <form action="signup" onSubmit={verifyUser}>
-                <Section title="Нет аккаунта? Создайте!" title_size="md">
+                <Section title="Введите код подтверждения!" title_size="md">
                   <Input
                     labelText="Почта или логин"
                     leadingIcon="mail"
@@ -177,19 +206,6 @@ export default function SignupPage() {
               </Section>
             </>
           )}
-          <Section align_items="center" padding_bot_size="lg" padding_top_size="lg">
-            <span className={styles.text_center + " " + styles.label}>
-              Продолжая, вы соглашаетесь с{" "}
-              <a className={styles.link} href="/documents#terms" target="_blank" rel="noopener noreferrer">
-                Условиями обслуживания WishWave
-              </a>{" "}
-              и подтверждаете, что ознакомились с нашей{" "}
-              <a className={styles.link} href="/documents#policy" target="_blank" rel="noopener noreferrer">
-                Политикой конфиденциальности
-              </a>
-              .
-            </span>
-          </Section>
         </Container>
       </ContentContainer>
     </>
