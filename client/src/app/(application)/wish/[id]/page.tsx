@@ -197,7 +197,7 @@ export default function WishPage() {
                 headline={"Нажмите, чтобы забронировать"}
                 overline="бронирование"
                 trailing_type="icon"
-                trailing="radio_button_unchecked"
+                trailing="check_box_outline_blank"
                 onClick={() => handleBook(wish.id)}
               />
             ) : wish.wishStatusId == 2 && wish.bookedByUser && !isBooker && !isOwner ? ( // Если желание забронировано но не пользователем
@@ -223,7 +223,7 @@ export default function WishPage() {
                 overline="бронирование"
                 trailing_type="icon"
                 trailing_color="tertiary"
-                trailing="radio_button_checked"
+                trailing="check_box"
               />
             ) : wish.wishStatusId == 2 && wish.bookedByUser && isBooker && !isOwner ? ( // Если желание забронировано пользователем
               <ListItem
@@ -245,7 +245,7 @@ export default function WishPage() {
                 overline="бронирование"
                 trailing_type="icon"
                 trailing_color="error"
-                trailing="cancel"
+                trailing="disabled_by_default"
               />
             ) : wish.wishStatusId == 2 && wish.bookedByUser && isOwner ? ( // Если желание забронировано и смотрит владелец
               <ListItem
@@ -267,7 +267,7 @@ export default function WishPage() {
                 overline="бронирование"
                 trailing_type="icon"
                 trailing_color="error"
-                trailing="cancel"
+                trailing="disabled_by_default"
               />
             ) : wish.wishStatusId == 3 && wish.bookedByUser ? (
               <ListItem
@@ -292,7 +292,7 @@ export default function WishPage() {
                 overline="бронирование"
                 trailing_type="icon"
                 trailing_color="primary"
-                trailing="check_circle"
+                trailing="select_check_box"
               />
             ) : null
           ) : null}

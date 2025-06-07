@@ -222,6 +222,7 @@ function AddFriendPageContent() {
             ? recivedRequests.map(({ id, sender }) => {
                 return (
                   <ListItem
+                    key={id}
                     condition={2}
                     url={sender.image ? process.env.NEXT_PUBLIC_SERVER_URL + "/static/" + sender.image : ""}
                     leading_type={sender.image ? "image" : "icon"}

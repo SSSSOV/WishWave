@@ -16,6 +16,7 @@ import { useEffect, useState } from "react"
 import style from "@/app/home.module.css"
 import Button from "@/components/ui/buttons/Button"
 import Loader from "@/components/ui/loader/Loader"
+import { Toaster } from "react-hot-toast"
 
 export default function BugreportPage() {
   const router = useRouter()
@@ -93,6 +94,16 @@ export default function BugreportPage() {
           </Section>
         </Container>
       </Content>
+      <Toaster
+        position="bottom-center"
+        toastOptions={{
+          // Define default options
+          icon: null,
+          className: "toast",
+          duration: 2000,
+          removeDelay: 1000,
+        }}
+      />
     </>
   )
 }

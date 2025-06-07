@@ -1,4 +1,4 @@
-import {Column, DataType, Model, Table} from "sequelize-typescript";
+import {Column, DataType, Default, Model, Table} from "sequelize-typescript";
 
 interface PendingUserAttrs {
   login: string;
@@ -27,4 +27,11 @@ export class PendingUser extends Model<PendingUser, PendingUserAttrs> {
 
     @Column({type: DataType.DATE, allowNull: false })
     declare expiresAt: Date;
+
+    @Default(0)
+    @Column({ type: DataType.INTEGER })
+    declare attempts: number;
+
+    @Column({ type: DataType.DATE, allowNull: true, field: 'locked_until' })
+    declare lockedUntil: Date | null;
 }

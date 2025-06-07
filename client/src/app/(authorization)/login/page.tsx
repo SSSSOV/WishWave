@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useUnit } from "effector-react"
 import { $isAuth, $user, handleCheckAuth, handleSignIn } from "@/context/user"
-import toast from "react-hot-toast"
+import toast, { Toaster } from "react-hot-toast"
 import Container from "@/components/ui/container/Container"
 import Loader from "@/components/ui/loader/Loader"
 
@@ -78,12 +78,12 @@ export default function LoginPage() {
               <Button variant="text" isPadNone type="button">
                 Забыли пароль?
               </Button>
-              <Button variant="filled" isFit={false} type="submit">
+              <Button isFit={false} type="submit">
                 Войти
               </Button>
             </Section>
           </form>
-          <Section align_items="center" padding_top_size="lg">
+          <Section align_items="center" padding_top_size="md" padding_bot_size="md">
             <Section items_direction="row" isFit>
               Нет аккаунта?
               <Button variant="text" isPadNone onClick={() => router.replace("/signup")}>
@@ -91,7 +91,7 @@ export default function LoginPage() {
               </Button>
             </Section>
           </Section>
-          <Section align_items="center" padding_bot_size="lg" padding_top_size="lg">
+          <Section align_items="center" padding_bot_size="lg">
             <span className={styles.text_center + " " + styles.label}>
               Продолжая, вы соглашаетесь с{" "}
               <a className={styles.link} href="/documents#terms" target="_blank" rel="noopener noreferrer">
@@ -106,6 +106,16 @@ export default function LoginPage() {
           </Section>
         </Container>
       </Content>
+      <Toaster
+        position="bottom-center"
+        toastOptions={{
+          // Define default options
+          icon: null,
+          className: "toast",
+          duration: 2000,
+          removeDelay: 1000,
+        }}
+      />
     </>
   )
 }

@@ -150,11 +150,17 @@ p {
 }
 
 .toast {
-  border-radius: var(--full) !important;
-  padding: var(--xs) var(--sm) !important;
+  border-radius: var(--xs) !important;
+  padding: var(--sm) var(--md) !important;
+  background-color: var(--surface-container) !important;
+  color: var(--on-surface-container) !important;
+  max-width: 864px !important;
+  width: 100% !important;
+  /* text-align: left; */
+  /* margin-bottom: 50px !important; */
 }
 
-.success {
+/* .success {
   background-color: var(--access-container) !important;
   color: var(--on-access-container) !important;
 }
@@ -162,4 +168,4 @@ p {
 .error {
   background-color: var(--error-container) !important;
   color: var(--on-error-container) !important;
-}
+} */

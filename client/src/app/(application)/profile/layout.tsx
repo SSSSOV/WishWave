@@ -20,9 +20,10 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
 
   useEffect(() => {
     if (isAuth) {
+      console.log("asas")
       fetchUser(null)
     }
-  }, [user, isAuth, fetchUser])
+  }, [isAuth, fetchUser])
 
   if (isLoading) {
     return <Loader />

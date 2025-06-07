@@ -15,6 +15,7 @@ import { hasNameContent } from "@/lib/utils/hasNameContent"
 import { useUnit } from "effector-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import { Toaster } from "react-hot-toast"
 
 export default function ListsPage() {
   // Заголовок страницы
@@ -142,6 +143,16 @@ export default function ListsPage() {
           )}
         </Container>
       </Content>
+      <Toaster
+        position="bottom-center"
+        toastOptions={{
+          // Define default options
+          icon: null,
+          className: "toast",
+          duration: 2000,
+          removeDelay: 1000,
+        }}
+      />
     </>
   )
 }

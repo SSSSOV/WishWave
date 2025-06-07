@@ -74,18 +74,40 @@ export class AuthService {
   async verifyEmail(loginOrEmail: string, code: string) {
     const pending = await this.pendingRepo.findOne({
       where: {
-        [Op.or]: [{ login: loginOrEmail }, { email: loginOrEmail }],
-        code,
+        [Op.or]: [{ login: loginOrEmail }, { email: loginOrEmail }]
       },
     });
     if (!pending) {
       throw new BadRequestException("Неверный логин/email или код подтверждения");
     }
 
+    const now = new Date();
+    if (pending.lockedUntil && pending.lockedUntil.getTime() > now.getTime()) {
+      const diffMs = pending.lockedUntil.getTime() - now.getTime();
+      const minutesLeft = Math.ceil(diffMs / (60 * 1000));
+      throw new BadRequestException(`Слишком много неправильных попыток. Повторите через ${minutesLeft} мин.`)
+    }
+
     if (pending.expiresAt.getTime() < Date.now()) {
       await pending.destroy();
       throw new BadRequestException("Срок действия кода истёк. Зарегистрируйтесь заново.");
     }
+
+    if (pending.code !== code) {
+      pending.attempts += 1;
+
+      if (pending.attempts >= 5) {
+        pending.lockedUntil = new Date(now.getTime() + 15 * 60 * 1000);
+        pending.attempts = 0;
+        await pending.save();
+        throw new BadRequestException('Слишком много попыток. Попробуйте через 15 минут.');
+      } else {
+        await pending.save();
+        const triesLeft = 5 - pending.attempts;
+        throw new BadRequestException(`Неверный код. Осталось ${triesLeft} попыток.`);
+      }
+    }
+
 
     const newUser = await this.userService.createUser({
       login: pending.login,
