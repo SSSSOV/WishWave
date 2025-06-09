@@ -178,7 +178,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 // Define default options
                 icon: null,
                 className: "toast",
-                duration: 20000,
+                duration: 2000,
                 removeDelay: 1000,
 
                 // Default options for specific types
